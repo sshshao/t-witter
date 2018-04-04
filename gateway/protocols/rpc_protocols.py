@@ -4,19 +4,24 @@ from enum import Enum
 STATUS_OK = "OK"
 STATUS_ERROR = "error"
 
-
-class RPC_Witter_Action(Enum):
-    ADD_ITEM = 1,
-    GET_ITEM = 2,
-    DELETE_ITEM = 3,
-    SEARCH = 4,
-
 class RPC_Auth_Action(Enum):
     LOG_IN = 1,
     LOG_OUT = 2,
     REGISTER = 3,
     VALIDATE = 4,
     VALIDATE_JWT = 5,
+
+class RPC_Witter_Action(Enum):
+    ADD_TWEET = 1,
+    GET_TWEET = 2,
+    DELETE_TWEET = 3,
+    SEARCH = 4,
+
+class RPC_Profile_Action(Enum):
+    GET_PROFILE = 1,
+    GET_FOLLOWER = 2,
+    GET_FOLLOWING = 3
+    FOLLOW = 4,
 
 
 def generate_message(status, msg):

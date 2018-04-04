@@ -26,7 +26,7 @@ COLLECTION_NAME = config_tweet['MongoDB_Collection']
 client = pymongo.MongoClient(URI)
 
 
-def add_item(payload):
+def add_tweet(payload):
     tweet = json.loads(new_post(payload['username'], payload['content']))
     tweet_id = tweet['id']
 
@@ -44,7 +44,7 @@ def add_item(payload):
     return res
     
 
-def get_item(payload):
+def get_tweet(payload):
     query = {'id': payload['id']}
 
     db = client[DB_NAME]
@@ -60,6 +60,18 @@ def get_item(payload):
         'item': result
     })
     return res
+
+
+def delete_tweet(payload):
+    query = {'id': payload['id']}
+
+    db = client[DB_NAME]
+    collection = db[COLLECTION_NAME]
+    result = collection.delete_one(query)
+
+    if(result.deleted_count == 1):
+        return 400
+    return 200
 
 
 def search(payload):

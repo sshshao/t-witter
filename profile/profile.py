@@ -10,25 +10,25 @@ from protocols.rpc_protocols import *
 # Get consts from config file
 config = configparser.ConfigParser()
 config.read('./config.ini')
-config_tweet = config['TWEET']
+config_profile = config['PROFILE']
 
 AMQP_HOST = config['DISPATCHER']['AMQP_Host']
 AMQP_EXCHANGE = config['DISPATCHER']['AMQP_Exchange']
 AMQP_EXCHANGE_TYPE = config['DISPATCHER']['AMQP_Exchange_Type']
-AMQP_TWEET_QUEUE = config_tweet['AMQP_Queue']
+AMQP_PROFILE_QUEUE = config_profile['AMQP_Queue']
 
 # Set up AMQP connection
 connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
 channel = connection.channel()
 channel.exchange_declare(exchange=AMQP_EXCHANGE, exchange_type=AMQP_EXCHANGE_TYPE)
-result = channel.queue_declare(queue=AMQP_TWEET_QUEUE, durable=True)
-channel.queue_bind(exchange=AMQP_EXCHANGE, queue=AMQP_TWEET_QUEUE)
+result = channel.queue_declare(queue=AMQP_PROFILE_QUEUE, durable=True)
+channel.queue_bind(exchange=AMQP_EXCHANGE, queue=AMQP_PROFILE_QUEUE)
 
 options = {
-    REQ_ACTION.ADD_TWEET.name: add_tweet,
-    REQ_ACTION.GET_TWEET.name: get_tweet,
-    REQ_ACTION.DELETE_TWEET.name: delete_tweet,
-    REQ_ACTION.SEARCH.name: search
+    REQ_ACTION.GET_PROFILE.name: get_profile,
+    REQ_ACTION.GET_FOLLOWER.name: get_follower,
+    REQ_ACTION.GET_FOLLOWING.name: get_following,
+    REQ_ACTION.FOLLOW.name: follow
 }
 
 
@@ -46,7 +46,7 @@ def on_request(ch, method, props, body):
 
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(on_request, queue=AMQP_TWEET_QUEUE)
+channel.basic_consume(on_request, queue=AMQP_PROFILE_QUEUE)
 
 # Start consume
 print(" [x] Awaiting RPC requests")
