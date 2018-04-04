@@ -1,0 +1,9 @@
+---
+- hosts: witter-workers
+  remote_user: ubuntu
+  gather_facts: False
+  become: yes
+
+  tasks:
+    - name: Join Swarm
+      raw: docker swarm join --token SWMTKN-1-14khxkerm2ij7ylz47quxyrohskvrv8tn5xxwc32nszm8bc55k-3wlvgf45edvwia7uyyrscjupq 10.0.0.182:2377
