@@ -95,7 +95,6 @@ def verify():
 @app.route('/additem', methods=['POST'])
 def add_item():
     cookie = check_login(request)
-    print(cookie)
     if cookie[0]:
         input_data = request.get_json()
         dispatcher = RPCDispatcher()
