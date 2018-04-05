@@ -1,3 +1,5 @@
+import json
+
 db_model = json.dumps({
     'id': 'ixo134j03k4l3',
     'username': 'mazafaka',
