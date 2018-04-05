@@ -18,6 +18,9 @@ class RPC_Auth_Action(Enum):
     VALIDATE = 4,
     VALIDATE_JWT = 5,
 
+class RPC_Profile_Action(Enum):
+    ADD_PROFILE = 1,    
+
 
 def generate_message(status, msg):
     if status == STATUS_OK:

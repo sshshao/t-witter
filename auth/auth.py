@@ -10,6 +10,7 @@ import configparser
 import time
 import sys, os
 
+from dispatcher import *
 from protocols.messages import *
 from protocols.rpc_protocols import *
 from protocols.schema import *
@@ -26,6 +27,7 @@ AMQP_Exchange_Type = config['AMQP']['AMQP_Exchange_Type']
 
 AMQP_Auth_Queue = config_auth['AMQP_Queue']
 AMQP_Email_Queue = config['EMAIL']['AMQP_Queue']
+AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
 Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
@@ -108,7 +110,21 @@ def validate_user(email, key):
                     user_account.activated = True
                     session.delete(ac_token_record)
                     session.commit()
-                    return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
+                    dispatcher = RPCDispatcher()
+                    # Sending Data to Mongo.
+                    req = json.dumps({
+                        'action': RPC_Profile_Action.ADD_PROFILE.name,
+                        'payload':{
+                            'id': user_account.uid,
+                            'username': user_account.username,
+                            'email': user_account.email,
+                        },
+                    })
+                    res = dispatcher.call(AMQP_Profile_Queue, req)
+                    res_format = json.loads(res)
+                    if res_format == STATUS_OK:
+                        return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
+                    return res
                 except Exception as err:
                     session.rollback()
                     return generate_message(STATUS_ERROR, ERROR_UNKNOWN_MESSAGE)
