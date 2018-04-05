@@ -97,12 +97,11 @@ def verify():
 @app.route('/additem', methods=['POST'])
 def add_item():
     cookie = check_login(request)
-    print(cookie)
     if cookie[0]:
         input_data = request.get_json()
         dispatcher = RPCDispatcher()
         req = json.dumps({
-            'action': RPC_Witter_Action.ADD_ITEM.name,
+            'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
                 'username': cookie[1],
                 'content': input_data['content'],
@@ -122,7 +121,22 @@ def get_item(id):
     tweet_id = id
     dispatcher = RPCDispatcher()
     req = json.dumps({
-        'action': RPC_Witter_Action.GET_ITEM.name,
+        'action': RPC_Witter_Action.GET_TWEET.name,
+        'payload': {
+            'id': tweet_id
+        }
+    })
+    res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
+    res_format = json.loads(res)
+    return Response(res_format, mimetype='application/json')
+
+
+@app.route('/item/<id>', methods=['DELETE'])
+def delete_item(id):
+    tweet_id = id
+    dispatcher = RPCDispatcher()
+    req = json.dumps({
+        'action': RPC_Witter_Action.DELETE_TWEET.name,
         'payload': {
             'id': tweet_id
         }

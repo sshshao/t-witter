@@ -6,10 +6,10 @@ STATUS_ERROR = "error"
 
 
 class REQ_ACTION(Enum):
-    ADD_TWEET = 1,
-    GET_TWEET = 2,
-    DELETE_TWEET = 3,
-    SEARCH = 4,
+    GET_PROFILE = 1,
+    GET_FOLLOWER = 2,
+    GET_FOLLOWING = 3
+    FOLLOW = 4,
 
 
 def generate_message(status, msg):
