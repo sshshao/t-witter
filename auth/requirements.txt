@@ -3,4 +3,4 @@ sqlalchemy
 pika
 sqlalchemy_utils
 psycopg2-binary
-jwt
+PyJWT
