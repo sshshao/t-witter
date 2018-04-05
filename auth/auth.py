@@ -108,7 +108,21 @@ def validate_user(email, key):
                     user_account.activated = True
                     session.delete(ac_token_record)
                     session.commit()
-                    return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
+                    dispatcher = RPCDispatcher()
+                    # Sending Data to Mongo.
+                    req = json.dumps({
+                        'action': RPC_Profile_Action.ADD_PROFILE.name,
+                        'payload':{
+                            'id': user_account.uid,
+                            'username': user_account.username,
+                            'email': user_account.email,
+                        },
+                    })
+                    res = dispatcher.call(AMQP_Profile_Queue, req)
+                    res_format = json.loads(res)
+                    if res_format == STATUS_OK:
+                        return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
+                    return res
                 except Exception as err:
                     session.rollback()
                     return generate_message(STATUS_ERROR, ERROR_UNKNOWN_MESSAGE)
