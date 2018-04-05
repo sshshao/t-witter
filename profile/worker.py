@@ -23,8 +23,7 @@ DB_NAME = config_profile['MongoDB_Name']
 COLLECTION_NAME = config_profile['MongoDB_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient(URI)
-
+client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
 
 def add_profile(payload):
     profile = json.loads(new_profile(payload['id'], payload['username'], payload['email']))

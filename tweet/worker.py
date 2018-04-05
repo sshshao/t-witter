@@ -24,7 +24,7 @@ TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
 PROFILE_COLLECTION_NAME = config_tweet['MongoDB_Profile_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient(URI)
+client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
 
 
 def add_tweet(payload):
