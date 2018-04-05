@@ -40,6 +40,7 @@ def check_login(req):
             return (True, username)
     return (False, )
 
+
 @app.route('/test', methods=['GET'])
 def hello():
     return 'Hello World!'
