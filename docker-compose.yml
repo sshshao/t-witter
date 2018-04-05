@@ -7,17 +7,23 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_PASSWORD: hyy19960529
+    networks: 
+      - twinet            
 
   mongo_db:
     image: mongo:latest
     ports:
       - "27017:27017"
+    networks: 
+      - twinet 
 
   amqp_service:
     image: "rabbitmq:3.7.4"
     ports: 
       - "5672:5672"
       - "15672:15672"
+    networks: 
+      - twinet 
 
   api_gateway:
     image: twitter_gateway_service
@@ -28,6 +34,8 @@ services:
       restart_policy:
         delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   auth_service:
     image: twitter_auth_service
@@ -36,6 +44,8 @@ services:
       restart_policy:
         delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   email_service:
     image: twitter_email_service
@@ -44,6 +54,8 @@ services:
       restart_policy: 
         delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   profile_service:
     image: twitter_profile_service
@@ -52,6 +64,8 @@ services:
       restart_policy:
         delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   tweet_service:
     image: twitter_tweet_service
@@ -60,3 +74,20 @@ services:
       restart_policy:
         delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - twinet
+
+networks: 
+  twinet:
