@@ -12,9 +12,9 @@ config = configparser.ConfigParser()
 config.read('./config.ini')
 config_tweet = config['TWEET']
 
-AMQP_HOST = config['DISPATCHER']['AMQP_Host']
-AMQP_EXCHANGE = config['DISPATCHER']['AMQP_Exchange']
-AMQP_EXCHANGE_TYPE = config['DISPATCHER']['AMQP_Exchange_Type']
+AMQP_HOST = config['AMQP']['AMQP_Host']
+AMQP_EXCHANGE = config['AMQP']['AMQP_Exchange']
+AMQP_EXCHANGE_TYPE = config['AMQP']['AMQP_Exchange_Type']
 AMQP_TWEET_QUEUE = config_tweet['AMQP_Queue']
 
 # Set up AMQP connection
