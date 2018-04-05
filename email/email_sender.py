@@ -5,6 +5,7 @@ from cerberus import Validator
 import smtplib
 import email.message
 import email.utils
+import time
 
 from protocols.schema import *
 from protocols.rpc_protocols import decode_json
@@ -22,7 +23,14 @@ AMQP_Queue = config_email['AMQP_Queue']
 Gmail_User = config_email['Gmail_User']
 Gmail_Password = config_email['Gmail_Password']
 
-connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+
+while True:
+    try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+        break
+    except Exception as err:
+        print("[x] AMQP Service Not Ready...")
+        
 channel = connection.channel()
 
 channel.exchange_declare(exchange=AMQP_Exchange, exchange_type=AMQP_Exchange_Type)

@@ -1,0 +1,39 @@
+version: '3'
+services:
+
+  
+  postgre_db:
+    image: "postgres"
+    hostname: "postgres_db"
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: hyy19960529
+
+  amqp_service:
+    image: "rabbitmq:3.7.4"
+    hostname: "rabbitmq_service"
+    ports: 
+      - "15672:15672"
+
+  api_gateway:
+    build: ./gateway
+    deploy:
+      replicas: 1
+      ports:
+        - "80:80"
+      restart_policy:
+        condition: on-failure
+
+  auth_service:
+    build: ./auth
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  email_service:
+    build: ./email
+    deploy:
+      replicas: 1
+      restart_policy: 
+        condition: on-failure
