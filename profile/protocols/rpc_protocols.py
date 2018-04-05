@@ -6,10 +6,11 @@ STATUS_ERROR = "error"
 
 
 class REQ_ACTION(Enum):
-    GET_PROFILE = 1,
-    GET_FOLLOWER = 2,
-    GET_FOLLOWING = 3
-    FOLLOW = 4,
+    ADD_PROFILE = 1
+    GET_PROFILE = 2,
+    GET_FOLLOWER = 3,
+    GET_FOLLOWING = 4
+    FOLLOW = 5,
 
 
 def generate_message(status, msg):

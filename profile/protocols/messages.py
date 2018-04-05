@@ -1,9 +1,7 @@
-#TWEET
+#PROFILE
 
 #Success Messages
-SEARCH_NO_RESULT = "No result found."
+SUCCESS_ADD_PROFILE = "User profile added."
 
 #Error Messages
-ERROR_POST_NO_USER = "Please log in."
-ERROR_POST_TWEET = "Error occured on posting tweet."
-ERROR_GET_TWEET = "Tweet ID does not exist."
+ERROR_ADD_PROFILE = "Error occured when adding user profile."

@@ -4,7 +4,7 @@ import sys, os
 import math, time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from models import *
+from protocols.schema import *
 from protocols.messages import *
 from protocols.rpc_protocols import *
 
@@ -16,8 +16,8 @@ config = configparser.ConfigParser()
 config.read('./config.ini')
 
 config_tweet = config['TWEET']
-SEARCH_LIMIT_DEFAULT = config_tweet['Search_Limit_Default']
-SEARCH_LIMIT_MAX = config_tweet['Search_Limit_Max']
+SEARCH_LIMIT_DEFAULT = int(config_tweet['Search_Limit_Default'])
+SEARCH_LIMIT_MAX = int(config_tweet['Search_Limit_Max'])
 URI = config_tweet['MongoDB_Uri']
 DB_NAME = config_tweet['MongoDB_Name']
 COLLECTION_NAME = config_tweet['MongoDB_Collection']
@@ -45,7 +45,7 @@ def add_tweet(payload):
     
 
 def get_tweet(payload):
-    query = {'id': payload['id']}
+    query = json.loads(tweet_query(payload['id']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
@@ -63,7 +63,7 @@ def get_tweet(payload):
 
 
 def delete_tweet(payload):
-    query = {'id': payload['id']}
+    query = json.loads(tweet_query(payload['id']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
@@ -76,14 +76,12 @@ def delete_tweet(payload):
 
 def search(payload):
     timestamp = math.floor(time.time())
-    limit = int(SEARCH_LIMIT_DEFAULT)
+    limit = SEARCH_LIMIT_DEFAULT
     if 'timestamp' in payload:
         timestamp = int(payload['timestamp'])
     if 'limit' in payload:
-        limit = int(payload['limit']) if int(payload['limit']) < int(SEARCH_LIMIT_MAX) else int(SEARCH_LIMIT_MAX)
-    print(timestamp)
-    print(limit)
-
+        limit = int(payload['limit']) if int(payload['limit']) < SEARCH_LIMIT_MAX else SEARCH_LIMIT_MAX
+    
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
     
