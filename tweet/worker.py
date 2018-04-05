@@ -21,7 +21,7 @@ SEARCH_LIMIT_MAX = int(config_tweet['Search_Limit_Max'])
 URI = config_tweet['MongoDB_Uri']
 DB_NAME = config_tweet['MongoDB_Name']
 TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
-PROFILE_COLLECTION_NAME = confid_tweey['MongoDB_Profile_Collection']
+PROFILE_COLLECTION_NAME = config_tweet['MongoDB_Profile_Collection']
 
 # Set up Mongo client
 client = pymongo.MongoClient(URI)
