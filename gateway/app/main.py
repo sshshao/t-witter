@@ -42,8 +42,6 @@ def hello():
     return 'Hello World!'
 
 
-
-
 @app.route('/adduser', methods=['POST'])
 def register():
     input_data = request.get_json()

@@ -3,6 +3,8 @@ import pika
 import json
 import sys, os
 
+from datetime import datetime
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from worker import *
 from protocols.rpc_protocols import *
@@ -36,8 +38,10 @@ options = {
 def on_request(ch, method, props, body):
     data = decode_json(body.decode('utf-8'))
     print(data)
-    response = options[data['action']](data['payload'])
-
+    bf = datetime.now().timestamp()
+    response = options[data['action']](data['payload']) 
+    pstime = datetime.now().timestamp() - bf
+    print("Processing Time: %d ms", pstime)
     ch.basic_publish(exchange=AMQP_EXCHANGE,
         routing_key=props.reply_to,
         properties=pika.BasicProperties(
