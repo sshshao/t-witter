@@ -122,10 +122,7 @@ def validate_user(email, key):
                             'email': user_account.email,
                         },
                     })
-                    bf = time.time() * 1000
                     res = dispatcher.call(AMQP_Profile_Queue, req)
-                    af = time.time() * 1000 - bf
-                    print("Processing Time: %d ms" % af)
                     res_format = json.loads(res)
                     if res_format['status'] == STATUS_OK:
                         return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
@@ -154,6 +151,7 @@ def login_user(username, password):
                 session.commit()
                 encoded_jwt = jwt.encode({
                     'uid': user_account.uid,
+                    'username': user_account.username,
                     'duration': int(Session_Duration),
                     'time_created': int(time.time())
                 }, JWT_Secret)
@@ -173,6 +171,7 @@ def check_jwt(jwt_token):
     # JWT Token Validated.
     if v.validate(jwt_data, JWT_Schema):
         user_id = jwt_data['uid']
+        username = jwt_data['username']
         valid_duration = jwt_data['duration']
         time_created = jwt_data['time_created']
         time_now = int(time.time())

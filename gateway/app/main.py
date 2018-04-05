@@ -6,6 +6,7 @@ import sys, os
 from dispatcher import *
 from protocols.rpc_protocols import *
 from protocols.messages import *
+from protocols.schema import *
 
 
 app = Flask(__name__)
@@ -23,19 +24,16 @@ def check_login(req):
     jwt_token = req.cookies.get('user-jwt')
     if not jwt_token:
         return (False, )
-    dispatcher = RPCDispatcher()
-    req = json.dumps({
-        'action': RPC_Auth_Action.VALIDATE_JWT.name,
-        'payload': {
-            "jwt": jwt_token
-        }, 
-    })
-    res = dispatcher.call(AMQP_Auth_Queue, req)
-    res_format = json.loads(res)
-    if res_format['status'] == STATUS_OK:
-        return (True, res_format['payload']['username'])
+    if v.validate(jwt_data, JWT_Schema):
+        user_id = jwt_data['uid']
+        username = jwt_data['username']
+        valid_duration = jwt_data['duration']
+        time_created = jwt_data['time_created']
+        time_now = int(time.time())
+        if time_now - time_created <= valid_duration:
+            # Blacklisted TODO
+            return (True, username)
     return (False, )
-
 
 @app.route('/test', methods=['GET'])
 def hello():
