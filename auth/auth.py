@@ -10,6 +10,7 @@ import configparser
 import time
 import sys, os
 
+from dispatcher import *
 from protocols.messages import *
 from protocols.rpc_protocols import *
 from protocols.schema import *
@@ -26,6 +27,7 @@ AMQP_Exchange_Type = config['AMQP']['AMQP_Exchange_Type']
 
 AMQP_Auth_Queue = config_auth['AMQP_Queue']
 AMQP_Email_Queue = config['EMAIL']['AMQP_Queue']
+AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
 Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
