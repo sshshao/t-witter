@@ -47,7 +47,7 @@ def get_profile(payload):
     result = collection.find_one(query)
 
     if(result == None):
-        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
+        return generate_message(RES_FAILURE, ERROR_FOLLOWING)
     
     res = json.dumps({
         'status': RES_SUCCESS,
@@ -72,7 +72,7 @@ def get_follower(payload):
     result = collection.find_one(query)
 
     if(result == None):
-        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
+        return generate_message(RES_FAILURE, ERROR_FOLLOWING)
 
     follower = result['follower'][:limit]
     res = json.dumps({
