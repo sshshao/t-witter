@@ -1,60 +1,104 @@
 version: '3'
 services:
+
   postgre_db:
-    image: "postgres"
-    restart: always
+    image: "postgres:latest"
+    ports: 
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: hyy19960529
+    networks: 
+      - twinet            
 
   mongo_db:
     image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./data/db:/data/db
-    command: mongod --smallfiles --logpath=/dev/null
+    ports:
+      - "27017:27017"
+    networks: 
+      - twinet 
 
   amqp_service:
     image: "rabbitmq:3.7.4"
     ports: 
-      - "15672:15672"
+      - "5672:5672"
+    networks: 
+      - twinet 
+  
+  amqp_mgt:
+    image: "rabbitmq:3-management"
+    ports:
+      - "8081:15672"
+    networks:
+      - twinet
 
   api_gateway:
     image: twitter_gateway_service
+    ports:
+      - "80:80"
     deploy:
-      replicas: 1
-      ports:
-        - "80:80"
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   auth_service:
     image: twitter_auth_service
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   email_service:
     image: twitter_email_service
-    restart: always
     deploy:
       replicas: 1
       restart_policy: 
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   profile_service:
     image: twitter_profile_service
     deploy:
       replicas: 1
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   tweet_service:
     image: twitter_tweet_service
     deploy:
       replicas: 1
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - twinet
+
+networks: 
+  twinet:
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16
