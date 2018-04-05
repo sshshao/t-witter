@@ -46,9 +46,11 @@ message_channel.exchange_declare(exchange=AMQP_Exchange, exchange_type=AMQP_Exch
 # Declare Queues
 message_channel.queue_declare(queue=AMQP_Auth_Queue, durable=True)
 message_channel.queue_declare(queue=AMQP_Email_Queue, durable=True)
+message_channel.queue_declare(queue=AMQP_Profile_Queue, durable=True)
 # Bind exchange and queues
 message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Auth_Queue)
 message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Email_Queue)
+message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Profile_Queue)
 
 
 
@@ -122,7 +124,7 @@ def validate_user(email, key):
                     })
                     res = dispatcher.call(AMQP_Profile_Queue, req)
                     res_format = json.loads(res)
-                    if res_format == STATUS_OK:
+                    if res_format['status'] == STATUS_OK:
                         return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
                     return res
                 except Exception as err:

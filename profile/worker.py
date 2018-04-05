@@ -5,6 +5,7 @@ import math, time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from protocols.messages import *
+from protocols.schema import *
 from protocols.rpc_protocols import *
 
 # Get consts from config file
@@ -26,7 +27,7 @@ client = pymongo.MongoClient(URI)
 
 
 def add_profile(payload):
-    profile = json.load(new_profile(payload['id'], payload['username'], payload['email']))
+    profile = json.loads(new_profile(payload['id'], payload['username'], payload['email']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
@@ -39,14 +40,14 @@ def add_profile(payload):
 
 
 def get_profile(payload):
-    query = json.load(query_profile(payload['username']))
+    query = json.loads(query_profile(payload['username']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
     result = collection.find_one(query)
 
     if(result == None):
-        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
+        return generate_message(RES_FAILURE, ERROR_FOLLOWING)
     
     res = json.dumps({
         'status': RES_SUCCESS,
@@ -61,17 +62,17 @@ def get_profile(payload):
 
 def get_follower(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if 'limit' in payload:
+    if payload['limit'] != None:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
-    query = json.load(query_profile(payload['username']))
+    query = json.loads(query_profile(payload['username']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
     result = collection.find_one(query)
 
     if(result == None):
-        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
+        return generate_message(RES_FAILURE, ERROR_FOLLOWING)
 
     follower = result['follower'][:limit]
     res = json.dumps({
@@ -83,10 +84,10 @@ def get_follower(payload):
 
 def get_following(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if 'limit' in payload:
+    if payload['limit'] != None:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
-    query = json.load(query_profile(payload['username']))
+    query = json.loads(query_profile(payload['username']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
@@ -108,8 +109,8 @@ def follow(payload):
     if 'follow' in payload:
         do_follow = payload['follow']
     
-    query_user = json.load(query_profile(payload['user']))
-    query_target  = json.load(query_profile(payload['target']))
+    query_user = json.loads(query_profile(payload['user']))
+    query_target  = json.loads(query_profile(payload['target']))
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]

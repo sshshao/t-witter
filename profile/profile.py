@@ -25,6 +25,7 @@ result = channel.queue_declare(queue=AMQP_PROFILE_QUEUE, durable=True)
 channel.queue_bind(exchange=AMQP_EXCHANGE, queue=AMQP_PROFILE_QUEUE)
 
 options = {
+    REQ_ACTION.ADD_PROFILE.name: add_profile,
     REQ_ACTION.GET_PROFILE.name: get_profile,
     REQ_ACTION.GET_FOLLOWER.name: get_follower,
     REQ_ACTION.GET_FOLLOWING.name: get_following,
