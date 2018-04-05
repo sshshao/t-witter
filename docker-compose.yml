@@ -18,18 +18,12 @@ services:
       - twinet 
 
   amqp_service:
-    image: "rabbitmq:3.7.4"
+    image: "rabbitmq:3.7.4-management"
     ports: 
       - "5672:5672"
+      - "8081:15672"      
     networks: 
       - twinet 
-  
-  amqp_mgt:
-    image: "rabbitmq:3-management"
-    ports:
-      - "8081:15672"
-    networks:
-      - twinet
 
   api_gateway:
     image: twitter_gateway_service
