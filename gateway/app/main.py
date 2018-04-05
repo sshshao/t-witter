@@ -3,9 +3,9 @@ import configparser
 import json
 import sys, os
 
-from .dispatcher import *
-from .protocols.rpc_protocols import *
-from .protocols.messages import *
+from dispatcher import *
+from protocols.rpc_protocols import *
+from protocols.messages import *
 
 
 app = Flask(__name__)
@@ -14,6 +14,8 @@ config.read('config.ini')
 
 AMQP_Auth_Queue = config['AUTH']['AMQP_Queue']
 AMQP_Tweet_Queue = config['TWEET']['AMQP_Queue']
+
+
 
 
 # Check whether the JWT Token is valid.
@@ -141,3 +143,8 @@ def search():
     res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
     res_format = json.loads(res)
     return Response(res_format, mimetype='application/json')
+
+
+if __name__ == "__main__":
+    # Only for debugging while developing
+    app.run(host='0.0.0.0', debug=True, port=80)
