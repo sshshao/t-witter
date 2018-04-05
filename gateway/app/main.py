@@ -143,9 +143,9 @@ def delete_item(id):
     res = dispatcher.call(AMQP_Tweet_Queue, req)
     res_format = json.loads(res)
     if res_format['status'] == 'OK':
-        return Response(res_format, status=200, mimetype='application/json')
+        return Response(res, status=200, mimetype='application/json')
     else:
-        return Response(res_format, status=400, mimetype='application/json')
+        return Response(res, status=400, mimetype='application/json')
 
 
 @app.route('/search', methods=['POST'])
@@ -225,12 +225,13 @@ def follow():
     if cookie[0]:
         input_data = request.get_json()
         dispatcher = RPCDispatcher()
+        follow = True if 'follow' not in input_data else input_data['follow']
         req = json.dumps({
             'action': RPC_Profile_Action.FOLLOW.name,
             'payload': {
                 'user': cookie[1],
                 'target': input_data['username'],
-                'follow': input_data['follow']
+                'follow': follow
             }
         })
         res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
