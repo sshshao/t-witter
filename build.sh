@@ -26,41 +26,41 @@ docker image build -q -t twitter_tweet_service .
 
 # Tagging and Pushing Auth Service.
 echo '\033[35m[x] Tagging Auth Service...\033[0m'
-docker tag twitter_auth_service localhost:5000/twitter_auth_service
+docker tag twitter_auth_service richackard/twitter_auth_service:latest
 
 echo '\033[35m[x] Pushing Auth Service...\033[0m'
-docker push localhost:5000/twitter_auth_service
+docker push richackard/twitter_auth_service:latest
 
 
 # Tagging and Pushing Email Service.
 echo '\033[35m[x] Tagging Email Service...\033[0m'
-docker tag twitter_email_service localhost:5000/twitter_email_service
+docker tag twitter_email_service richackard/twitter_email_service:latest
 
 echo '\033[35m[x] Pushing Email Service...\033[0m'
-docker push localhost:5000/twitter_email_service
+docker push richackard/twitter_email_service:latest
 
 
 # Tagging and Pushing Gateway Service.
 echo '\033[35m[x] Tagging Gateway Service...\033[0m'
-docker tag twitter_gateway_service localhost:5000/twitter_gateway_service
+docker tag twitter_gateway_service richackard/twitter_gateway_service:latest
 
 echo '\033[35m[x] Pushing Gateway Service...\033[0m'
-docker push localhost:5000/twitter_gateway_service
+docker push richackard/twitter_gateway_service:latest
 
 
 # Tagging and Pushing Profile Service.
 echo '\033[35m[x] Tagging Profile Service...\033[0m'
-docker tag twitter_profile_service localhost:5000/twitter_profile_service
+docker tag twitter_profile_service richackard/twitter_profile_service:latest
 
 echo '\033[35m[x] Pushing Profile Service...\033[0m'
-docker push localhost:5000/twitter_profile_service
+docker push richackard/twitter_profile_service:latest
 
 
 # Tagging and Pushing Tweet Service.
 echo '\033[35m[x] Tagging Tweet Service...\033[0m'
-docker tag twitter_tweet_service localhost:5000/twitter_tweet_service
+docker tag twitter_tweet_service richackard/twitter_tweet_service:latest
 
 echo '\033[35m[x] Pushing Tweet Service...\033[0m'
-docker push localhost:5000/twitter_tweet_service
+docker push richackard/twitter_tweet_service:latest
 
 echo '\033[32m[x] Image Build Finished...\033[0m'
