@@ -8,11 +8,6 @@ services:
 
   mongo_db:
     image: mongo:latest
-    ports:
-      - '27017:27017'
-    volumes:
-      - 'mongo:/data/db'
-
 
   amqp_service:
     image: "rabbitmq:3.7.4"
