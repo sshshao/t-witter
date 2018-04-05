@@ -37,9 +37,11 @@ def check_login(req):
     return (False, )
 
 
-@app.route('/', methods=['GET'])
+@app.route('/test', methods=['GET'])
 def hello():
     return 'Hello World!'
+
+
 
 
 @app.route('/adduser', methods=['POST'])
