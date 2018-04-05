@@ -26,7 +26,7 @@ services:
       - twinet 
 
   api_gateway:
-    image: 10.0.1.6:5000/twitter_gateway_service
+    image: richackard/twitter_gateway_service
     ports:
       - "80:80"
     deploy:
@@ -38,7 +38,7 @@ services:
       - twinet 
 
   auth_service:
-    image: 10.0.1.6:5000/twitter_auth_service
+    image: richackard/twitter_auth_service
     deploy:
       replicas: 1
       restart_policy:
@@ -48,7 +48,7 @@ services:
       - twinet 
 
   email_service:
-    image: 10.0.1.6:5000/twitter_email_service
+    image: richackard/twitter_email_service
     deploy:
       replicas: 1
       restart_policy: 
@@ -58,7 +58,7 @@ services:
       - twinet 
 
   profile_service:
-    image: 10.0.1.6:5000/twitter_profile_service
+    image: richackard/twitter_profile_service
     deploy:
       replicas: 1
       restart_policy:
@@ -68,7 +68,7 @@ services:
       - twinet 
 
   tweet_service:
-    image: 10.0.1.6:5000/twitter_tweet_service
+    image: richackard/twitter_tweet_service
     deploy:
       replicas: 1
       restart_policy:
