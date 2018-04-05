@@ -26,7 +26,7 @@ services:
       - twinet 
 
   api_gateway:
-    image: /twitter_gateway_service:latest
+    image: twitter_gateway_service:latest
     ports:
       - "80:80"
     deploy:
@@ -38,7 +38,7 @@ services:
       - twinet 
 
   auth_service:
-    image: /twitter_auth_service:latest
+    image: twitter_auth_service:latest
     deploy:
       replicas: 1
       restart_policy:
@@ -48,7 +48,7 @@ services:
       - twinet 
 
   email_service:
-    image: /twitter_email_service:latest
+    image: twitter_email_service:latest
     deploy:
       replicas: 1
       restart_policy: 
@@ -58,7 +58,7 @@ services:
       - twinet 
 
   profile_service:
-    image: /twitter_profile_service:latest
+    image: twitter_profile_service:latest
     deploy:
       replicas: 1
       restart_policy:
@@ -68,7 +68,7 @@ services:
       - twinet 
 
   tweet_service:
-    image: /twitter_tweet_service:latest
+    image: twitter_tweet_service:latest
     deploy:
       replicas: 1
       restart_policy:
@@ -78,7 +78,7 @@ services:
       - twinet
 
   visualizer:
-    image: /dockersamples/visualizer:stable
+    image: dockersamples/visualizer:stable
     ports:
       - "8080:8080"
     volumes:
