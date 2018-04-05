@@ -6,9 +6,9 @@ STATUS_ERROR = "error"
 
 
 class RPC_Witter_Action(Enum):
-    ADD_ITEM = 1,
-    GET_ITEM = 2,
-    DELETE_ITEM = 3,
+    ADD_TWEET = 1,
+    GET_TWEET = 2,
+    DELETE_TWEET = 3,
     SEARCH = 4,
 
 class RPC_Auth_Action(Enum):
