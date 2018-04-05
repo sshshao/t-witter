@@ -62,7 +62,7 @@ def get_profile(payload):
 
 def get_follower(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if 'limit' in payload:
+    if payload['limit'] != None:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
     query = json.loads(query_profile(payload['username']))
@@ -84,7 +84,7 @@ def get_follower(payload):
 
 def get_following(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if 'limit' in payload:
+    if payload['limit'] != None:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
     query = json.loads(query_profile(payload['username']))
