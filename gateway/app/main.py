@@ -225,12 +225,13 @@ def follow():
     if cookie[0]:
         input_data = request.get_json()
         dispatcher = RPCDispatcher()
+        follow = True if 'follow' in input_data else input_data['follow']
         req = json.dumps({
             'action': RPC_Profile_Action.FOLLOW.name,
             'payload': {
                 'user': cookie[1],
                 'target': input_data['username'],
-                'follow': input_data['follow']
+                'follow': follow
             }
         })
         res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
