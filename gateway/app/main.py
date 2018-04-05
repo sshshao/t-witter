@@ -188,7 +188,7 @@ def get_user(username):
 
 
 @app.route('/user/<username>/followers', methods=['GET'])
-def get_user(username):
+def get_follower(username):
     limit = request.args.get('limit')
     dispatcher = RPCDispatcher()
     req = json.dumps({
@@ -204,7 +204,7 @@ def get_user(username):
 
 
 @app.route('/user/<username>/following', methods=['GET'])
-def get_user(username):
+def get_following(username):
     limit = request.args.get('limit')
     dispatcher = RPCDispatcher()
     req = json.dumps({
@@ -220,7 +220,7 @@ def get_user(username):
 
 
 @app.route('/follow', methods=['POST'])
-def get_user():
+def follow():
     cookie = check_login(request)
     if cookie[0]:
         input_data = request.get_json()
