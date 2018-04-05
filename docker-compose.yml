@@ -1,20 +1,13 @@
 version: '3'
 services:
+
   postgre_db:
     image: "postgres"
-    restart: always
     environment:
       POSTGRES_PASSWORD: hyy19960529
 
   mongo_db:
     image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./data/db:/data/db
-    command: mongod --smallfiles --logpath=/dev/null
 
   amqp_service:
     image: "rabbitmq:3.7.4"
@@ -23,26 +16,28 @@ services:
 
   api_gateway:
     image: twitter_gateway_service
+    ports:
+      - "80:80"
     deploy:
-      replicas: 1
-      ports:
-        - "80:80"
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
 
   auth_service:
     image: twitter_auth_service
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
 
   email_service:
     image: twitter_email_service
-    restart: always
     deploy:
       replicas: 1
       restart_policy: 
+        delay: "1s"
         condition: on-failure
 
   profile_service:
@@ -50,6 +45,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
+        delay: "1s"
         condition: on-failure
 
   tweet_service:
@@ -57,4 +53,5 @@ services:
     deploy:
       replicas: 1
       restart_policy:
+        delay: "1s"
         condition: on-failure
