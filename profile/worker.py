@@ -5,6 +5,7 @@ import math, time
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from protocols.messages import *
+from protocols.schema import *
 from protocols.rpc_protocols import *
 
 # Get consts from config file

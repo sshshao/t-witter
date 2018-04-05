@@ -140,12 +140,12 @@ def delete_item(id):
             'id': tweet_id
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
+    res = dispatcher.call(AMQP_Tweet_Queue, req)
     res_format = json.loads(res)
-    if res['status'] == 'OK':
-        return Response(res_format, status=200, mimetype='application/json')
+    if res_format['status'] == 'OK':
+        return Response(res, status=200, mimetype='application/json')
     else:
-        return Response(res_format, status=400, mimetype='application/json')
+        return Response(res, status=400, mimetype='application/json')
 
 
 @app.route('/search', methods=['POST'])
