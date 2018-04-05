@@ -207,6 +207,7 @@ def on_request(ch, method, props, body):
             raise ValueError()
         payload = data['payload']
         # Login
+        response = None
         if data['action'] == RPC_Auth_Action.LOG_IN.name:
             if v.validate(payload, Login_Schema):
                 response = login_user(
