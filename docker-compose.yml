@@ -30,7 +30,7 @@ services:
     ports:
       - "80:80"
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         delay: "1s"
         condition: on-failure
@@ -40,7 +40,7 @@ services:
   auth_service:
     image: twitter_auth_service
     deploy:
-      replicas: 2
+      replicas: 1
       restart_policy:
         delay: "1s"
         condition: on-failure
