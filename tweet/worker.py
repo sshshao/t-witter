@@ -20,7 +20,8 @@ SEARCH_LIMIT_DEFAULT = int(config_tweet['Search_Limit_Default'])
 SEARCH_LIMIT_MAX = int(config_tweet['Search_Limit_Max'])
 URI = config_tweet['MongoDB_Uri']
 DB_NAME = config_tweet['MongoDB_Name']
-COLLECTION_NAME = config_tweet['MongoDB_Collection']
+TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
+PROFILE_COLLECTION_NAME = confid_tweey['MongoDB_Profile_Collection']
 
 # Set up Mongo client
 client = pymongo.MongoClient(URI)
@@ -31,7 +32,7 @@ def add_tweet(payload):
     tweet_id = tweet['id']
 
     db = client[DB_NAME]
-    collection = db[COLLECTION_NAME]
+    collection = db[TWEET_COLLECTION_NAME]
     result = collection.insert_one(tweet)
 
     if(result.inserted_id == None):
@@ -42,13 +43,13 @@ def add_tweet(payload):
         'id': tweet_id
     })
     return res
-    
+
 
 def get_tweet(payload):
     query = json.loads(tweet_query(payload['id']))
 
     db = client[DB_NAME]
-    collection = db[COLLECTION_NAME]
+    collection = db[TWEET_COLLECTION_NAME]
     result = collection.find_one(query)
 
     if(result == None):
@@ -66,7 +67,7 @@ def delete_tweet(payload):
     query = json.loads(tweet_query(payload['id']))
 
     db = client[DB_NAME]
-    collection = db[COLLECTION_NAME]
+    collection = db[TWEET_COLLECTION_NAME]
     result = collection.delete_one(query)
 
     if(result.deleted_count == 1):
@@ -75,17 +76,27 @@ def delete_tweet(payload):
 
 
 def search(payload):
-    timestamp = math.floor(time.time())
+    db = client[DB_NAME]
+    tweet_collection = db[TWEET_COLLECTION_NAME]
+    profile_collection = db[PROFILE_COLLECTION_NAME]
+
+    # Process queries conditions
+    timestamp = math.floor(time.time()) if 'timestamp' not in payload else int(payload['timestamp'])
+    q = None if 'q' not in payload else payload['q']
+    user = None if 'user' not in payload else payload['user']
+    username = None if 'username' not in payload else payload['username']
+    following = payload['following']
+    targets = None
+    if following:
+        result = profile_collection.find_one({'username': user})
+        targets = result['following']
     limit = SEARCH_LIMIT_DEFAULT
-    if 'timestamp' in payload:
-        timestamp = int(payload['timestamp'])
     if 'limit' in payload:
         limit = int(payload['limit']) if int(payload['limit']) < SEARCH_LIMIT_MAX else SEARCH_LIMIT_MAX
-    
-    db = client[DB_NAME]
-    collection = db[COLLECTION_NAME]
-    
-    cursor = collection.find({'timestamp': {"$lte": timestamp}}).sort('timestamp', pymongo.DESCENDING).limit(limit)
+
+    # Start Query
+    query = json.loads(query_search(timestamp, q, username, targets))
+    cursor = tweet_collection.find(query).sort('timestamp', pymongo.DESCENDING).limit(limit)
     if(cursor == None):
         return generate_message(RES_SUCCESS, SEARCH_NO_RESULT)
 

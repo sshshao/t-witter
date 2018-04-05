@@ -43,5 +43,29 @@ def tweet_query(id):
     })
 
 
+
+def query_search(timestamp, q, username, targets):
+    '''
+    query = { '$and': [
+        { 'timestamp': {'$lte': timestamp} },
+        { 'content': {'$regex' : '.*'+q+'.*'} }
+        { 'username': username }, 
+        { 'username': {'$in': targets} }
+    ]}
+    '''
+    query = { '$and': [
+        { 'timestamp': {'$lte': timestamp} }
+    ]}
+
+    if q != None:
+        query['$and'].append({'content': {'$regex': '.*'+q+'.*'}})
+    if username != None:
+        query['$and'].append({'username': username})
+    if targets != None:
+        query['$and'].append({'username': {'$in': targets}})
+    
+    return json.dumps(query)
+
+
 def generate_tweet_id():
     return uuid.uuid4().hex[:16]
