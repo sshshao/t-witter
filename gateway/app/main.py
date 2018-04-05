@@ -14,7 +14,7 @@ config.read('config.ini')
 
 AMQP_Auth_Queue = config['AUTH']['AMQP_Queue']
 AMQP_Tweet_Queue = config['TWEET']['AMQP_Queue']
-
+AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
 
 
 
@@ -143,7 +143,10 @@ def delete_item(id):
     })
     res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
     res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    if res_format['status'] == 'OK':
+        return Response(res_format, status=200, mimetype='application/json')
+    else:
+        return Response(res_format, status=400, mimetype='application/json')
 
 
 @app.route('/search', methods=['POST'])
@@ -157,6 +160,74 @@ def search():
     res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
     res_format = json.loads(res)
     return Response(res_format, mimetype='application/json')
+
+
+@app.route('/user/<username>', methods=['GET'])
+def get_user(username):
+    dispatcher = RPCDispatcher()
+    req = json.dumps({
+        'action': RPC_Profile_Action.GET_PROFILE.name,
+        'payload': {
+            'username': username
+        }
+    })
+    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
+    res_format = json.loads(res)
+    return Response(res_format, mimetype='application/json')
+
+
+@app.route('/user/<username>/followers', methods=['GET'])
+def get_user(username):
+    limit = request.args.get('limit')
+    dispatcher = RPCDispatcher()
+    req = json.dumps({
+        'action': RPC_Profile_Action.GET_FOLLOWER.name,
+        'payload': {
+            'username': username,
+            'limit': limit
+        }
+    })
+    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
+    res_format = json.loads(res)
+    return Response(res_format, mimetype='application/json')
+
+
+@app.route('/user/<username>/following', methods=['GET'])
+def get_user(username):
+    limit = request.args.get('limit')
+    dispatcher = RPCDispatcher()
+    req = json.dumps({
+        'action': RPC_Profile_Action.GET_FOLLOWING.name,
+        'payload': {
+            'username': username,
+            'limit': limit
+        }
+    })
+    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
+    res_format = json.loads(res)
+    return Response(res_format, mimetype='application/json')
+
+
+@app.route('/follow', methods=['POST'])
+def get_user():
+    cookie = check_login(request)
+    if cookie[0]:
+        input_data = request.get_json()
+        dispatcher = RPCDispatcher()
+        req = json.dumps({
+            'action': RPC_Profile_Action.FOLLOW.name,
+            'payload': {
+                'user': cookie[1],
+                'target': input_data['username'],
+                'follow': input_data['follow']
+            }
+        })
+        res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
+        res_format = json.loads(res)
+        return Response(res_format, mimetype='application/json')
+    else:
+        r = Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
+    return r
 
 
 if __name__ == "__main__":

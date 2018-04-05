@@ -70,8 +70,8 @@ def delete_tweet(payload):
     result = collection.delete_one(query)
 
     if(result.deleted_count == 1):
-        return 400
-    return 200
+        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
+    return generate_message(RES_SUCCESS, '')
 
 
 def search(payload):

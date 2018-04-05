@@ -18,10 +18,10 @@ class RPC_Witter_Action(Enum):
     SEARCH = 4,
 
 class RPC_Profile_Action(Enum):
-    ADD_PROFILE = 1
+    ADD_PROFILE = 1,
     GET_PROFILE = 2,
     GET_FOLLOWER = 3,
-    GET_FOLLOWING = 4
+    GET_FOLLOWING = 4,
     FOLLOW = 5,
 
 

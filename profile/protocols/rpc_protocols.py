@@ -6,10 +6,10 @@ STATUS_ERROR = "error"
 
 
 class REQ_ACTION(Enum):
-    ADD_PROFILE = 1
+    ADD_PROFILE = 1,
     GET_PROFILE = 2,
     GET_FOLLOWER = 3,
-    GET_FOLLOWING = 4
+    GET_FOLLOWING = 4,
     FOLLOW = 5,
 
 

@@ -104,4 +104,39 @@ def get_following(payload):
 
 
 def follow(payload):
-    return payload
+    do_follow = True
+    if 'follow' in payload:
+        do_follow = payload['follow']
+    
+    query_user = json.load(query_profile(payload['user']))
+    query_target  = json.load(query_profile(payload['target']))
+
+    db = client[DB_NAME]
+    collection = db[COLLECTION_NAME]
+    user = collection.find_one(query_user)
+    target = collection.find_one(query_target)
+
+    if (user == None) or (target == None):
+        return generate_message(RES_FAILURE, ERROR_NO_USER)
+
+    if do_follow:
+        if user['username'] in target['follower']:
+            return generate_message(RES_SUCCESS, '')
+        else:
+            result_user = collection.update_one(query_user, {'$push': {'following': target['username']}}, upsert=False)
+            result_target = collection.update_one(query_target, {'$push': {'follower': user['username']}}, upsert=False)
+            if (result_user.modified_count != 1) or (result_target.modified_count != 1):
+                return generate_message(RES_FAILURE, ERROR_FOLLOWING)
+            
+            return generate_message(RES_SUCCESS, '')
+    else:
+        if user['username'] in target['follower']:
+            result_user = collection.update_one(query_user, {'$pull': {'following': target['username']}}, upsert=False)
+            result_target = collection.update_one(query_target, {'$pull': {'follower': user['username']}}, upsert=False)
+
+            if (result_user.modified_count != 1) or (result_target.modified_count != 1):
+                return generate_message(RES_FAILURE, ERROR_FOLLOWING)
+            
+            return generate_message(RES_SUCCESS, '')
+        else:
+            return generate_message(RES_SUCCESS, '')
