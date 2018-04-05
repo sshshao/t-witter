@@ -1,4 +1,5 @@
 from flask import Flask, request, Response
+from cerberus import Validator
 import configparser
 import json
 import sys, os
@@ -17,7 +18,7 @@ AMQP_Auth_Queue = config['AUTH']['AMQP_Queue']
 AMQP_Tweet_Queue = config['TWEET']['AMQP_Queue']
 AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
 
-
+v = Validator()
 
 # Check whether the JWT Token is valid.
 def check_login(req):
