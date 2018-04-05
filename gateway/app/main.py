@@ -3,6 +3,7 @@ from cerberus import Validator
 import configparser
 import json
 import sys, os
+import jwt
 
 from dispatcher import *
 from protocols.rpc_protocols import *
@@ -17,6 +18,7 @@ config.read('config.ini')
 AMQP_Auth_Queue = config['AUTH']['AMQP_Queue']
 AMQP_Tweet_Queue = config['TWEET']['AMQP_Queue']
 AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
+JWT_Secret = config['BASIC']['JWT_Secret']
 
 v = Validator()
 
@@ -25,6 +27,7 @@ def check_login(req):
     jwt_token = req.cookies.get('user-jwt')
     if not jwt_token:
         return (False, )
+    jwt_data = jwt.decode(jwt_token, JWT_Secret)
     if v.validate(jwt_data, JWT_Schema):
         user_id = jwt_data['uid']
         username = jwt_data['username']
