@@ -46,9 +46,11 @@ message_channel.exchange_declare(exchange=AMQP_Exchange, exchange_type=AMQP_Exch
 # Declare Queues
 message_channel.queue_declare(queue=AMQP_Auth_Queue, durable=True)
 message_channel.queue_declare(queue=AMQP_Email_Queue, durable=True)
+message_channel.queue_declare(queue=AMQP_Profile_Queue, durable=True)
 # Bind exchange and queues
 message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Auth_Queue)
 message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Email_Queue)
+message_channel.queue_bind(exchange=AMQP_Exchange, queue=AMQP_Profile_Queue)
 
 
 
