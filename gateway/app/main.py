@@ -112,8 +112,7 @@ def add_item():
         res_format = json.loads(res)
         return Response(res_format, mimetype='application/json')
     else:
-        r = Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
-    return r
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
 
 @app.route('/item/<id>', methods=['GET'])
@@ -151,15 +150,27 @@ def delete_item(id):
 
 @app.route('/search', methods=['POST'])
 def search():
+    cookie = check_login(request)
     input_data = request.get_json()
-    dispatcher = RPCDispatcher()
-    req = json.dumps({
-        'action': RPC_Witter_Action.SEARCH.name,
-        'payload': input_data
-    })
-    res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+
+    following = True
+    if 'following' in input_data:
+        following = input_data['following']
+    input_data['following'] = following
+
+    if (cookie[0] and following) or (not following):
+        if(cookie[0] and following):
+            input_data['user'] = cookie[1]
+        dispatcher = RPCDispatcher()
+        req = json.dumps({
+            'action': RPC_Witter_Action.SEARCH.name,
+            'payload': input_data
+        })
+        res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
+        res_format = json.loads(res)
+        return Response(res_format, mimetype='application/json')
+    else:
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
 
 @app.route('/user/<username>', methods=['GET'])
@@ -226,8 +237,7 @@ def get_user():
         res_format = json.loads(res)
         return Response(res_format, mimetype='application/json')
     else:
-        r = Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
-    return r
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
 
 if __name__ == "__main__":
