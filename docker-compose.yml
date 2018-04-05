@@ -3,15 +3,20 @@ services:
 
   postgre_db:
     image: "postgres"
+    ports: 
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: hyy19960529
 
   mongo_db:
     image: mongo:latest
+    ports:
+      - "27017:27017"
 
   amqp_service:
     image: "rabbitmq:3.7.4"
     ports: 
+      - "5672:5672"
       - "15672:15672"
 
   api_gateway:
