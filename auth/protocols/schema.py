@@ -1,37 +1,37 @@
 
 JWT_Schema = {
-    'uid': {'type': 'integer'},
-    'duration': {'type': 'integer'},
-    'time_created': {'type': 'integer'},
+    'uid': {'required': True,'type': 'integer'},
+    'duration': {'required': True,'type': 'integer'},
+    'time_created': {'required': True,'type': 'integer'},
 }
 
 Login_Schema = {
-    'username': {'type': 'string'},
-    'password': {'type': 'string'},
+    'username': {'required': True, 'type': 'string'},
+    'password': {'required': True, 'type': 'string'},
 }
 
 Register_Schema = {
-    'email': {'type': 'string'},
-    'username': {'type': 'string'},
-    'password': {'type': 'string'},
+    'email': {'required': True, 'type': 'string'},
+    'username': {'required': True, 'type': 'string'},
+    'password': {'required': True, 'type': 'string'},
 }
 
 Validation_Schema = {
-    'email': {'type': 'string'},
-    'key': {'type': 'string'}
+    'email': {'required': True, 'type': 'string'},
+    'key': {'required': True, 'type': 'string'},
 }
 
 Auth_Schema = {
-    'action': {'type': 'string'},
-    'payload': {'type': 'dict'},
+    'action': {'required': True, 'type': 'string'},
+    'payload': {'required': True, 'type': 'dict'},
 }
 
 Email_Schema = {
-    'email': {'type': 'string'},
-    'title': {'type': 'string'},
-    'content': {'type': 'string'},
+    'email': {'required': True, 'type': 'string'},
+    'title': {'required': True, 'type': 'string'},
+    'content': {'required': True, 'type': 'string'},
 }
 
 Validate_JWT_Schema = {
-    'jwt': {'type': 'string'},
+    'jwt': {'required': True, 'type': 'string'},
 }

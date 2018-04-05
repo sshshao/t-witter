@@ -70,7 +70,7 @@ def delete_tweet(payload):
     collection = db[TWEET_COLLECTION_NAME]
     result = collection.delete_one(query)
 
-    if(result.deleted_count != 1):
+    if(result.deleted_count == 1):
         return generate_message(RES_FAILURE, ERROR_GET_TWEET)
     return generate_message(RES_SUCCESS, '')
 
