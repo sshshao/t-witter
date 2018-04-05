@@ -122,7 +122,10 @@ def validate_user(email, key):
                             'email': user_account.email,
                         },
                     })
+                    bf = time.time() * 1000
                     res = dispatcher.call(AMQP_Profile_Queue, req)
+                    af = time.time() * 1000 - bf
+                    print("Processing Time: %d ms" % af)
                     res_format = json.loads(res)
                     if res_format['status'] == STATUS_OK:
                         return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)

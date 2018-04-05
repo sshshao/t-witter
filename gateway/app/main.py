@@ -3,8 +3,6 @@ import configparser
 import json
 import sys, os
 
-import time
-
 from dispatcher import *
 from protocols.rpc_protocols import *
 from protocols.messages import *
@@ -46,12 +44,8 @@ def hello():
 
 @app.route('/adduser', methods=['POST'])
 def register():
-    input_data = request.get_json()
-
-    bf = time.time() * 1000
+    input_data = request.get_json() 
     dispatcher = RPCDispatcher()
-    af = time.time() * 1000 - bf
-    print("Processing Time: %d ms" % af)
     req = json.dumps({
         'action': RPC_Auth_Action.REGISTER.name,
         'payload': input_data
