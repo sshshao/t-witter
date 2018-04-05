@@ -21,14 +21,15 @@ services:
   #   ports: 
   #     - "15672:15672"
 
-  # api_gateway:
-  #   image: twitter_gateway_service
-  #   deploy:
-  #     replicas: 1
-  #     ports:
-  #       - "80:80"
-  #     restart_policy:
-  #       condition: on-failure
+  api_gateway:
+    image: twitter_gateway_service
+    deploy:
+      replicas: 1
+      ports:
+        - "80:80"
+      restart_policy:
+        delay: "1s"
+        condition: on-failure
 
   auth_service:
     image: twitter_auth_service
