@@ -6,4 +6,4 @@
 
   tasks:
     - name: Join Swarm
-      raw: docker swarm join --token SWMTKN-1-14khxkerm2ij7ylz47quxyrohskvrv8tn5xxwc32nszm8bc55k-3wlvgf45edvwia7uyyrscjupq 10.0.0.182:2377
+      raw: docker swarm join --token SWMTKN-1-1mm73iekjz74v1i5pgy0rwnxvuo400k16y8fmjakkq5zu67z92-253zbrhv08l6snmp4k73nnxx6 10.0.1.6:2377
