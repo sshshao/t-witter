@@ -35,14 +35,15 @@ services:
     deploy:
       replicas: 1
       restart_policy:
+        delay: 1
         condition: on-failure
 
   email_service:
     image: twitter_email_service
-    restart: always
     deploy:
       replicas: 1
       restart_policy: 
+        delay: 1
         condition: on-failure
 
   profile_service:
@@ -50,6 +51,7 @@ services:
     deploy:
       replicas: 1
       restart_policy:
+        delay: 1
         condition: on-failure
 
   tweet_service:
@@ -57,4 +59,5 @@ services:
     deploy:
       replicas: 1
       restart_policy:
+        delay: 1
         condition: on-failure
