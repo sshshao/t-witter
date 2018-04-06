@@ -100,7 +100,11 @@ def search(payload):
     query = json.loads(query_search(timestamp, q, username, targets))
     cursor = tweet_collection.find(query).sort('timestamp', pymongo.DESCENDING).limit(limit)
     if(cursor == None):
-        return generate_message(RES_SUCCESS, SEARCH_NO_RESULT)
+        res = json.dumps({
+            'status': RES_SUCCESS,
+            'items': []
+        })
+        return res
 
     result = []
     for doc in cursor:
@@ -111,7 +115,5 @@ def search(payload):
         'status': RES_SUCCESS,
         'items': result
     })
-
-    print(res)
     
     return res
