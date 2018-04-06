@@ -2,82 +2,85 @@ version: '3'
 services:
 
   ## Config Servers
-  config01:
-    image: mongo
-    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  cfg_r1:
+    image: mongo:3.4.9
+    deploy: 
+      restart_policy: on-failure
     networks: 
       - twinet  
+    command: mongod --port 27017 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16
 
-  config02:
-    image: mongo
-    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  cfg_r2:
+    image: mongo:3.4.9
+    deploy: 
+      restart_policy: on-failure
     networks: 
       - twinet  
-
-  config03:
-    image: mongo
-    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-    networks: 
-      - twinet  
+    command: mongod --port 27017 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16
 
 
   ## Shards
-  shard01a:
-    image: mongo
-    command: mongod --port 27020 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+  shard01_rep1:
+    image: mongo:3.4.9
     networks: 
       - twinet  
+    command: mongod --port 27017 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
 
-  shard01b:
-    image: mongo
-    command: mongod --port 27020 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
-    networks: 
-      - twinet  
 
-  shard02a:
-    image: mongo
-    command: mongod --port 27021 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  shard01_rep2:
+    image: mongo:3.4.9
     networks: 
       - twinet  
+    command: mongod --port 27017 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
 
-  shard02b:
-    image: mongo
-    command: mongod --port 27021 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
-    networks: 
-      - twinet  
 
-  shard03a:
-    image: mongo
-    command: mongod --port 27022 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  shard02_rep1:
+    image: mongo:3.4.9
     networks: 
-      - twinet  
+      - twinet
+    command: mongod --port 27017 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  
 
-  shard03b:
-    image: mongo
-    command: mongod --port 27022 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  shard02_rep2:
+    image: mongo:3.4.9
     networks: 
       - twinet  
+    command: mongod --port 27017 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+
+
+  shard03_rep1:
+    image: mongo:3.4.9
+    networks: 
+      - twinet
+    command: mongod --port 27017 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  
+
+  shard03_rep2:
+    image: mongo:3.4.9
+    networks: 
+      - twinet
+    command: mongod --port 27017 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  
 
   ## Router
   mongo_db:
-    image: mongo
+    image: mongo:3.4.9
     command: 
       - /bin/sh
       - -c
       - |
-          mongos --port 27017 --configdb configserver/config01:27019,config02:27019,config03:27019
+          mongos --port 27017 --configdb cfg/cfg_r1:27017,cfg_r2:27017
           echo \"sh.addShard('shard01/shard01a:27020'); sh.addShard('shard02/shard02a:27021'); sh.addShard('shard03/shard03a:27021');\" | mongo
-          
+
     depends_on:
-      - config01
-      - config02
-      - config03
-      - shard01a
-      - shard01b
-      - shard02a
-      - shard02b
-      - shard03a
-      - shard03b
+      - cfg_r1
+      - cfg_r2
+      - shard01_rep1
+      - shard01_rep2
+      - shard02_rep1
+      - shard02_rep2
+      - shard03_rep1
+      - shard03_rep2
     networks: 
       - twinet  
 
