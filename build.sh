@@ -63,4 +63,4 @@ docker tag twitter_tweet_service richackard/twitter_tweet_service:latest
 echo '\033[35m[x] Pushing Tweet Service...\033[0m'
 docker push richackard/twitter_tweet_service:latest
 
-echo '\033[32m[x] Image Build Finished...\033[0m'
+echo '\033[32m[x] Deployment Finished...\033[0m'
