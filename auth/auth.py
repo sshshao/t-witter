@@ -240,20 +240,21 @@ def on_request(ch, method, props, body):
         if not response:
             response = generate_message(STATUS_ERROR, ERROR_MALFORMED_REQUEST)
             
-        ch.basic_publish(exchange=AMQP_Exchange,
+        ch.basic_publish(exchange='',
             routing_key = props.reply_to,
-            properties = pika.BasicProperties(correlation_id = props.correlation_id),
             body = response)
+
         ch.basic_ack(delivery_tag = method.delivery_tag)
+
     except ValueError as err:
         response = generate_message(STATUS_ERROR, ERROR_MALFORMED_REQUEST)
-        ch.basic_publish(exchange=AMQP_Exchange,
+        ch.basic_publish(exchange='',
             routing_key = props.reply_to,
-            properties = pika.BasicProperties(correlation_id = props.correlation_id),
             body = response)
+
         ch.basic_ack(delivery_tag = method.delivery_tag)
-
-
+            
+            
 message_channel.basic_qos(prefetch_count=1)
 message_channel.basic_consume(on_request, queue=AMQP_Auth_Queue)
 
