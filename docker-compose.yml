@@ -5,40 +5,58 @@ services:
   config01:
     image: mongo
     command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   config02:
     image: mongo
     command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   config03:
     image: mongo
     command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
 
   ## Shards
   shard01a:
     image: mongo
     command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   shard01b:
     image: mongo
     command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   shard02a:
     image: mongo
     command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   shard02b:
     image: mongo
     command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   shard03a:
     image: mongo
     command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   shard03b:
     image: mongo
     command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
   ## Router
   mongo_db:
@@ -57,6 +75,8 @@ services:
       - shard02b
       - shard03a
       - shard03b
+    networks: 
+      - twinet  
 
 
   postgre_db:
