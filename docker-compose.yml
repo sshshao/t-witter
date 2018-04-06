@@ -1,82 +1,80 @@
 version: '3'
 services:
 
-  # ## Config Servers
-  # config01:
-  #   image: mongo
-  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  ## Config Servers
+  config01:
+    image: mongo
+    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # config02:
-  #   image: mongo
-  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  config02:
+    image: mongo
+    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # config03:
-  #   image: mongo
-  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  config03:
+    image: mongo
+    command: mongod --port 27019 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
 
-  # ## Shards
-  # shard01a:
-  #   image: mongo
-  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  ## Shards
+  shard01a:
+    image: mongo
+    command: mongod --port 27020 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # shard01b:
-  #   image: mongo
-  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  shard01b:
+    image: mongo
+    command: mongod --port 27020 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # shard02a:
-  #   image: mongo
-  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  shard02a:
+    image: mongo
+    command: mongod --port 27021 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # shard02b:
-  #   image: mongo
-  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  shard02b:
+    image: mongo
+    command: mongod --port 27021 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # shard03a:
-  #   image: mongo
-  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  shard03a:
+    image: mongo
+    command: mongod --port 27022 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # shard03b:
-  #   image: mongo
-  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
-  #   networks: 
-  #     - twinet  
+  shard03b:
+    image: mongo
+    command: mongod --port 27022 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+    networks: 
+      - twinet  
 
-  # ## Router
-  # mongo_db:
-  #   image: mongo
-  #   command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017
-  #   ports:
-  #     - "27017:27017"
+  ## Router
+  mongo_db:
+    image: mongo
+    command: mongos --port 27017 --configdb configserver/config01:27019,config02:27019,config03:27019
 
-  #   depends_on:
-  #     - config01
-  #     - config02
-  #     - config03
-  #     - shard01a
-  #     - shard01b
-  #     - shard02a
-  #     - shard02b
-  #     - shard03a
-  #     - shard03b
-  #   networks: 
-  #     - twinet  
+    depends_on:
+      - config01
+      - config02
+      - config03
+      - shard01a
+      - shard01b
+      - shard02a
+      - shard02b
+      - shard03a
+      - shard03b
+    networks: 
+      - twinet  
 
 
   postgre_db:
