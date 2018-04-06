@@ -17,9 +17,9 @@ class RPCDispatcher(object):
         self.channel = self.connection.channel()
 
         self.channel.basic_consume(
-            'amq.rabbitmq.reply-to',
             self.on_response,
-            auto_ack=True)
+            queue='amq.rabbitmq.reply-to',
+            no_ack=True)
     
     def on_response(self, ch, method, props, body):
         self.response = body
