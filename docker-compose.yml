@@ -30,7 +30,7 @@ services:
     ports:
       - "80:80"
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         delay: "1s"
         condition: on-failure
@@ -40,7 +40,7 @@ services:
   auth_service:
     image: richackard/twitter_auth_service
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         delay: "1s"
         condition: on-failure
@@ -60,7 +60,7 @@ services:
   profile_service:
     image: richackard/twitter_profile_service
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         delay: "1s"
         condition: on-failure
@@ -70,7 +70,7 @@ services:
   tweet_service:
     image: richackard/twitter_tweet_service
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
         delay: "1s"
         condition: on-failure
