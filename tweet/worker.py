@@ -109,7 +109,7 @@ def search(payload):
     result = []
     for doc in cursor:
         del doc['_id']
-        result.append({'item': doc})
+        result.append(doc)
     
     res = json.dumps({
         'status': RES_SUCCESS,
