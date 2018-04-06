@@ -1,73 +1,82 @@
 version: '3'
 services:
 
-  ## Config Servers
-  config01:
-    image: mongo
-    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  config02:
-    image: mongo
-    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  config03:
-    image: mongo
-    command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
+  # ## Config Servers
+  # config01:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
 
-  ## Shards
-  shard01a:
-    image: mongo
-    command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  shard01b:
-    image: mongo
-    command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  shard02a:
-    image: mongo
-    command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  shard02b:
-    image: mongo
-    command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  shard03a:
-    image: mongo
-    command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
-  shard03b:
-    image: mongo
-    command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
-    volumes:
-      - ./scripts:/scripts
+  # config02:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
 
-  ## Router
-  mongo_db:
-    image: mongo
-    command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017
-    ports:
-      - "27017:27017"
-    volumes:
-      - ./scripts:/scripts
-    depends_on:
-      - config01
-      - config02
-      - config03
-      - shard01a
-      - shard01b
-      - shard02a
-      - shard02b
-      - shard03a
-      - shard03b
+  # config03:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+
+  # ## Shards
+  # shard01a:
+  #   image: mongo
+  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard01b:
+  #   image: mongo
+  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard02a:
+  #   image: mongo
+  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard02b:
+  #   image: mongo
+  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard03a:
+  #   image: mongo
+  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard03b:
+  #   image: mongo
+  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # ## Router
+  # mongo_db:
+  #   image: mongo
+  #   command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017
+  #   ports:
+  #     - "27017:27017"
+
+  #   depends_on:
+  #     - config01
+  #     - config02
+  #     - config03
+  #     - shard01a
+  #     - shard01b
+  #     - shard02a
+  #     - shard02b
+  #     - shard03a
+  #     - shard03b
+  #   networks: 
+  #     - twinet  
 
 
   postgre_db:
@@ -79,12 +88,12 @@ services:
     networks: 
       - twinet            
 
-  # mongo_db:
-  #   image: mongo:latest
-  #   ports:
-  #     - "27017:27017"
-  #   networks: 
-  #     - twinet 
+  mongo_db:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    networks: 
+      - twinet 
 
   amqp_service:
     image: "rabbitmq:3.7.4-management"

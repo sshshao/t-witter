@@ -11,7 +11,7 @@ echo '\033[36m[x] Build Docker Images... \033[0m'
 sudo sh build.sh
 
 echo '\033[36m[x] Deploy Services... \033[0m'
-sleep 5
+sleep 10
 sudo docker stack deploy -c docker-compose.yml twitter
 
 echo '\033[36m[x] Deployment Finished... \033[0m'
