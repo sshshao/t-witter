@@ -61,8 +61,13 @@ services:
   ## Router
   mongo_db:
     image: mongo
-    command: mongos --port 27017 --configdb configserver/config01:27019,config02:27019,config03:27019
-
+    command: 
+      - /bin/sh
+      - -c
+      - |
+          mongos --port 27017 --configdb configserver/config01:27019,config02:27019,config03:27019
+          echo \"sh.addShard('shard01/shard01a:27020'); sh.addShard('shard02/shard02a:27021'); sh.addShard('shard03/shard03a:27021');\" | mongo
+          
     depends_on:
       - config01
       - config02
