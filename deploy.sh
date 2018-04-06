@@ -13,4 +13,4 @@ sh build.sh
 echo '\033[36m[x] Deploy Services... \033[0m'
 docker stack deploy -c docker-compose.yml twitter
 
-echo '\033[36m[x] Deploy Services... \033[0m'
+echo '\033[36m[x] Deployment Finished... \033[0m'
