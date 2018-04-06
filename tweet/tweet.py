@@ -34,7 +34,6 @@ options = {
 
 def on_request(ch, method, props, body):
     data = decode_json(body.decode('utf-8'))
-    print(data)
     response = options[data['action']](data['payload'])
 
     ch.basic_publish(exchange='',

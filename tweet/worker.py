@@ -80,6 +80,8 @@ def search(payload):
     tweet_collection = db[TWEET_COLLECTION_NAME]
     profile_collection = db[PROFILE_COLLECTION_NAME]
 
+    print(json.dumps(payload))
+
     # Process queries conditions
     timestamp = math.floor(time.time()) if 'timestamp' not in payload else int(payload['timestamp'])
     q = None if 'q' not in payload else payload['q']
@@ -109,4 +111,7 @@ def search(payload):
         'status': RES_SUCCESS,
         'items': result
     })
+
+    print(res)
+    
     return res
