@@ -37,10 +37,8 @@ def on_request(ch, method, props, body):
     print(data)
     response = options[data['action']](data['payload'])
 
-    ch.basic_publish(exchange=AMQP_EXCHANGE,
+    ch.basic_publish(exchange='',
         routing_key=props.reply_to,
-        properties=pika.BasicProperties(
-            correlation_id=props.correlation_id),
         body=response)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
