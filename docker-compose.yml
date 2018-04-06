@@ -86,12 +86,12 @@ services:
     networks: 
       - twinet            
 
-  mongo_db:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    networks: 
-      - twinet 
+  # mongo_db:
+  #   image: mongo:latest
+  #   ports:
+  #     - "27017:27017"
+  #   networks: 
+  #     - twinet 
 
   amqp_service:
     image: "rabbitmq:3.7.4-management"
