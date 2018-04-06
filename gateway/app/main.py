@@ -112,9 +112,8 @@ def add_item():
                 #'childType': input_data['childType']
             }
         })
-        res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -129,9 +128,8 @@ def get_item(id):
             'id': tweet_id
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Tweet_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/item/<id>', methods=['DELETE'])
@@ -170,9 +168,8 @@ def search():
             'action': RPC_Witter_Action.SEARCH.name,
             'payload': input_data
         })
-        res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -186,9 +183,8 @@ def get_user(username):
             'username': username
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/user/<username>/followers', methods=['GET'])
@@ -202,9 +198,8 @@ def get_follower(username):
             'limit': limit
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/user/<username>/following', methods=['GET'])
@@ -218,9 +213,8 @@ def get_following(username):
             'limit': limit
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/follow', methods=['POST'])
@@ -238,9 +232,8 @@ def follow():
                 'follow': follow
             }
         })
-        res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Profile_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 

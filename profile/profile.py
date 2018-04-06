@@ -37,7 +37,6 @@ options = {
 
 def on_request(ch, method, props, body):
     data = decode_json(body.decode('utf-8'))
-    print(data)
     
     # distinguish internal and external call
     response = options[data['action']](data['payload'])
