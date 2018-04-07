@@ -13,7 +13,7 @@ services:
       - /bin/sh
       - -c
       - |
-          mongod --port 27018 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+          mongod --port 27018 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
           #mongo < init_shard1.js
 
   cfg_r2:
@@ -23,7 +23,7 @@ services:
         condition: on-failure
     networks: 
       - twinet  
-    command: mongod --port 27018 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+    command: mongod --port 27018 --configsvr --replSet cfg --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
 
 
   ## Shards
@@ -38,7 +38,7 @@ services:
       - /bin/sh
       - -c
       - |
-          mongod --port 27019 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+          mongod --port 27019 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
           mongo < init_shard1.js
 
 
@@ -49,7 +49,7 @@ services:
         condition: on-failure
     networks: 
       - twinet  
-    command: mongod --port 27019 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+    command: mongod --port 27019 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
 
 
 
@@ -64,7 +64,7 @@ services:
       - /bin/sh
       - -c
       - |
-          mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+          mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
           mongo < init_shard2.js
   
 
@@ -75,7 +75,7 @@ services:
         condition: on-failure
     networks: 
       - twinet  
-    command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+    command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
 
 
   shard03_rep1:
@@ -89,7 +89,7 @@ services:
       - /bin/sh
       - -c
       - |
-          mongod --port 27019 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+          mongod --port 27019 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
           mongo < init_shard3.js
 
   shard03_rep2:
@@ -99,7 +99,7 @@ services:
         condition: on-failure
     networks: 
       - twinet
-    command: mongod --port 27019 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16 --bind-ip=0.0.0.0
+    command: mongod --port 27019 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16 --bind_ip=0.0.0.0
   
 
   ## Router
@@ -112,7 +112,7 @@ services:
       - /bin/sh
       - -c
       - |
-          mongos --port 27017 --configdb cfg/cfg_r1:27018,cfg_r2:27018 --bind-ip=0.0.0.0
+          mongos --port 27017 --configdb cfg/cfg_r1:27018,cfg_r2:27018 --bind_ip=0.0.0.0
           mongos < init_router.js
 
     depends_on:
