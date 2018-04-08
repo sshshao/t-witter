@@ -32,13 +32,26 @@ Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
 # Connecting to PostgreSQL DB.
-engine = connect()
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
-print('Auth Service DB Connnection Established...')
-# Connecting to Message Broker
-message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+while True:
+    try:
+        engine = connect()
+        Base.metadata.bind = engine
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        print('[x] Auth Service DB Connnection Established...')
+        break
+    except Exception as err:
+        print('[x] Auth Service PostgreSQL Not Ready Yet...')
+
+while True:
+    try:
+        # Connecting to Message Broker
+        message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+        break
+    except Exception as err:
+        print('[x] Auth Service AMQP Connection Not Ready Yet...')
+        
+
 message_channel = message_broker.channel()
 
 # Declare exchange

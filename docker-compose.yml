@@ -38,6 +38,8 @@ services:
         condition: on-failure
     networks: 
       - twinet 
+    depends_on:
+      - amqp_service
 
   auth_service:
     image: richackard/twitter_auth_service
@@ -48,6 +50,9 @@ services:
         condition: on-failure
     networks: 
       - twinet 
+    depends_on:
+      - amqp_service
+      - mongo_db
 
   email_service:
     image: richackard/twitter_email_service
@@ -57,7 +62,9 @@ services:
         delay: "1s"
         condition: on-failure
     networks: 
-      - twinet 
+      - twinet
+    depends_on:
+      - amqp_service 
 
   profile_service:
     image: richackard/twitter_profile_service
@@ -67,7 +74,10 @@ services:
         delay: "1s"
         condition: on-failure
     networks: 
-      - twinet 
+      - twinet
+    depends_on:
+      - amqp_service
+      - mongo_db 
 
   tweet_service:
     image: richackard/twitter_tweet_service
@@ -78,6 +88,9 @@ services:
         condition: on-failure
     networks: 
       - twinet
+    depends_on:
+      - amqp_service
+      - mongo_db
 
 networks: 
   twinet:
