@@ -55,6 +55,3 @@
       apt:
         name: "docker-ce=18.03.0~ce-0~ubuntu"
         state: present
-
-      
-    
