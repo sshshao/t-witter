@@ -1,0 +1,9 @@
+---
+- hosts: witter-workers
+  remote_user: ubuntu
+  gather_facts: False
+  become: yes
+
+  tasks:
+    - name: Join Master
+      raw: kubeadm join 10.0.1.15:6443 --token cx4b2s.efpb9rudutrp61hn --discovery-token-ca-cert-hash sha256:874ba45147deaa396ccffc2f9c4ac02c4ca6f45c95cab94203ee235720a77de2
