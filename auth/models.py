@@ -47,8 +47,12 @@ def connect():
     return engine
 
 
-engine = connect()
-
+while True:
+    try:
+        engine = connect()
+        break
+    except Exception:
+        print("[x] Auth Service PostgreSQL Not Ready Yet...")
 if not database_exists(engine.url):
     create_database(engine.url) 
     

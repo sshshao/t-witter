@@ -31,11 +31,7 @@ services:
     image: richackard/twitter_gateway_service
     ports:
       - "80:80"
-    deploy:
-      replicas: 2
-      restart_policy:
-        delay: "1s"
-        condition: on-failure
+    restart: always
     networks: 
       - twinet 
     depends_on:

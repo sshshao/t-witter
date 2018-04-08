@@ -33,16 +33,11 @@ Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
 # Connecting to PostgreSQL DB.
-while True:
-    try:
-        engine = connect()
-        Base.metadata.bind = engine
-        DBSession = sessionmaker(bind=engine)
-        session = DBSession()
-        print('[x] Auth Service DB Connnection Established...')
-        break    
-    except Exception as err:
-        print('[x] Auth Service PostgreSQL Not Ready Yet...')
+engine = connect()
+Base.metadata.bind = engine
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+print('[x] Auth Service DB Connnection Established...')
 
 
 while True:
