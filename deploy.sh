@@ -6,7 +6,9 @@ kompose down
 #sudo docker stack rm twitter
 
 echo '\033[35m[x] Updating Codebase... \033[0m'
-git pull origin master
+git pull origin kube
+git checkout kube
+
 
 echo '\033[36m[x] Build Docker Images... \033[0m'
 sudo sh build.sh
