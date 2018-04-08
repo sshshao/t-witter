@@ -15,8 +15,6 @@ sudo sh build.sh
 
 echo '\033[36m[x] Deploy Services... \033[0m'
 sleep 10
-cp docker-compose.yml deployment/
-cd deployment
 kompose up
 #sudo docker stack deploy -c docker-compose.yml twitter
 
