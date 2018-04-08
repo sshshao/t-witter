@@ -1,6 +1,7 @@
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError as SOE
+from psycopg2 import OperationalError as POE
 from models import UserAccount, UserActivationToken, Base, connect
 from cerberus import Validator
 import hashlib, uuid
@@ -39,9 +40,10 @@ while True:
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
         print('[x] Auth Service DB Connnection Established...')
-        break
+        break    
     except Exception as err:
         print('[x] Auth Service PostgreSQL Not Ready Yet...')
+
 
 while True:
     try:
