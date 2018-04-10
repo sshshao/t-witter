@@ -11,8 +11,6 @@ spec:
       targetPort: 80
       protocol: TCP
       name: http
-  externalIPs:
-    - 10.0.1.15
   selector:
     twitter: api-gateway
 ---
@@ -23,7 +21,7 @@ metadata:
     twitter: api-gateway
   name: api-gateway
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       twitter: api-gateway
