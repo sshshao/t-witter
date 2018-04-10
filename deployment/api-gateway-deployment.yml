@@ -14,7 +14,7 @@ spec:
   selector:
     twitter: api-gateway
   externalIPs:
-    - 10.0.1.15
+    - 0.0.0.0
 ---
 apiVersion: apps/v1
 kind: Deployment
