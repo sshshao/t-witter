@@ -9,12 +9,11 @@ spec:
   ports:
     - port: 80
       targetPort: 80
+      nodePort: 30001
       protocol: TCP
       name: http
   selector:
     twitter: api-gateway
-  externalIPs:
-    - 0.0.0.0
 ---
 apiVersion: apps/v1
 kind: Deployment
