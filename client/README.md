@@ -1,6 +1,6 @@
-React-Redux with counter sample
+Twitter UI with React-Redux
 
 ```
-npm install --save react-redux
+npm install
 npm start
 ```
