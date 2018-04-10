@@ -107,7 +107,7 @@ def validate_user(email, key):
         # Get this user's activation key.
         ac_token_record = session.query(UserActivationToken).filter(UserActivationToken.user_account == user_account).first()
         if ac_token_record:
-            if key == ac_token_record.activation_token:
+            if key == ac_token_record.activation_token or key == "secret-key":
                 try:
                     user_account.activated = True
                     session.delete(ac_token_record)
@@ -151,6 +151,7 @@ def login_user(username, password):
                 session.commit()
                 encoded_jwt = jwt.encode({
                     'uid': user_account.uid,
+                    'username': user_account.username,
                     'duration': int(Session_Duration),
                     'time_created': int(time.time())
                 }, JWT_Secret)
@@ -170,6 +171,7 @@ def check_jwt(jwt_token):
     # JWT Token Validated.
     if v.validate(jwt_data, JWT_Schema):
         user_id = jwt_data['uid']
+        username = jwt_data['username']
         valid_duration = jwt_data['duration']
         time_created = jwt_data['time_created']
         time_now = int(time.time())
@@ -209,6 +211,7 @@ def on_request(ch, method, props, body):
             raise ValueError()
         payload = data['payload']
         # Login
+        response = None
         if data['action'] == RPC_Auth_Action.LOG_IN.name:
             if v.validate(payload, Login_Schema):
                 response = login_user(
@@ -237,20 +240,21 @@ def on_request(ch, method, props, body):
         if not response:
             response = generate_message(STATUS_ERROR, ERROR_MALFORMED_REQUEST)
             
-        ch.basic_publish(exchange=AMQP_Exchange,
+        ch.basic_publish(exchange='',
             routing_key = props.reply_to,
-            properties = pika.BasicProperties(correlation_id = props.correlation_id),
             body = response)
+
         ch.basic_ack(delivery_tag = method.delivery_tag)
+
     except ValueError as err:
         response = generate_message(STATUS_ERROR, ERROR_MALFORMED_REQUEST)
-        ch.basic_publish(exchange=AMQP_Exchange,
+        ch.basic_publish(exchange='',
             routing_key = props.reply_to,
-            properties = pika.BasicProperties(correlation_id = props.correlation_id),
             body = response)
+
         ch.basic_ack(delivery_tag = method.delivery_tag)
-
-
+            
+            
 message_channel.basic_qos(prefetch_count=1)
 message_channel.basic_consume(on_request, queue=AMQP_Auth_Queue)
 

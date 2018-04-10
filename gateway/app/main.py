@@ -1,11 +1,15 @@
 from flask import Flask, request, Response
+from cerberus import Validator
 import configparser
 import json
 import sys, os
+import jwt
+import time
 
-from dispatcher import *
+from direct_dispatcher import *
 from protocols.rpc_protocols import *
 from protocols.messages import *
+from protocols.schema import *
 
 
 app = Flask(__name__)
@@ -15,36 +19,36 @@ config.read('config.ini')
 AMQP_Auth_Queue = config['AUTH']['AMQP_Queue']
 AMQP_Tweet_Queue = config['TWEET']['AMQP_Queue']
 AMQP_Profile_Queue = config['PROFILE']['AMQP_Queue']
+JWT_Secret = config['BASIC']['JWT_Secret']
 
-
+v = Validator()
 
 # Check whether the JWT Token is valid.
 def check_login(req):
     jwt_token = req.cookies.get('user-jwt')
     if not jwt_token:
         return (False, )
-    dispatcher = RPCDispatcher()
-    req = json.dumps({
-        'action': RPC_Auth_Action.VALIDATE_JWT.name,
-        'payload': {
-            "jwt": jwt_token
-        }, 
-    })
-    res = dispatcher.call(AMQP_Auth_Queue, req)
-    res_format = json.loads(res)
-    if res_format['status'] == STATUS_OK:
-        return (True, res_format['payload']['username'])
+    jwt_data = jwt.decode(jwt_token, JWT_Secret)
+    if v.validate(jwt_data, JWT_Schema):
+        user_id = jwt_data['uid']
+        username = jwt_data['username']
+        valid_duration = jwt_data['duration']
+        time_created = jwt_data['time_created']
+        time_now = int(time.time())
+        if time_now - time_created <= valid_duration:
+            # Blacklisted TODO
+            return (True, username)
     return (False, )
 
 
-@app.route('/', methods=['GET'])
+@app.route('/test', methods=['GET'])
 def hello():
     return 'Hello World!'
 
 
 @app.route('/adduser', methods=['POST'])
 def register():
-    input_data = request.get_json()
+    input_data = request.get_json() 
     dispatcher = RPCDispatcher()
     req = json.dumps({
         'action': RPC_Auth_Action.REGISTER.name,
@@ -108,9 +112,8 @@ def add_item():
                 #'childType': input_data['childType']
             }
         })
-        res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -125,9 +128,8 @@ def get_item(id):
             'id': tweet_id
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Tweet_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/item/<id>', methods=['DELETE'])
@@ -166,9 +168,8 @@ def search():
             'action': RPC_Witter_Action.SEARCH.name,
             'payload': input_data
         })
-        res = json.dumps(dispatcher.call(AMQP_Tweet_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -182,9 +183,8 @@ def get_user(username):
             'username': username
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/user/<username>/followers', methods=['GET'])
@@ -198,9 +198,8 @@ def get_follower(username):
             'limit': limit
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/user/<username>/following', methods=['GET'])
@@ -214,9 +213,8 @@ def get_following(username):
             'limit': limit
         }
     })
-    res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-    res_format = json.loads(res)
-    return Response(res_format, mimetype='application/json')
+    res = dispatcher.call(AMQP_Profile_Queue, req)
+    return Response(res, mimetype='application/json')
 
 
 @app.route('/follow', methods=['POST'])
@@ -225,7 +223,7 @@ def follow():
     if cookie[0]:
         input_data = request.get_json()
         dispatcher = RPCDispatcher()
-        follow = True if 'follow' in input_data else input_data['follow']
+        follow = True if 'follow' not in input_data else input_data['follow']
         req = json.dumps({
             'action': RPC_Profile_Action.FOLLOW.name,
             'payload': {
@@ -234,9 +232,8 @@ def follow():
                 'follow': follow
             }
         })
-        res = json.dumps(dispatcher.call(AMQP_Profile_Queue, req))
-        res_format = json.loads(res)
-        return Response(res_format, mimetype='application/json')
+        res = dispatcher.call(AMQP_Profile_Queue, req)
+        return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 

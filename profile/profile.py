@@ -3,6 +3,8 @@ import pika
 import json
 import sys, os
 
+import time
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from worker import *
 from protocols.rpc_protocols import *
@@ -35,14 +37,19 @@ options = {
 
 def on_request(ch, method, props, body):
     data = decode_json(body.decode('utf-8'))
-    print(data)
+    
+    # distinguish internal and external call
     response = options[data['action']](data['payload'])
-
-    ch.basic_publish(exchange=AMQP_EXCHANGE,
-        routing_key=props.reply_to,
-        properties=pika.BasicProperties(
-            correlation_id=props.correlation_id),
-        body=response)
+    if(data['action'] == REQ_ACTION.ADD_PROFILE.name):
+        ch.basic_publish(exchange=AMQP_EXCHANGE,
+            routing_key=props.reply_to,
+            properties=pika.BasicProperties(
+                correlation_id=props.correlation_id),
+            body=response)
+    else:
+        ch.basic_publish(exchange='',
+            routing_key=props.reply_to,
+            body=response)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 

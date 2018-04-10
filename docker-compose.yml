@@ -1,60 +1,176 @@
 version: '3'
 services:
+
+  # ## Config Servers
+  # config01:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # config02:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # config03:
+  #   image: mongo
+  #   command: mongod --port 27017 --configsvr --replSet configserver --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+
+  # ## Shards
+  # shard01a:
+  #   image: mongo
+  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard01b:
+  #   image: mongo
+  #   command: mongod --port 27018 --shardsvr --replSet shard01 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard02a:
+  #   image: mongo
+  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard02b:
+  #   image: mongo
+  #   command: mongod --port 27019 --shardsvr --replSet shard02 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard03a:
+  #   image: mongo
+  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # shard03b:
+  #   image: mongo
+  #   command: mongod --port 27020 --shardsvr --replSet shard03 --noprealloc --smallfiles --oplogSize 16
+  #   networks: 
+  #     - twinet  
+
+  # ## Router
+  # mongo_db:
+  #   image: mongo
+  #   command: mongos --port 27017 --configdb configserver/config01:27017,config02:27017,config03:27017
+  #   ports:
+  #     - "27017:27017"
+
+  #   depends_on:
+  #     - config01
+  #     - config02
+  #     - config03
+  #     - shard01a
+  #     - shard01b
+  #     - shard02a
+  #     - shard02b
+  #     - shard03a
+  #     - shard03b
+  #   networks: 
+  #     - twinet  
+
+
   postgre_db:
-    image: "postgres"
-    restart: always
+    image: "postgres:latest"
+    ports: 
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: hyy19960529
+    networks: 
+      - twinet            
 
   mongo_db:
     image: mongo:latest
-    container_name: "mongodb"
-    environment:
-      - MONGO_DATA_DIR=/data/db
-      - MONGO_LOG_DIR=/dev/null
-    volumes:
-      - ./data/db:/data/db
-    command: mongod --smallfiles --logpath=/dev/null
+    ports:
+      - "27017:27017"
+    networks: 
+      - twinet 
 
   amqp_service:
-    image: "rabbitmq:3.7.4"
+    image: "rabbitmq:3.7.4-management"
     ports: 
-      - "15672:15672"
+      - "5672:5672"
+      - "8081:15672"      
+    networks: 
+      - twinet 
 
   api_gateway:
-    image: twitter_gateway_service
+    image: richackard/twitter_gateway_service
+    ports:
+      - "80:80"
     deploy:
-      replicas: 1
-      ports:
-        - "80:80"
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   auth_service:
-    image: twitter_auth_service
+    image: richackard/twitter_auth_service
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   email_service:
-    image: twitter_email_service
-    restart: always
+    image: richackard/twitter_email_service
     deploy:
       replicas: 1
       restart_policy: 
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   profile_service:
-    image: twitter_profile_service
+    image: richackard/twitter_profile_service
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet 
 
   tweet_service:
-    image: twitter_tweet_service
+    image: richackard/twitter_tweet_service
     deploy:
-      replicas: 1
+      replicas: 3
       restart_policy:
+        delay: "1s"
         condition: on-failure
+    networks: 
+      - twinet
+
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+    networks:
+      - twinet
+
+networks: 
+  twinet:
+    driver: overlay
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.28.0.0/16

@@ -24,7 +24,7 @@ TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
 PROFILE_COLLECTION_NAME = config_tweet['MongoDB_Profile_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient(URI)
+client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
 
 
 def add_tweet(payload):
@@ -70,7 +70,7 @@ def delete_tweet(payload):
     collection = db[TWEET_COLLECTION_NAME]
     result = collection.delete_one(query)
 
-    if(result.deleted_count != 1):
+    if(result.deleted_count == 1):
         return generate_message(RES_FAILURE, ERROR_GET_TWEET)
     return generate_message(RES_SUCCESS, '')
 
@@ -79,6 +79,8 @@ def search(payload):
     db = client[DB_NAME]
     tweet_collection = db[TWEET_COLLECTION_NAME]
     profile_collection = db[PROFILE_COLLECTION_NAME]
+
+    print(json.dumps(payload))
 
     # Process queries conditions
     timestamp = math.floor(time.time()) if 'timestamp' not in payload else int(payload['timestamp'])
@@ -98,15 +100,20 @@ def search(payload):
     query = json.loads(query_search(timestamp, q, username, targets))
     cursor = tweet_collection.find(query).sort('timestamp', pymongo.DESCENDING).limit(limit)
     if(cursor == None):
-        return generate_message(RES_SUCCESS, SEARCH_NO_RESULT)
+        res = json.dumps({
+            'status': RES_SUCCESS,
+            'items': []
+        })
+        return res
 
     result = []
     for doc in cursor:
         del doc['_id']
-        result.append({'item': doc})
+        result.append(doc)
     
     res = json.dumps({
         'status': RES_SUCCESS,
         'items': result
     })
+    
     return res

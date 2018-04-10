@@ -11,8 +11,8 @@ Base = declarative_base()
 class UserAccount(Base):
     __tablename__ = 'userAccount'
     uid = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(64), unique=True)
-    email = Column(String(64), unique=True)
+    username = Column(String(256), unique=True)
+    email = Column(String(256), unique=True)
     password = Column(String(128), nullable=False)
     password_salt = Column(String(128), nullable=False)
     activated = Column(Boolean, default=False)
