@@ -11,6 +11,8 @@ spec:
       targetPort: 80
       protocol: TCP
       name: http
+  externalIPs:
+    - 130.245.168.42
   selector:
     twitter: api-gateway
 ---
