@@ -2,17 +2,17 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    twitter: api-gateway
+    name: api-gateway
   name: api-gateway
 spec:
   replicas: 3
   selector:
     matchLabels:
-      twitter: api-gateway
+      name: api-gateway
   template:
     metadata:
       labels: 
-        twitter: api-gateway
+        name: api-gateway
     spec:
       containers:
       - image: richackard/twitter_gateway_service
