@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    twitter: tweet-service
+  name: tweet-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      twitter: tweet-service
+  template:
+    metadata:
+      labels: 
+        twitter: tweet-service
+    spec:
+      containers:
+      - image: richackard/twitter_tweet_service
+        name: tweet_service
+      restartPolicy: Always

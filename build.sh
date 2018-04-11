@@ -1,6 +1,21 @@
 #!/bin/bash
 echo "Build Started."
 
+#echo '\033[35m[x] Stopping Services... \033[0m'
+#kompose down
+#sudo docker stack rm twitter
+
+echo '\033[35m[x] Updating Codebase... \033[0m'
+git pull origin kube
+git checkout kube
+
+echo '\033[36m[x] Build Docker Images... \033[0m'
+#sudo sh build.sh
+#echo '\033[36m[x] Deploy Services... \033[0m'
+#sleep 10
+#kompose up
+#sudo docker stack deploy -c docker-compose.yml twitter
+
 cd mongo
 echo '\033[33m[x] Building Mongo DB Service...\033[0m'
 docker image build -q -t twitter_mongo_db .
