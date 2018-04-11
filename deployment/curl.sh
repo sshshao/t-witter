@@ -1,0 +1,1 @@
+kubectl run curl-abc --image=radial/busyboxplus:curl -i --tty --rm

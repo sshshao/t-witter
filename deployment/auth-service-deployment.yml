@@ -1,3 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  labels:
+    twitter: auth-service
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+  selector:
+    twitter: auth-service
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
