@@ -1,0 +1,12 @@
+kind: "Service"
+apiVersion: v1
+metadata:
+  name: {{SVC_NAME}}
+spec:
+  type: {{SERVICE_TYPE}}
+  selector:
+    app: {{APP_NAME}}
+  sessionAffinity: ClientIP
+  ports:
+    - name: management-console
+      port: 15672
