@@ -1,6 +1,6 @@
 export NAMESPACE=default && \
 export DOCKER_REPOSITORY=richackard && \
-export RABBITMQ_REPLICAS=5 && \
+export RABBITMQ_REPLICAS=1 && \
 export RABBITMQ_DEFAULT_USER=guest && \
 export RABBITMQ_DEFAULT_PASS=guest && \
 export RABBITMQ_ERLANG_COOKIE=secret && \
