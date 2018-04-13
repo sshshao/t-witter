@@ -17,7 +17,7 @@ kind: ReplicationController
 metadata:
   name: postgres
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
