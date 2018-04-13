@@ -6,9 +6,11 @@ metadata:
   name: amqp-service
 spec:
   ports:
-  - port: 5672
+  - name: service
+    port: 5672
     targetPort: 5672
-  - port: 15672
+  - name: interface
+    port: 15672
     targetPort: 15672
   selector:
     twitter: amqp-service
