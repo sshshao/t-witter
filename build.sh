@@ -16,11 +16,7 @@ echo '\033[36m[x] Build Docker Images... \033[0m'
 #kompose up
 #sudo docker stack deploy -c docker-compose.yml twitter
 
-cd mongo
-echo '\033[33m[x] Building Mongo DB Service...\033[0m'
-docker image build -q -t twitter_mongo_db .
-
-cd ../auth
+cd auth
 echo '\033[35m[x] Building Auth Service...\033[0m'
 docker image build -q -t twitter_auth_service .
 
