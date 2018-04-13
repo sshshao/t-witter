@@ -1,3 +1,5 @@
+db.create("witter")
+db.create("profile")
 sh.enableSharding( "witter" )
 sh.shardCollection("witter.tweet", {"id": "hashed"})
 sh.shardCollection("witter.profile", {"id": "hashed"})
