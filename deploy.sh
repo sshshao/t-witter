@@ -11,7 +11,7 @@ kubectl delete -f profile-service-deployment.yml
 kubectl delete -f tweet-service-deployment.yml
 
 cd ..
-sudo build.sh
+sudo sh build.sh
 
 echo '\033[35m[x] Deploying new Services... \033[0m'
 cd deployment
