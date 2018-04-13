@@ -18,12 +18,13 @@ config.read('./config.ini')
 config_profile = config['PROFILE']
 QUERY_LIMIT_DEFAULT = int(config_profile['Query_Limit_Default'])
 QUERY_LIMIT_MAX = int(config_profile['Query_Limit_Max'])
-URI = config_profile['MongoDB_Uri']
 DB_NAME = config_profile['MongoDB_Name']
+NODE_NAME = config_profile['MongoDB_Node']
+PORT_NUM = config_profile['MongoDB_Mgs_Port']
 COLLECTION_NAME = config_profile['MongoDB_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
+client = pymongo.MongoClient('mongodb://%s' % NODE_NAME, PORT_NUM, maxPoolSize=100, waitQueueMultiple=10)
 
 def add_profile(payload):
     profile = json.loads(new_profile(payload['id'], payload['username'], payload['email']))

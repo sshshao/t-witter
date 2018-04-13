@@ -18,13 +18,14 @@ config.read('./config.ini')
 config_tweet = config['TWEET']
 SEARCH_LIMIT_DEFAULT = int(config_tweet['Search_Limit_Default'])
 SEARCH_LIMIT_MAX = int(config_tweet['Search_Limit_Max'])
-URI = config_tweet['MongoDB_Uri']
-DB_NAME = config_tweet['MongoDB_Name']
+DB_NAME = config_profile['MongoDB_Name']
+NODE_NAME = config_profile['MongoDB_Node']
+PORT_NUM = config_profile['MongoDB_Mgs_Port']
 TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
 PROFILE_COLLECTION_NAME = config_tweet['MongoDB_Profile_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
+client = pymongo.MongoClient('mongodb://%s' % NODE_NAME, PORT_NUM, maxPoolSize=100, waitQueueMultiple=10)
 
 
 def add_tweet(payload):
