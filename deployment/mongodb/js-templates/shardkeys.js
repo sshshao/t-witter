@@ -1,5 +1,6 @@
-db.create("witter")
-db.create("profile")
+use "witter"
+db.createCollection("profile")
+db.createCollection("tweet")
 sh.enableSharding( "witter" )
 sh.shardCollection("witter.tweet", {"id": "hashed"})
 sh.shardCollection("witter.profile", {"id": "hashed"})
