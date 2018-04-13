@@ -18,9 +18,9 @@ config.read('./config.ini')
 config_tweet = config['TWEET']
 SEARCH_LIMIT_DEFAULT = int(config_tweet['Search_Limit_Default'])
 SEARCH_LIMIT_MAX = int(config_tweet['Search_Limit_Max'])
-DB_NAME = config_profile['MongoDB_Name']
-NODE_NAME = config_profile['MongoDB_Node']
-PORT_NUM = config_profile['MongoDB_Mgs_Port']
+DB_NAME = config_tweet['MongoDB_Name']
+NODE_NAME = config_tweet['MongoDB_Node']
+PORT_NUM = config_tweet['MongoDB_Mgs_Port']
 TWEET_COLLECTION_NAME = config_tweet['MongoDB_Tweet_Collection']
 PROFILE_COLLECTION_NAME = config_tweet['MongoDB_Profile_Collection']
 

@@ -11,6 +11,9 @@ kubectl delete -f profile-service-deployment.yml
 kubectl delete -f tweet-service-deployment.yml
 
 cd ..
+echo '\033[35m[x] Updating Codebase... \033[0m'
+git pull origin kube
+git checkout kube
 sudo sh build.sh
 
 echo '\033[35m[x] Deploying new Services... \033[0m'
