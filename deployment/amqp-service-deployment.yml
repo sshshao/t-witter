@@ -5,6 +5,7 @@ metadata:
     twitter: amqp-service
   name: amqp-service
 spec:
+
   ports:
   - name: service
     port: 5672
@@ -12,6 +13,7 @@ spec:
   - name: interface
     port: 15672
     targetPort: 15672
+    nodePort: 30002
   selector:
     twitter: amqp-service
 ---
