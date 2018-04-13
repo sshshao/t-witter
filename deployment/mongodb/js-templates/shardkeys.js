@@ -1,4 +1,4 @@
-use "witter"
+use witter
 db.createCollection("profile")
 db.createCollection("tweet")
 sh.enableSharding( "witter" )
