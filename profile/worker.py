@@ -20,7 +20,7 @@ QUERY_LIMIT_DEFAULT = int(config_profile['Query_Limit_Default'])
 QUERY_LIMIT_MAX = int(config_profile['Query_Limit_Max'])
 DB_NAME = config_profile['MongoDB_Name']
 NODE_NAME = config_profile['MongoDB_Node']
-PORT_NUM = config_profile['MongoDB_Mgs_Port']
+PORT_NUM = int(config_profile['MongoDB_Mgs_Port'])
 COLLECTION_NAME = config_profile['MongoDB_Collection']
 
 # Set up Mongo client
