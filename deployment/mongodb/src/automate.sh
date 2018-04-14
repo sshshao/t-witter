@@ -26,7 +26,7 @@ while read p; do
   	i=$((i+1))
 done < ./tmp/podfile
 
-sleep 15
+sleep 30
 echo "Initialize Shard..."
 kubectl exec -ti ${POD} -c ${CONTAINER} mongo mongodb-node01:${MONGOSPORT} <./build/shard-init.js
 
