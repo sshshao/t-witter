@@ -1,43 +1,32 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: mongo-db
+  name: mongodb-node01
 spec:
   ports:
   - name: mongodb
-    port: 5432
-    targetPort: 5432
-    protocol: TCP
+    port: 27017
+    targetPort: 27017
   selector:
-    app: postgres
+    app: mongo-db
 
 ---
 apiVersion: v1
 kind: ReplicationController
 metadata:
-  name: postgres
+  name: mongo-db
 spec:
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
-        app: postgres
+        app: mongo-db
     spec:
       containers:
-        - name: postgres
-          image: postgres:9.6
-          env:
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: hyy19960529
-            - name: PGDATA
-              value: /var/lib/postgresql/data/pgdata
+        - name: mongo-db-service
+          image: mongodb:3.6
           ports:
-            - containerPort: 5432
-          volumeMounts:
-            - mountPath: /var/lib/postgresql/data
-              name: pg-data
-      volumes:
-        - name: pg-data
-          emptyDir: {}
+            - containerPort: 27017
+          args:
+          - "--port 27017"
+          - "bind_ip=0.0.0.0"
