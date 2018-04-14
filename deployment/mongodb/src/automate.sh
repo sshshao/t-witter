@@ -18,18 +18,18 @@ while read p; do
   	CONTAINER="rsp${RSNUM}-node${NODE}"
   	echo "${ii}: Initialize replication set rs${RSNUM} on node ${NODE}"
   	echo "Execute command on pod ${POD} and container ${CONTAINER}"
-  	kubectl exec -ti ${POD} -c ${CONTAINER} mongo 127.0.0.1:${PORT} <${JSFILE}
+  	kubectl exec -ti ${POD} -c ${CONTAINER} mongo mongodb-node01:${PORT} <${JSFILE}
   	if [ -e "./build/cfg${ii}-init.js" ]; then
   		echo "Initialize Config Server Replication Set"
-  		kubectl exec -ti ${POD} -c ${CONTAINER} mongo 127.0.0.1:${CFGPORT} <./build/cfg${ii}-init.js
+  		kubectl exec -ti ${POD} -c ${CONTAINER} mongo mongodb-node01:${CFGPORT} <./build/cfg${ii}-init.js
   	fi	
   	i=$((i+1))
 done < ./tmp/podfile
 
 sleep 15
 echo "Initialize Shard..."
-kubectl exec -ti ${POD} -c ${CONTAINER} mongo 127.0.0.1:${MONGOSPORT} <./build/shard-init.js
+kubectl exec -ti ${POD} -c ${CONTAINER} mongo mongodb-node01:${MONGOSPORT} <./build/shard-init.js
 
 sleep 15
 echo "Initialize database collections for sharding ..."
-kubectl exec -ti ${POD} -c ${CONTAINER} mongo 127.0.0.1:${MONGOSPORT} <./js-templates/shardkeys.js
+kubectl exec -ti ${POD} -c ${CONTAINER} mongo mongodb-node01:${MONGOSPORT} <./js-templates/shardkeys.js
