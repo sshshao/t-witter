@@ -11,9 +11,4 @@ Queue: tweet_queue -> For Tweet-related Service RPC.
 Queue: profile_queue -> For Profile Action Handling.
 
 
-sudo docker stack rm twitter
-git pull origin test
-git checkout test
-
-sudo sh build.sh
-sudo docker stack deploy -c docker-compose.yml twitter
+run deploy.sh will first stop all services, then fetch the newest repo, then deploy those services.

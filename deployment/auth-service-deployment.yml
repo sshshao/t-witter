@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    twitter: auth-service
+  name: auth-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      twitter: auth-service
+  template:
+    metadata:
+      labels: 
+        twitter: auth-service
+    spec:
+      containers:
+      - image: richackard/twitter_auth_service
+        name: auth-service
+      restartPolicy: Always

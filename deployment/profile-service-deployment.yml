@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    twitter: profile-service
+  name: profile-service
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      twitter: profile-service
+  template:
+    metadata:
+      labels: 
+        twitter: profile-service
+    spec:
+      containers:
+      - image: richackard/twitter_profile_service
+        name: profile-service
+      restartPolicy: Always

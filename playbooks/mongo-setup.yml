@@ -1,0 +1,24 @@
+---
+- hosts: witter-all
+  remote_user: ubuntu
+  gather_facts: False
+  become: yes
+
+  tasks:
+    - name: Join Master
+      raw: kubeadm join 10.0.1.15:6443 --token cx4b2s.efpb9rudutrp61hn --discovery-token-ca-cert-hash sha256:874ba45147deaa396ccffc2f9c4ac02c4ca6f45c95cab94203ee235720a77de2
+
+    - name: Install public key
+      raw: sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+
+    - name: Create list file...
+      raw: echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+
+    - name: Update Apt cache...
+      apt:
+        update_cache: yes
+    
+    - name: Install Mongo DB....
+      raw: sudo apt-get install -y mongodb-org
+
+    

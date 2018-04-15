@@ -53,5 +53,43 @@
 
     - name: Install Docker CE.
       apt:
-        name: "docker-ce=18.03.0~ce-0~ubuntu"
+        name: "docker-ce=17.03.0~ce-0~ubuntu-xenial"
         state: present
+
+    - name: Kubernetes Key...
+      raw: sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
+
+    - name: Adding Kubernetes Repo
+      raw: 'sudo add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"'
+      
+
+    - name: Update Cache.
+      apt:
+        update_cache: yes
+    
+    - name: Install Kubernetes (Kubelet)...
+      apt:
+        name: "kubelet"
+        state: present
+
+    - name: Install Kubernetes (Kubeadm)...
+      apt:
+        name: "kubeadm"
+        state: present
+
+    - name: Install Kubernetes (Kubectl)...
+      apt:
+        name: "kubectl"
+        state: present
+
+    - name: Install Kubernetes (kubernetes-cni)...
+      apt:
+        name: "kubernetes-cni"
+        state: present
+
+    - name: Install Kompose...
+      raw: |
+        curl -L https://github.com/kubernetes/kompose/releases/download/v1.11.0/kompose-linux-amd64 -o kompose
+        chmod +x kompose
+        sudo mv ./kompose /usr/local/bin/kompose
+

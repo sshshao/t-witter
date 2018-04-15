@@ -1,6 +1,7 @@
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError as SOE
+from psycopg2 import OperationalError as POE
 from models import UserAccount, UserActivationToken, Base, connect
 from cerberus import Validator
 import hashlib, uuid
@@ -32,13 +33,27 @@ Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
 # Connecting to PostgreSQL DB.
-engine = connect()
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
-print('Auth Service DB Connnection Established...')
-# Connecting to Message Broker
-message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+while True:
+    try:
+        engine = connect()
+        Base.metadata.bind = engine
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        break
+    except Exception as err:
+        print("[x] Auth Service PostgreSQL Not Ready Yet...")
+print('[x] Auth Service DB Connnection Established...')
+
+
+while True:
+    try:
+        # Connecting to Message Broker
+        message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+        break
+    except Exception as err:
+        print('[x] Auth Service AMQP Connection Not Ready Yet...')
+        
+
 message_channel = message_broker.channel()
 
 # Declare exchange

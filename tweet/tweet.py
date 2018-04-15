@@ -18,7 +18,12 @@ AMQP_EXCHANGE_TYPE = config['AMQP']['AMQP_Exchange_Type']
 AMQP_TWEET_QUEUE = config_tweet['AMQP_Queue']
 
 # Set up AMQP connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+while True:
+    try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+        break
+    except Exception as err:
+        print('[x] AMQP Connection Not Ready Yet...')
 channel = connection.channel()
 channel.exchange_declare(exchange=AMQP_EXCHANGE, exchange_type=AMQP_EXCHANGE_TYPE)
 result = channel.queue_declare(queue=AMQP_TWEET_QUEUE, durable=True)
