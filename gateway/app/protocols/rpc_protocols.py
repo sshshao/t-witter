@@ -9,7 +9,8 @@ class RPC_Witter_Action(Enum):
     ADD_TWEET = 1,
     GET_TWEET = 2,
     DELETE_TWEET = 3,
-    SEARCH = 4,
+    LIKE_TWEET = 4,
+    SEARCH = 5,
 
 class RPC_Auth_Action(Enum):
     LOG_IN = 1,

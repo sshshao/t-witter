@@ -9,7 +9,8 @@ class REQ_ACTION(Enum):
     ADD_TWEET = 1,
     GET_TWEET = 2,
     DELETE_TWEET = 3,
-    SEARCH = 4,
+    LIKE_TWEET = 4,
+    SEARCH = 5,
 
 
 def generate_message(status, msg):

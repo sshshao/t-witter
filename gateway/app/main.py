@@ -109,7 +109,9 @@ def add_item():
             'payload': {
                 'username': cookie[1],
                 'content': input_data['content'],
-                #'childType': input_data['childType']
+                'childType': input_data['childType'],
+                'parent': input_data['parent'],
+                'media': input_data['media']
             }
         })
         res = dispatcher.call(AMQP_Tweet_Queue, req)
@@ -134,20 +136,47 @@ def get_item(id):
 
 @app.route('/item/<id>', methods=['DELETE'])
 def delete_item(id):
-    tweet_id = id
-    dispatcher = RPCDispatcher()
-    req = json.dumps({
-        'action': RPC_Witter_Action.DELETE_TWEET.name,
-        'payload': {
-            'id': tweet_id
-        }
-    })
-    res = dispatcher.call(AMQP_Tweet_Queue, req)
-    res_format = json.loads(res)
-    if res_format['status'] == 'OK':
-        return Response(res, status=200, mimetype='application/json')
+    cookie = check_login(request)
+    if cookie[0]:
+        tweet_id = id
+        dispatcher = RPCDispatcher()
+        req = json.dumps({
+            'action': RPC_Witter_Action.DELETE_TWEET.name,
+            'payload': {
+                'id': tweet_id,
+                'username': cookie[1]
+            }
+        })
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        res_format = json.loads(res)
+        if res_format['status'] == 'OK':
+            return Response(res, status=200, mimetype='application/json')
+        else:
+            return Response(res, status=400, mimetype='application/json')
     else:
-        return Response(res, status=400, mimetype='application/json')
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
+
+
+@app.route('/item/<id>/like', methods=['POST'])
+def like_item(id):
+    cookie = check_login(request)
+    if cookie[0]:
+        input_data = request.get_json()
+        tweet_id = id
+        dispatcher = RPCDispatcher()
+        like = True if 'like' not in input_data else input_data['like']
+        req = json.dumps({
+            'action': RPC_Witter_Action.LIKE_TWEET.name,
+            'payload': {
+                'id': tweet_id,
+                'username': cookie[1]
+                'like': like
+            }
+        })
+        res = dispatcher.call(AMQP_Tweet_Queue, req)
+        return Response(res, mimetype='application/json')
+    else:
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
 
 @app.route('/search', methods=['POST'])
@@ -155,10 +184,8 @@ def search():
     cookie = check_login(request)
     input_data = request.get_json()
 
-    following = True
-    if 'following' in input_data:
-        following = input_data['following']
-    input_data['following'] = following
+    if 'following' not in input_data:
+        inptu_data['following'] = True
 
     if (cookie[0] and following) or (not following):
         if(cookie[0] and following):

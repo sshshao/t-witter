@@ -29,7 +29,8 @@ client = pymongo.MongoClient('mongodb://%s' % NODE_NAME, PORT_NUM, maxPoolSize=1
 
 
 def add_tweet(payload):
-    tweet = json.loads(new_post(payload['username'], payload['content']))
+    tweet = json.loads(new_post(payload['username'], payload['content'], 
+        payload['childType'], payload['parent'], payload['media']))
     tweet_id = tweet['id']
 
     db = client[DB_NAME]
@@ -65,15 +66,41 @@ def get_tweet(payload):
 
 
 def delete_tweet(payload):
-    query = json.loads(tweet_query(payload['id']))
+    query = json.loads(user_tweet_query(payload['id'], payload['username']))
 
     db = client[DB_NAME]
     collection = db[TWEET_COLLECTION_NAME]
     result = collection.delete_one(query)
 
+    #delete media also
+
     if(result.deleted_count == 1):
         return generate_message(RES_FAILURE, ERROR_GET_TWEET)
     return generate_message(RES_SUCCESS, '')
+
+
+def like_tweet(payload):
+    query = json.loads(tweet_query(payload['id']))
+    user = payload['username']
+    like = payload['like']
+
+    db = client[DB_NAME]
+    collection = db[TWEET_COLLECTION_NAME]
+    result = collection.find_one(query)
+    liked_by = result['property']['liked_by']
+    
+    if like:
+        if user in liked_by:
+            return generate_message(RES_SUCCESS, '')
+        else:
+            update = json.loads(like_tweet_update(user))
+            collection.update_one(query, update, upsert=False)
+    else:
+        if user in liked_by:
+            update = json.loads(unlike_tweet_update(user))
+            collection.update_one(query, update, upsert=False)
+        else:
+            return generate_message(RES_SUCCESS, '')
 
 
 def search(payload):

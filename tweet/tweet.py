@@ -33,6 +33,7 @@ options = {
     REQ_ACTION.ADD_TWEET.name: add_tweet,
     REQ_ACTION.GET_TWEET.name: get_tweet,
     REQ_ACTION.DELETE_TWEET.name: delete_tweet,
+    REQ_ACTION.LIKE_TWEET.name: like_tweet,
     REQ_ACTION.SEARCH.name: search
 }
 
