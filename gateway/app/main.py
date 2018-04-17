@@ -6,10 +6,10 @@ import sys, os
 import jwt
 import time
 
-from .direct_dispatcher import *
-from .protocols.rpc_protocols import *
-from .protocols.messages import *
-from .protocols.schema import *
+from direct_dispatcher import *
+from protocols.rpc_protocols import *
+from protocols.messages import *
+from protocols.schema import *
 
 
 app = Flask(__name__)
