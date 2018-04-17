@@ -108,14 +108,16 @@ def search(payload):
     tweet_collection = db[TWEET_COLLECTION_NAME]
     profile_collection = db[PROFILE_COLLECTION_NAME]
 
-    print(json.dumps(payload))
-
     # Process queries conditions
     timestamp = math.floor(time.time()) if 'timestamp' not in payload else int(payload['timestamp'])
     q = None if 'q' not in payload else payload['q']
     user = None if 'user' not in payload else payload['user']
     username = None if 'username' not in payload else payload['username']
-    following = payload['following']
+    following = True if 'following' not in payload else payload['following']
+    rank = 'interest' if 'rank' not in paylaod else payload['rank']
+    parent = None if 'parent' not in payload else payload['parent']
+    replies = True if 'replies' not in payload else payload['replies']
+    hasMedia = True if 'hasMedia' not in payload else payload['hasMedia']
     targets = None
     if following:
         result = profile_collection.find_one({'username': user})
@@ -125,8 +127,10 @@ def search(payload):
         limit = int(payload['limit']) if int(payload['limit']) < SEARCH_LIMIT_MAX else SEARCH_LIMIT_MAX
 
     # Start Query
-    query = json.loads(query_search(timestamp, q, username, targets))
-    cursor = tweet_collection.find(query).sort('timestamp', pymongo.DESCENDING).limit(limit)
+    query = json.loads(search_query(timestamp, q, username, targets))
+
+    #sort by interest or time
+    cursor = tweet_collection.find(query).sort(search_sort(rank)).limit(limit)
     if(cursor == None):
         res = json.dumps({
             'status': RES_SUCCESS,

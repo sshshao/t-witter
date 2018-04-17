@@ -184,9 +184,6 @@ def search():
     cookie = check_login(request)
     input_data = request.get_json()
 
-    if 'following' not in input_data:
-        inptu_data['following'] = True
-
     if (cookie[0] and following) or (not following):
         if(cookie[0] and following):
             input_data['user'] = cookie[1]

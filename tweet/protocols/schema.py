@@ -2,19 +2,20 @@ import json
 import math
 import time
 import uuid
+import pymongo
 
 
 def new_post(username, content, childType, parent, media):
     return json.dumps({
         'id': generate_tweet_id(),
         'username': username,
+        'timestamp': math.floor(time.time()),
+        'content': content,
+        'retweeted': 0,
         'property': {
             'likes': 0,
             'liked_by': []
         },
-        'retweeted': 0,
-        'content': content,
-        'timestamp': math.floor(time.time()),
         'childType': childType,
         'parent': parent,
         'media': media
@@ -56,13 +57,16 @@ def unlike_tweet_update(user):
     })
 
 
-def query_search(timestamp, q, username, targets):
+def search_query(timestamp, q, username, targets, parent):
     '''
     query = { '$and': [
         { 'timestamp': {'$lte': timestamp} },
-        { 'content': {'$regex' : '.*'+q+'.*'} }
-        { 'username': username }, 
-        { 'username': {'$in': targets} }
+        { 'content': {'$regex' : '.*'+q+'.*'} },
+        { 'username': username },
+        { 'username': {'$in': targets} },
+        { 'parent': parent },
+        { 'childType': {'$not': 'reply'} },
+        { 'media': { '$size': { 'gt': 0 } } }
     ]}
     '''
     query = { '$and': [
@@ -75,8 +79,25 @@ def query_search(timestamp, q, username, targets):
         query['$and'].append({'username': username})
     if targets != None:
         query['$and'].append({'username': {'$in': targets}})
-    
+    if parent != None:
+        query['$and'].append({'parent': parent})
+    if replies != None:
+        query['$and'].append({'childType': {'$not': 'reply'}})
+    if hasMedia:
+        query['$and'].append({'media': {'$size': {'$gt': 1}}})
+
     return json.dumps(query)
+
+
+def search_sort(rank):
+    if rank == 'interest':
+        return [
+            ('timestamp', pymongo.DESCENDING), 
+            ('retweeted', pymongo.DESCENDING),
+            ('property.likes', pymongo.DESCENDING)
+        ]
+    else:
+        return [('timestamp', pymongo.DESCENDING)]
 
 
 def generate_tweet_id():
