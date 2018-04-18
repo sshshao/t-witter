@@ -15,15 +15,10 @@ def get_cur_time_milli():
     return t_ms
 
 class RPCDispatcher(object):
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
     def __init__(self, ):
         bf_time = get_cur_time_milli()
-        self.connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=AMQP_HOST))
-        af_time = get_cur_time_milli()
-        sys.stderr.write("RPC Connection Creation Takes: %d ms\n" % (af_time - bf_time))
-
-        bf_time = get_cur_time_milli()
-        self.channel = self.connection.channel()
+        self.channel = RPCDispatcher.connection.channel()
         af_time = get_cur_time_milli()
         sys.stderr.write("RPC Channel Creation Takes: %d ms\n" % (af_time - bf_time))
 
