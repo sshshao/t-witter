@@ -60,7 +60,7 @@ def register():
         'payload': input_data
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -73,7 +73,7 @@ def login():
         'payload': input_data,
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
-    dispatcher.close()
+    
     r = Response(res, mimetype='application/json')
     # Login Succeeded.
     res_dict = json.loads(str(res))
@@ -102,7 +102,7 @@ def verify():
         'payload': input_data
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -143,7 +143,7 @@ def get_item(id):
         }
     })
     res = dispatcher.call(AMQP_Tweet_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -158,7 +158,7 @@ def delete_item(id):
         }
     })
     res = dispatcher.call(AMQP_Tweet_Queue, req)
-    dispatcher.close()
+    
     res_format = json.loads(res)
     if res_format['status'] == 'OK':
         return Response(res, status=200, mimetype='application/json')
@@ -185,7 +185,7 @@ def search():
             'payload': input_data
         })
         res = dispatcher.call(AMQP_Tweet_Queue, req)
-        dispatcher.close()
+        
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
@@ -201,7 +201,7 @@ def get_user(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -217,7 +217,7 @@ def get_follower(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -233,7 +233,7 @@ def get_following(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
-    dispatcher.close()
+    
     return Response(res, mimetype='application/json')
 
 
@@ -253,7 +253,7 @@ def follow():
             }
         })
         res = dispatcher.call(AMQP_Profile_Queue, req)
-        dispatcher.close()
+        
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
