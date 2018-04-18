@@ -116,6 +116,7 @@ def add_item():
         dispatcher = RPCDispatcher()
         af_time = get_cur_time_milli()
         sys.stderr.print("RPC Takes: %d ms\n" % (af_time - bf_time))
+        sys.stderr.print("RPC Takes: %d ms\n" % (af_time - bf_time))        
         req = json.dumps({
             'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
