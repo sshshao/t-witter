@@ -1,6 +1,7 @@
 import pika, uuid
 import configparser
 import os, sys
+import time
 
 config = configparser.ConfigParser()
 config.read('config.ini')
