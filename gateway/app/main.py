@@ -114,7 +114,7 @@ def add_item():
         bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
         af_time = get_cur_time_milli()
-        sys.stderr.write("RPC Takes: %d ms\n" % (af_time - bf_time))
+        sys.stderr.write("RPC Creation Takes: %d ms\n" % (af_time - bf_time))
         req = json.dumps({
             'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
@@ -123,7 +123,10 @@ def add_item():
                 #'childType': input_data['childType']
             }
         })
+        bf_time = get_cur_time_milli()    
         res = dispatcher.call(AMQP_Tweet_Queue, req)
+        af_time = get_cur_time_milli()
+        sys.stderr.write("RPC Call Takes: %d ms\n" % (af_time - bf_time))
         dispatcher.close()
         return Response(res, mimetype='application/json')
     else:
