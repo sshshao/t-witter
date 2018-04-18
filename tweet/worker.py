@@ -35,6 +35,7 @@ def add_tweet(payload):
 
     db = client[DB_NAME]
     collection = db[TWEET_COLLECTION_NAME]
+    collection.create_index([('timestamp', pymongo.DESCENDING)])
     result = collection.insert_one(tweet)
 
     if(result.inserted_id == None):
