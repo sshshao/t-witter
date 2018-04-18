@@ -16,7 +16,7 @@ def get_cur_time_milli():
     return t_ms
 
 class RPCDispatcher(object):
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST,heartbeat_interval=0))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
     def __init__(self, ):
         bf_time = get_cur_time_milli()
         try:
@@ -24,7 +24,7 @@ class RPCDispatcher(object):
         except ConnectionClosed:
             # Remote closed the connection.
             # ReEstablish the connection
-            RPCDispatcher.connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST, heartbeat_interval=0))
+            RPCDispatcher.connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
             self.channel = RPCDispatcher.connection.channel()
         af_time = get_cur_time_milli()
         sys.stderr.write("RPC Channel Creation Takes: %d ms\n" % (af_time - bf_time))
