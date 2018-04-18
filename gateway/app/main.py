@@ -23,6 +23,11 @@ JWT_Secret = config['BASIC']['JWT_Secret']
 
 v = Validator()
 
+def get_cur_time_milli():
+    t_ms = int(time.time())
+    return t_ms
+
+
 # Check whether the JWT Token is valid.
 def check_login(req):
     jwt_token = req.cookies.get('user-jwt')
@@ -105,8 +110,12 @@ def verify():
 def add_item():
     cookie = check_login(request)
     if cookie[0]:
+        sys.err.print()
         input_data = request.get_json()
+        bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
+        af_time = get_cur_time_milli()
+        sys.err.print("RPC Takes: %d ms" % (af_time - bf_time))
         req = json.dumps({
             'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
