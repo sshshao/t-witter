@@ -110,7 +110,6 @@ def verify():
 def add_item():
     cookie = check_login(request)
     if cookie[0]:
-        sys.err.print()
         input_data = request.get_json()
         bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
