@@ -127,7 +127,6 @@ def add_item():
         res = dispatcher.call(AMQP_Tweet_Queue, req)
         af_time = get_cur_time_milli()
         sys.stderr.write("RPC Call Takes: %d ms\n" % (af_time - bf_time))
-        dispatcher.close()
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
