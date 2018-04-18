@@ -17,7 +17,7 @@ def get_cur_time_milli():
 class RPCDispatcher(object):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
     def __init__(self, ):
-        if not RPCDispatcher.connection.is_open:
+        if RPCDispatcher.connection.is_closed:
             RPCDispatcher.connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
         bf_time = get_cur_time_milli()
         self.channel = RPCDispatcher.connection.channel()
@@ -48,4 +48,4 @@ class RPCDispatcher(object):
         return str(self.response.decode('utf-8'))
     
     def close(self):
-        self.connection.close()
+        self.channel.close()
