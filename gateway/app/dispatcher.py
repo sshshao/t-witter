@@ -42,3 +42,6 @@ class RPCDispatcher(object):
         while self.response is None:
             self.connection.process_data_events()
         return str(self.response.decode('utf-8'))
+
+    def close(self):
+        self.connection.close()

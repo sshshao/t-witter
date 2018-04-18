@@ -23,6 +23,11 @@ JWT_Secret = config['BASIC']['JWT_Secret']
 
 v = Validator()
 
+def get_cur_time_milli():
+    t_ms = int(time.time() * 1000)
+    return t_ms
+
+
 # Check whether the JWT Token is valid.
 def check_login(req):
     jwt_token = req.cookies.get('user-jwt')
@@ -55,6 +60,7 @@ def register():
         'payload': input_data
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
+    dispatcher.close()
     return Response(res, mimetype='application/json')
 
 
@@ -67,6 +73,7 @@ def login():
         'payload': input_data,
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
+    dispatcher.close()   
     r = Response(res, mimetype='application/json')
     # Login Succeeded.
     res_dict = json.loads(str(res))
@@ -95,6 +102,7 @@ def verify():
         'payload': input_data
     })
     res = dispatcher.call(AMQP_Auth_Queue, req)
+    dispatcher.close()
     return Response(res, mimetype='application/json')
 
 
@@ -103,7 +111,10 @@ def add_item():
     cookie = check_login(request)
     if cookie[0]:
         input_data = request.get_json()
+        bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
+        af_time = get_cur_time_milli()
+        sys.stderr.write("RPC Creation Takes: %d ms\n" % (af_time - bf_time))
         req = json.dumps({
             'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
@@ -114,7 +125,11 @@ def add_item():
                 'media': input_data['media']
             }
         })
+        bf_time = get_cur_time_milli()    
         res = dispatcher.call(AMQP_Tweet_Queue, req)
+        af_time = get_cur_time_milli()
+        sys.stderr.write("RPC Call Takes: %d ms\n" % (af_time - bf_time))
+        dispatcher.close()
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
@@ -131,11 +146,13 @@ def get_item(id):
         }
     })
     res = dispatcher.call(AMQP_Tweet_Queue, req)
+    dispatcher.close()
     return Response(res, mimetype='application/json')
 
 
 @app.route('/item/<id>', methods=['DELETE'])
 def delete_item(id):
+<<<<<<< HEAD
     cookie = check_login(request)
     if cookie[0]:
         tweet_id = id
@@ -153,6 +170,21 @@ def delete_item(id):
             return Response(res, status=200, mimetype='application/json')
         else:
             return Response(res, status=400, mimetype='application/json')
+=======
+    tweet_id = id
+    dispatcher = RPCDispatcher()
+    req = json.dumps({
+        'action': RPC_Witter_Action.DELETE_TWEET.name,
+        'payload': {
+            'id': tweet_id
+        }
+    })
+    res = dispatcher.call(AMQP_Tweet_Queue, req)
+    dispatcher.close()    
+    res_format = json.loads(res)
+    if res_format['status'] == 'OK':
+        return Response(res, status=200, mimetype='application/json')
+>>>>>>> origin/timetest
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -193,6 +225,7 @@ def search():
             'payload': input_data
         })
         res = dispatcher.call(AMQP_Tweet_Queue, req)
+        dispatcher.close()        
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
@@ -208,6 +241,7 @@ def get_user(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
+    dispatcher.close()    
     return Response(res, mimetype='application/json')
 
 
@@ -223,6 +257,7 @@ def get_follower(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
+    dispatcher.close()
     return Response(res, mimetype='application/json')
 
 
@@ -238,6 +273,7 @@ def get_following(username):
         }
     })
     res = dispatcher.call(AMQP_Profile_Queue, req)
+    dispatcher.close()   
     return Response(res, mimetype='application/json')
 
 
@@ -257,6 +293,7 @@ def follow():
             }
         })
         res = dispatcher.call(AMQP_Profile_Queue, req)
+        dispatcher.close()     
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
