@@ -36,8 +36,8 @@ Validate_JWT_Schema = {
     'jwt': {'required': True, 'type': 'string'},
 }
 
-Media_Insert_Query = 'INSERT INTO media (id, type, content) VALUES (%s, %s, %s)'
+Media_Insert_Query = 'INSERT INTO media (id, type, content) VALUES (%s, %s, %s);'
 
-Media_Find_Query = 'SELECT id, type, content FROM media WHERE id = %s'
+Media_Find_Query = 'SELECT id, type, content FROM media WHERE id = %s;'
 
-Media_Delete_Query = 'DELETE FROM media WHERE id = %s'
+Media_Delete_Query = 'DELETE FROM media WHERE id = %s;'
