@@ -112,6 +112,9 @@ def add_item():
     cookie = check_login(request)
     if cookie[0]:
         input_data = request.get_json()
+        input_data['childType'] = None if 'childType' not in input_data else inputdata['childType']
+        input_data['parent'] = None if 'parent' not in input_data else inputdata['parent']
+        input_data['media'] = [] if 'media' not in input_data else inputdata['media']
         bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
         af_time = get_cur_time_milli()
