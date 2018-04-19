@@ -296,7 +296,7 @@ def add_item_media():
         content = request.files['content']
         return add_media(content)
     else:
-        return Response(generate_messafe(STATUS_ERROR, ERROR_POST_NO_USER))
+        return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
 
 @app.route('/media/<id>', methods=['GET'])
@@ -304,6 +304,7 @@ def get_item_media(id):
     media = get_media(id)
     if media != None:
         return Response(media.content, mimetype=media.type)
+    return Response(generate_message(STATUS_ERROR, ERROR_NO_MEDIA))
 
 
 if __name__ == "__main__":

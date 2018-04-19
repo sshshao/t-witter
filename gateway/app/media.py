@@ -1,5 +1,6 @@
 import uuid
 import io
+import configparser
 
 from cassandra.cluster import Cluster
 from protocols.schema import *
