@@ -2,3 +2,4 @@ flask
 pika
 PyJWT
 cerberus
+cassandra-driver

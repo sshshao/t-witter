@@ -26,6 +26,14 @@ def generate_message(status, msg):
         })
 
 
+def generate_del_msg(status, msg, media):
+    return json.dumps({
+        'status': STATUS_OK,
+        'message': msg,
+        'media': media
+    })
+
+
 def generate_payload(status, msg, payload):
     if status == STATUS_OK:
         return json.dumps({

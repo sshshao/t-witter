@@ -6,10 +6,11 @@ import sys, os
 import jwt
 import time
 
-from direct_dispatcher import *
 from protocols.rpc_protocols import *
 from protocols.messages import *
 from protocols.schema import *
+from direct_dispatcher import *
+from media import *
 
 
 app = Flask(__name__)
@@ -152,7 +153,6 @@ def get_item(id):
 
 @app.route('/item/<id>', methods=['DELETE'])
 def delete_item(id):
-<<<<<<< HEAD
     cookie = check_login(request)
     if cookie[0]:
         tweet_id = id
@@ -166,25 +166,15 @@ def delete_item(id):
         })
         res = dispatcher.call(AMQP_Tweet_Queue, req)
         res_format = json.loads(res)
+
+        #delete associate media
+        if res_format['media'] != None:
+            delete_media(res_format['media'])
+
         if res_format['status'] == 'OK':
             return Response(res, status=200, mimetype='application/json')
         else:
             return Response(res, status=400, mimetype='application/json')
-=======
-    tweet_id = id
-    dispatcher = RPCDispatcher()
-    req = json.dumps({
-        'action': RPC_Witter_Action.DELETE_TWEET.name,
-        'payload': {
-            'id': tweet_id
-        }
-    })
-    res = dispatcher.call(AMQP_Tweet_Queue, req)
-    dispatcher.close()    
-    res_format = json.loads(res)
-    if res_format['status'] == 'OK':
-        return Response(res, status=200, mimetype='application/json')
->>>>>>> origin/timetest
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
@@ -297,6 +287,23 @@ def follow():
         return Response(res, mimetype='application/json')
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
+
+    
+@app.route('/addmedia', methods=['POST'])
+def add_item_media():
+    cookie = check_login(request)
+    if cookie[0]:
+        content = request.files['content']
+        return add_media(content)
+    else:
+        return Response(generate_messafe(STATUS_ERROR, ERROR_POST_NO_USER))
+
+
+@app.route('/media/<id>', methods=['GET'])
+def get_item_media(id):
+    media = get_media(id)
+    if media != None:
+        return Response(media.content, mimetype=media.type)
 
 
 if __name__ == "__main__":
