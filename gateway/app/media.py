@@ -15,8 +15,7 @@ cluster = Cluster([CASS_HOST])
 
 def add_media(content):
     mimetype = content.content_type
-    f = open(content, 'rb')
-    file_obj = io.BytesIO(f.read())
+    file_obj = io.BytesIO(content.read())
 
     session = cluster.connect(CASS_NAMESPACE)
     session.execute(Media_Insert_Query, [generate_media_id(), mimetype, file_obj])
