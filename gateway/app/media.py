@@ -12,6 +12,28 @@ CASS_NAMESPACE = config['CASSANDRA']['Cass_Namespace']
 
 cluster = Cluster([CASS_HOST])
 
+session = cluster.connect()
+session.execute(
+    """
+    CREATE KEYSPACE IF NOT EXISTS %s
+    WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1'
+    """ % CASS_NAMESPACE
+)
+
+session.set_keyspace(CASS_NAMESPACE)
+
+session.execute(
+    """
+    CREATE TABLE IF NOT EXISTS media (
+        id text,
+        type text,
+        content blob,
+        PRIMARY KEY (id)
+    )
+    """
+)
+
+session.close()
 
 def add_media(content):
     mimetype = content.content_type
