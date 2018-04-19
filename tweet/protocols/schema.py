@@ -57,7 +57,7 @@ def unlike_tweet_update(user):
     })
 
 
-def search_query(timestamp, q, username, targets, parent):
+def search_query(timestamp, q, username, targets, parent, replies, hasMedia):
     '''
     query = { '$and': [
         { 'timestamp': {'$lte': timestamp} },

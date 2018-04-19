@@ -131,7 +131,7 @@ def search(payload):
         limit = int(payload['limit']) if int(payload['limit']) < SEARCH_LIMIT_MAX else SEARCH_LIMIT_MAX
 
     # Start Query
-    query = json.loads(search_query(timestamp, q, username, targets, parent))
+    query = json.loads(search_query(timestamp, q, username, targets, parent, replies, hasMedia))
 
     #sort by interest or time
     cursor = tweet_collection.find(query).sort(search_sort(rank)).limit(limit)
