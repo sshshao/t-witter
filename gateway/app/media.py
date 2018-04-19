@@ -36,7 +36,7 @@ session.execute(
 def add_media(content):
     mimetype = content.content_type
     file_obj = content.read()
-    sys.stderr.write(file_obj)
+#    sys.stderr.write(file_obj)
     media_id = generate_media_id()
 
 #    session = cluster.connect(CASS_NAMESPACE)
