@@ -54,6 +54,12 @@ def generate_payload(status, msg, payload):
             'payload': payload
         })
 
+def generate_media_response(media_id):
+    return json.dumps({
+        'status': STATUS_OK, 
+        'id': media_id,
+    })
+
 
 def decode_json(json_payload):
     return json.loads(json_payload)

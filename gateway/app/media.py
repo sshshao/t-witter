@@ -33,22 +33,20 @@ session.execute(
     """
 )
 
-session.close()
-
 def add_media(content):
     mimetype = content.content_type
     file_obj = io.BytesIO(content.read())
+    media_id = generate_media_id()
 
-    session = cluster.connect(CASS_NAMESPACE)
-    session.execute(Media_Insert_Query, [generate_media_id(), mimetype, file_obj])
-    session.close()
-    return None
-
+#    session = cluster.connect(CASS_NAMESPACE)
+    session.execute(Media_Insert_Query, [media_id, mimetype, file_obj])
+#    session.close()
+    return media_id
 
 def get_media(id):
-    session = cluster.connect(CASS_NAMESPACE)
+#    session = cluster.connect(CASS_NAMESPACE)
     rows = session.execute(Media_Find_Query, [id])
-    session.close()
+#    session.close()
 
     if len(rows) < 1:
         return None
@@ -58,10 +56,10 @@ def get_media(id):
 
 
 def delete_media(ids):
-    session = cluster.connect(CASS_NAMESPACE)
+#    session = cluster.connect(CASS_NAMESPACE)
     for id in ids:
         rows = session.execute(Media_Delete_Query, [id])
-    session.close()
+#    session.close()
 
 
 def generate_media_id():

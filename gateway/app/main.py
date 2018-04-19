@@ -297,7 +297,8 @@ def add_item_media():
     cookie = check_login(request)
     if cookie[0]:
         content = request.files['content']
-        return add_media(content)
+        media_id = add_media(content)
+        return Response(generate_media_response(media_id))
     else:
         return Response(generate_message(STATUS_ERROR, ERROR_POST_NO_USER))
 
