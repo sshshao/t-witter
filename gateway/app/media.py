@@ -49,7 +49,7 @@ def get_media(id):
     rows = session.execute(Media_Find_Query, [id])
 #    session.close()
 
-    if len(rows) < 1:
+    if len(list(rows)) < 1:
         return None
     else:
         #returns named tuple (id, type, content)
