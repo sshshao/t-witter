@@ -191,7 +191,7 @@ def like_item(id):
             'action': RPC_Witter_Action.LIKE_TWEET.name,
             'payload': {
                 'id': tweet_id,
-                'username': cookie[1]
+                'username': cookie[1],
                 'like': like
             }
         })
