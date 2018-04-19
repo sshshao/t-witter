@@ -16,7 +16,7 @@ session = cluster.connect()
 session.execute(
     """
     CREATE KEYSPACE IF NOT EXISTS %s
-    WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1'
+    WITH replication = { 'class': 'SimpleStrategy', 'replication_factor': '1'}
     """ % CASS_NAMESPACE
 )
 
