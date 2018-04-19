@@ -1,4 +1,5 @@
 import uuid
+import io
 
 from cassandra.cluster import Cluster
 from protocols.schema import *
@@ -12,7 +13,7 @@ cluster = Cluster([CASS_HOST])
 
 
 def add_media(content):
-    mimetype = file.content_type
+    mimetype = content.content_type
     f = open(content, 'rb')
     file_obj = io.BytesIO(f.read())
 
