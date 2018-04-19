@@ -116,7 +116,7 @@ def search(payload):
     user = None if 'user' not in payload else payload['user']
     username = None if 'username' not in payload else payload['username']
     following = True if 'following' not in payload else payload['following']
-    rank = 'interest' if 'rank' not in paylaod else payload['rank']
+    rank = 'interest' if 'rank' not in payload else payload['rank']
     parent = None if 'parent' not in payload else payload['parent']
     replies = True if 'replies' not in payload else payload['replies']
     hasMedia = True if 'hasMedia' not in payload else payload['hasMedia']
