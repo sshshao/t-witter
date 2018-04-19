@@ -122,8 +122,10 @@ def search(payload):
     hasMedia = True if 'hasMedia' not in payload else payload['hasMedia']
     targets = None
     if following:
+        targets = []
         result = profile_collection.find_one({'username': user})
-        targets = result['following']
+        if result != None:
+            targets = result['following']
     limit = SEARCH_LIMIT_DEFAULT
     if 'limit' in payload:
         limit = int(payload['limit']) if int(payload['limit']) < SEARCH_LIMIT_MAX else SEARCH_LIMIT_MAX
