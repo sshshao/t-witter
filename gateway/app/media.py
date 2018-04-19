@@ -29,13 +29,13 @@ session.execute(
         type text,
         content blob,
         PRIMARY KEY (id)
-    )
+    )   
     """
 )
 
 def add_media(content):
     mimetype = content.content_type
-    file_obj = io.BytesIO(content.read())
+    file_obj = content.read()
     media_id = generate_media_id()
 
 #    session = cluster.connect(CASS_NAMESPACE)
