@@ -208,6 +208,7 @@ def like_item(id):
 def search():
     cookie = check_login(request)
     input_data = request.get_json()
+    following = True if 'following' not in input_data else input_data['following']
 
     if (cookie[0] and following) or (not following):
         if(cookie[0] and following):
