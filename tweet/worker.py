@@ -76,7 +76,7 @@ def delete_tweet(payload):
 
     if(result.deleted_count == 1):
         return generate_message(RES_FAILURE, ERROR_GET_TWEET)
-    return generate_del_msg(RES_SUCCESS, '', tweet['media'])
+    return generate_del_msg(RES_SUCCESS, '', tweet['media'] if tweet != None else None)
 
 
 def like_tweet(payload):
@@ -87,6 +87,8 @@ def like_tweet(payload):
     db = client[DB_NAME]
     collection = db[TWEET_COLLECTION_NAME]
     result = collection.find_one(query)
+    if result == None:
+        return generate_message(RES_FAILURE, ERROR_GET_TWEET)
     liked_by = result['property']['liked_by']
     
     if like:
