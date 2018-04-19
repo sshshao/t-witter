@@ -49,11 +49,13 @@ def get_media(id):
     rows = session.execute(Media_Find_Query, [id])
 #    session.close()
 
-    if len(list(rows)) < 1:
+    data = list(rows)
+
+    if len(data) < 1:
         return None
     else:
         #returns named tuple (id, type, content)
-        return rows[0]
+        return data[0]
 
 
 def delete_media(ids):
