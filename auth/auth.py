@@ -122,7 +122,7 @@ def validate_user(email, key):
         # Get this user's activation key.
         ac_token_record = session.query(UserActivationToken).filter(UserActivationToken.user_account == user_account).first()
         if ac_token_record:
-            if key == ac_token_record.activation_token or key == "secret-key":
+            if key == ac_token_record.activation_token or key == "abracadabra":
                 try:
                     user_account.activated = True
                     session.delete(ac_token_record)
