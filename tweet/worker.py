@@ -119,7 +119,7 @@ def search(payload):
     rank = 'interest' if 'rank' not in payload else payload['rank']
     parent = None if 'parent' not in payload else payload['parent']
     replies = True if 'replies' not in payload else payload['replies']
-    hasMedia = True if 'hasMedia' not in payload else payload['hasMedia']
+    hasMedia = False if 'hasMedia' not in payload else payload['hasMedia']
     targets = None
     if following:
         targets = []
