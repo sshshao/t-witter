@@ -84,7 +84,7 @@ def search_query(timestamp, q, username, targets, parent, replies, hasMedia):
     if replies != None:
         query['$and'].append({'childType': {'$ne': 'reply'}})
     if hasMedia:
-        query['$and'].append({'media': {'$exists': true}, '$where': 'this.media.length > 0'})
+        query['$and'].append({'media': {'$exists': True}, '$where': 'this.media.length > 0'})
 
     return json.dumps(query)
 
