@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 from flask import Flask, request, Response
 from cerberus import Validator
 import configparser
@@ -6,14 +9,11 @@ import sys, os
 import jwt
 import time
 
-from gevent import monkey
 from protocols.rpc_protocols import *
 from protocols.messages import *
 from protocols.schema import *
 from direct_dispatcher import *
 from media import *
-
-monkey.patch_all()
 
 app = Flask(__name__)
 config = configparser.ConfigParser()
