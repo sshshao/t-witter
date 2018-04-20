@@ -15,6 +15,7 @@ def get_cur_time_milli():
     t_ms = int(time.time() * 1000)
     return t_ms
 
+
 class RPCDispatcher(object):
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_HOST))
     def __init__(self, ):
