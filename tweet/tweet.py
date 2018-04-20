@@ -48,7 +48,7 @@ def on_request(ch, method, props, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-channel.basic_qos(prefetch_count=1)
+channel.basic_qos(prefetch_count=20)
 channel.basic_consume(on_request, queue=AMQP_TWEET_QUEUE)
 
 # Start consume
