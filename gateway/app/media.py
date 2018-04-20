@@ -40,7 +40,7 @@ def add_media(content):
     media_id = generate_media_id()
 
 #    session = cluster.connect(CASS_NAMESPACE)
-    session.execute(Media_Insert_Query, [media_id, mimetype, file_obj])
+    session.execute_async(Media_Insert_Query, [media_id, mimetype, file_obj])
 #    session.close()
     return media_id
 
