@@ -115,10 +115,10 @@ def add_item():
         input_data['childType'] = None if 'childType' not in input_data else inputdata['childType']
         input_data['parent'] = None if 'parent' not in input_data else inputdata['parent']
         input_data['media'] = [] if 'media' not in input_data else inputdata['media']
-        bf_time = get_cur_time_milli()    
+        #bf_time = get_cur_time_milli()    
         dispatcher = RPCDispatcher()
-        af_time = get_cur_time_milli()
-        sys.stderr.write("RPC Creation Takes: %d ms\n" % (af_time - bf_time))
+        #af_time = get_cur_time_milli()
+        #sys.stderr.write("RPC Creation Takes: %d ms\n" % (af_time - bf_time))
         req = json.dumps({
             'action': RPC_Witter_Action.ADD_TWEET.name,
             'payload': {
@@ -129,10 +129,10 @@ def add_item():
                 'media': input_data['media']
             }
         })
-        bf_time = get_cur_time_milli()    
+        #bf_time = get_cur_time_milli()    
         res = dispatcher.call(AMQP_Tweet_Queue, req)
-        af_time = get_cur_time_milli()
-        sys.stderr.write("RPC Call Takes: %d ms\n" % (af_time - bf_time))
+        #af_time = get_cur_time_milli()
+        #sys.stderr.write("RPC Call Takes: %d ms\n" % (af_time - bf_time))
         dispatcher.close()
         return Response(res, mimetype='application/json')
     else:
