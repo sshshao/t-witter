@@ -82,7 +82,7 @@ def search_query(timestamp, q, username, targets, parent, replies, hasMedia):
     if parent != None:
         query['$and'].append({'parent': parent})
     if replies != None:
-        query['$and'].append({'childType': {'$not': 'reply'}})
+        query['$and'].append({'childType': {'$ne': 'reply'}})
     if hasMedia:
         query['$and'].append({'media': {'$size': {'$gt': 1}}})
 
