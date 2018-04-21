@@ -49,7 +49,7 @@ exports.login = function(req, res) {
         if(response.status == STATUS_OK) {
             res.cookie('user-jwt', response.payload.jwt);
         }
-        res.json(JSON.parse(response));
+        res.json(response);
     });
 }
 
