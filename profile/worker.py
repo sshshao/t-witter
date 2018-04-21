@@ -106,9 +106,7 @@ def get_following(payload):
 
 
 def follow(payload):
-    do_follow = True
-    if 'follow' in payload:
-        do_follow = payload['follow']
+    do_follow = True if 'follow' not in payload else payload['follow']
     
     query_user = json.loads(query_profile(payload['user']))
     query_target  = json.loads(query_profile(payload['target']))

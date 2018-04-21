@@ -29,6 +29,10 @@ client = pymongo.MongoClient('mongodb://%s' % NODE_NAME, PORT_NUM, maxPoolSize=1
 
 
 def add_tweet(payload):
+    payload['childType'] = None if 'childType' not in payload else payload['childType']
+    payload['parent'] = None if 'parent' not in payload else payload['parent']
+    payload['media'] = [] if 'media' not in payload else payload['media']
+
     tweet = json.loads(new_post(payload['username'], payload['content'], 
         payload['childType'], payload['parent'], payload['media']))
     tweet_id = tweet['id']
@@ -80,9 +84,10 @@ def delete_tweet(payload):
 
 
 def like_tweet(payload):
+    like = True if 'like' not in payload else payload['like']
+    
     query = json.loads(tweet_query(payload['id']))
     user = payload['username']
-    like = payload['like']
 
     db = client[DB_NAME]
     collection = db[TWEET_COLLECTION_NAME]
