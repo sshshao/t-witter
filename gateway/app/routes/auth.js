@@ -32,7 +32,7 @@ exports.register = function(req, res) {
         'action': RPC_AUTH_ACTION.REGISTER,
         'payload': input_data
     };
-    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, JSON.stringify(msg), (resposne) => {
         res.json(JSON.parse(response));
     });
 }
@@ -70,7 +70,7 @@ exports.verify = function(req, res) {
         'action': RPC_AUTH_ACTION.VALIDATE,
         'payload': input_data
     };
-    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, JSON.stringify(msg), (response) => {
         res.json(JSON.parse(response));
     });
 }
