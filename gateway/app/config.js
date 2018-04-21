@@ -14,7 +14,7 @@ module.exports = {
 
     cassandra: {
         Cass_Host: '10.0.1.15',
-        Cass_Namespace: 'media',
+        Cass_Namespace: 'media'
     },
 
     auth: {

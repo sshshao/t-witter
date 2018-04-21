@@ -6,7 +6,7 @@ const AMQP_EXCHANGE_MODE = require('../config').amqp.AMQP_Exchange_Type;
 
 var connection = null;
 
-function startConnection() {
+function startConnection(callback) {
     amqp.connect(AMQP_HOST, function(err, conn) {
         if(err) {
             console.log('[AMQP Error] ' + err);
@@ -14,34 +14,46 @@ function startConnection() {
         }
 
         //outdated function?
-        conn.on("error", function(err) {
-            if (err.message !== "Connection closing") {
-                console.error("[AMQP] Connection error", err.message);
+        conn.on('error', function(err) {
+            if (err.message !== 'Connection closing') {
+                console.error('[AMQP] Connection error', err.message);
             }
         });
-        conn.on("close", function() {
-            console.error("[AMQP] Reconnecting...");
-            return setTimeout(startConnection, 500);
+        conn.on('close', function() {
+            console.error('[AMQP] Reconnecting...');
+            return setTimeout(startConnection, 100);
         });
 
         connection = conn;
+        callback();
     });
 }
 
-exports.dispatch = function(service, payload, callback) {
+function startChannel(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {
             console.log('[AMQP Error] ' + err);
-            return setTimeout(startConnection, 500);
+            return setTimeout(startConnection, 100);
         }
 
         ch.consume('amq.rabbitmq.reply-to', function(msg) {
             console.log(' [.] Received %s', msg.content.toString());
-            callback(ch, msg.content.toString());
+            callback(msg.content.toString());
             ch.close();
         }, {noAck: false});
         
         ch.publish('', service, new Buffer(payload),
             {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
     });
+}
+
+exports.dispatch = function(service, payload, callback) {
+    if(connection == null) {
+        startConnection(function() {
+            startChannel(service, payload, callback);
+        });
+    }
+    else {
+        startChannel(service, payload, callback);
+    }
 }

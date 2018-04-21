@@ -9,7 +9,7 @@ const SUCCESS_LOGOUT_MESSAGE = require('../protocols/messages').SUCCESS_LOGOUT_M
 const ERROR_NOT_YET_LOGIN_MESSAGE = require('../protocols/messages').ERROR_NOT_YET_LOGIN_MESSAGE;
 
 const STATUS_OK = 'OK';
-const STATUS_ERROR = "error";
+const STATUS_ERROR = 'error';
 
 exports.checkLogin = function(req) {
     if(req.cookies != null) {

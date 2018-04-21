@@ -8,7 +8,7 @@ const RPC_TWEET_ACTION = require('../protocols/rpc_protocols').RPC_Tweet_Action;
 const ERROR_NOT_YET_LOGIN_MESSAGE = require('../protocols/messages').ERROR_NOT_YET_LOGIN_MESSAGE;
 
 const STATUS_OK = 'OK';
-const STATUS_ERROR = "error";
+const STATUS_ERROR = 'error';
 
 exports.post = function(req, res) {
     var cookie = auth.checkLogin(req);

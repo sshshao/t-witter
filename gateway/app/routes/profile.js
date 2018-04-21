@@ -5,7 +5,7 @@ const AMQP_PROFILE_QUEUE = require('../config').profile.AMQP_Queue;
 const RPC_PROFILE_ACTION = require('../protocols/rpc_protocols').RPC_Profile_Action;
 
 const STATUS_OK = 'OK';
-const STATUS_ERROR = "error";
+const STATUS_ERROR = 'error';
 
 exports.getUser = function(req, res) {
     var username = req.params.username;

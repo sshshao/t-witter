@@ -3,8 +3,9 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
 
-const serverPort = require("./config").serverPort;
+const serverPort = require('./config').serverPort;
 const auth = require('./routes/auth');
 const tweet = require('./routes/tweet');
 const profile = require('./routes/profile');
@@ -22,14 +23,17 @@ app.use(cookieParser());
 //serve static files
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
 
+//set uploaded file store as memory storage
+var upload = multer({ storage: multer.memoryStorage() });
+
 //enabled routes
 router.get('/api/status', (req, res) => {
-	return res.status(200).send("Gateway running");
+	return res.status(200).send('Gateway running');
 });
 router.post('/adduser', auth.register);
 router.post('/login', auth.login);
@@ -44,10 +48,10 @@ router.get('/user/:username', profile.getUser);
 router.get('/user/:username/followers', profile.getFollower);
 router.get('/user/:username/following', profile.getFollowing);
 router.post('/follow', profile.follow);
-router.post('/addmedia', media.post);
+router.post('/addmedia', upload.single('content'), media.post);
 router.get('/media/:id', media.get);
 
 app.use('/', router);
 app.listen(serverPort, () => {
-	console.log("Server running on port " + serverPort);
+	console.log('Server running on port ' + serverPort);
 })
