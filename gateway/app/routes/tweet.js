@@ -49,7 +49,7 @@ exports.remove = function(req, res) {
     if(cookie[0]) {
         var tweetId = req.params.id;
         var msg = {
-            'action': RPC_TWEET_ACTION.GET_TWEET,
+            'action': RPC_TWEET_ACTION.DELETE_TWEET,
             'payload': {
                 'id': tweetId,
                 'username': cookie[1]
