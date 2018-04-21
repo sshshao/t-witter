@@ -59,7 +59,7 @@ exports.remove = function(req, res) {
             //delete associate media if exists
             response = JSON.parse(response);
             if(response.media != null) {
-                meida.remove(response.media);
+                media.remove(response.media);
             }
 
             if(response.status == STATUS_OK)    res.status(200).json(response);
