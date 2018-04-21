@@ -53,7 +53,7 @@ exports.get = function(req, res) {
 
         if(result.rows.length == 1) {
             var mimetype = result.rows[0].type;
-            var content = result.rows[0].contents.toString('binary');
+            var content = result.rows[0].content.toString('binary');
 
             res.setHeader('content-type', mimetype);
             res.send(new Buffer(content, 'base64'));
