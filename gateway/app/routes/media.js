@@ -47,14 +47,16 @@ exports.get = function(req, res) {
     var query = 'SELECT id, type, content FROM media WHERE id = ?';
     client.execute(query, [mediaId], function(err, result) {
         if(err) {
-            utils.generateMessage(STATUS_ERROR, err.message);
+            res.send(utils.generateMessage(STATUS_ERROR, err.message));
+            return;
         }
+
         if(result.rows.length == 1) {
             var mimetype = result.rows[0].type;
             var content = result.rows[0].contents.toString('binary');
 
             res.setHeader('content-type', mimetype);
-            res.end(new Buffer(content, 'base64'));
+            res.send(new Buffer(content, 'base64'));
         }
         else {
             res.send(utils.generateMessage(STATUS_ERROR, ERROR_NO_MEDIA));
