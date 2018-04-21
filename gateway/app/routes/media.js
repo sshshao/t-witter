@@ -27,7 +27,7 @@ exports.post = function(req, res) {
     var type = req.file.mimetype;
     var content = req.file.buffer.toString('base64');
 
-    var query = 'INSERT INTO media (id, type, content) VALUES ("?", "?", textAsBlob(?))';
+    var query = 'INSERT INTO media (id, type, content) VALUES (?, ?, textAsBlob(?))';
     var params = [mediaId, type, content];
     client.execute(query, params, {prepare: true}, function(err, result) {
         if(err) {
@@ -44,7 +44,7 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res) {
     var mediaId = req.params.id;
-    var query = 'SELECT id, type, content FROM media WHERE id = "?"';
+    var query = "SELECT id, type, content FROM media WHERE id = '?'";
     client.execute(query, [mediaId], function(err, result) {
         if(err) {
             res.send(utils.generateMessage(STATUS_ERROR, err.message));
@@ -67,7 +67,7 @@ exports.get = function(req, res) {
 exports.remove = function(mediaIds) {
     for(var i = 0; i < mediaIds.length; i++) {
         var mediaId = mediaIds[i];
-        var query = 'DELETE FROM media WHERE id = "?"';
+        var query = "DELETE FROM media WHERE id = '?'";
         client.execute(query, [mediaId], function(err, result) {
             if(err) {
                 utils.generateMessage(STATUS_ERROR, err.message);
