@@ -1,10 +1,29 @@
+const jwt = require('jsonwebtoken');
 const dispatcher = require('./dispatcher');
+const utils = require('../protocols/utils');
+
 const AMQP_AUTH_QUEUE = require('../config').auth.AMQP_Queue;
 const RPC_AUTH_ACTION = require('../protocols/rpc_protocols').RPC_Auth_Action;
+const JWT_SECRET = require('../config').basic.JWT_Secret;
+const SUCCESS_LOGOUT_MESSAGE = require('../protocols/messages').SUCCESS_LOGOUT_MESSAGE;
+const ERROR_NOT_YET_LOGIN_MESSAGE = require('../protocols/messages').ERROR_NOT_YET_LOGIN_MESSAGE;
+
+const STATUS_OK = 'OK';
+const STATUS_ERROR = "error";
 
 exports.checkLogin = function(req) {
-    //jwt
-    return null;
+    if(req.cookies != null) {
+        try {
+            var decoded = jwt.verify(req.cookies, JWT_SECRET);
+            //todo: check duration
+            return [True, decoded.username];
+        } catch(err) {
+            return [False, null];
+        }
+    }
+    else {
+        return [False, null];
+    }
 }
 
 exports.register = function(req, res) {
@@ -26,12 +45,23 @@ exports.login = function(req, res) {
     };
     dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
         //assign jwt
+        response = JSON.parse(response);
+        if(response.status == STATUS_OK) {
+            res.cookie('user-jwt', response.payload.jwt);
+        }
         res.json(JSON.parse(response));
     });
 }
 
 exports.logout = function(req, res) {
-    //jwt
+    var r;
+    if(req.cookies != null) {
+        res.clearCookie('user-jwt');
+        r = utils.generateMessage(STATUS_OK, SUCCESS_LOGOUT_MESSAGE);
+    }
+    else {
+        r = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
+    }
 }
 
 exports.verify = function(req, res) {

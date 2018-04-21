@@ -2,6 +2,7 @@ const http = require('http');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const serverPort = require("./config").serverPort;
 const auth = require('./routes/auth');
@@ -16,6 +17,7 @@ var router = express.Router();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 //serve static files
 //app.use(express.static(path.join(__dirname, 'public')));

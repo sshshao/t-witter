@@ -28,7 +28,6 @@ function startConnection() {
     });
 }
 
-
 exports.dispatch = function(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {

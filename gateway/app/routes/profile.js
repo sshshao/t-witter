@@ -1,3 +1,4 @@
+const dispatcher = require('./dispatcher');
 const auth = require('./auth');
 
 const AMQP_PROFILE_QUEUE = require('../config').profile.AMQP_Queue;
@@ -14,7 +15,7 @@ exports.getUser = function(req, res) {
             'username': username
         }
     }
-    dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
         res.json(JSON.parse(response));
     });
 }
@@ -29,7 +30,7 @@ exports.getFollower = function(req, res) {
             'username': username
         }
     }
-    dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
         res.json(JSON.parse(response));
     });
 }
@@ -44,7 +45,7 @@ exports.getFollowing = function(req, res) {
             'username': username
         }
     }
-    dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
         res.json(JSON.parse(response));
     });
 }
@@ -61,7 +62,7 @@ exports.follow = function(req, res) {
                 'follow': input_data.follow
             }
         };
-        dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
+        dispatcher.dispatch(AMQP_PROFILE_QUEUE, msg, (resposne) => {
             res.json(JSON.parse(response));
         });
     }
