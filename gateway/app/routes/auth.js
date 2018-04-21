@@ -16,13 +16,13 @@ exports.checkLogin = function(req) {
         try {
             var decoded = jwt.verify(req.cookies, JWT_SECRET);
             //todo: check duration
-            return [True, decoded.username];
+            return [true, decoded.username];
         } catch(err) {
-            return [False, null];
+            return [false, null];
         }
     }
     else {
-        return [False, null];
+        return [false, null];
     }
 }
 
