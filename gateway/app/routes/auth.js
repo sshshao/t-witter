@@ -12,9 +12,9 @@ const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
 
 exports.checkLogin = function(req) {
-    if(req.cookies != null) {
+    if(req.cookies['user-jwt'] != null) {
         try {
-            var decoded = jwt.verify(req.cookies, JWT_SECRET);
+            var decoded = jwt.verify(req.cookies['user-jwt'], JWT_SECRET);
             //todo: check duration
             return [true, decoded.username];
         } catch(err) {
