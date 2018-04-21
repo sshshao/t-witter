@@ -55,13 +55,14 @@ exports.login = function(req, res) {
 
 exports.logout = function(req, res) {
     var r;
-    if(req.cookies != null) {
+    if(req.cookies['user-jwt'] != null) {
         res.clearCookie('user-jwt');
         r = utils.generateMessage(STATUS_OK, SUCCESS_LOGOUT_MESSAGE);
     }
     else {
         r = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
     }
+    res.json(r);
 }
 
 exports.verify = function(req, res) {
