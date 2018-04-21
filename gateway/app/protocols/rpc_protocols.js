@@ -1,4 +1,4 @@
-var protocol = {
+module.exports = {
     RPC_Auth_Action: {
         LOG_IN: 'LOG_IN',
         LOG_OUT: 'LOG_OUT',
@@ -24,5 +24,3 @@ var protocol = {
         FOLLOW: 'FOLLOW'
     }
 }
-
-export default protocol;

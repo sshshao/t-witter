@@ -1,4 +1,4 @@
-var message = {
+module.exports = {
     // Error Codes
     ERROR_ACCOUNT_EXISTED_CODE: "duplicate key value",
 
@@ -31,5 +31,3 @@ var message = {
     ERROR_GET_TWEET: "Tweet ID does not exist.",
     ERROR_NO_MEDIA: "Media ID Not Found."
 }
-
-export default message;

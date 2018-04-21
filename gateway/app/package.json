@@ -7,5 +7,8 @@
     "scripts": {
         "start": "node server.js"
     },
-    "dependencies": {}
+    "dependencies": {
+        "amqplib": "^0.5.2",
+        "express": "^4.16.3"
+    }
 }

@@ -1,47 +1,46 @@
-import { generateMessage } from '../protocols/utils';
-import { dispatch } from './dispatcher';
-
+const dispatcher = require('./dispatcher');
 const AMQP_AUTH_QUEUE = require('../config').auth.AMQP_Queue;
 const RPC_AUTH_ACTION = require('../protocols/rpc_protocols').RPC_Auth_Action;
 
-export function checkLogin(req) {
+exports.checkLogin = function(req) {
     //jwt
+    return null;
 }
 
-export function register(req, res) {
+exports.register = function(req, res) {
     var input_data = req.body;
     var msg = {
         'action': RPC_AUTH_ACTION.REGISTER,
         'payload': input_data
     };
-    dispatch(AMQP_AUTH_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (resposne) => {
         res.json(JSON.parse(response));
     });
 }
 
-export function login(req, res) {
+exports.login = function(req, res) {
     var input_data = req.body;
     var msg = {
         'action': RPC_AUTH_ACTION.LOG_IN,
         'payload': input_data
     };
-    dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
         //assign jwt
         res.json(JSON.parse(response));
     });
 }
 
-export function logout(req, res) {
+exports.logout = function(req, res) {
     //jwt
 }
 
-export function verify(req, res) {
+exports.verify = function(req, res) {
     var input_data = req.body;
     var msg = {
         'action': RPC_AUTH_ACTION.VALIDATE,
         'payload': input_data
     };
-    dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
         res.json(JSON.parse(response));
     });
 }

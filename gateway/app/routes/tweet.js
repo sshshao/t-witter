@@ -1,7 +1,7 @@
-import { generateMessage } from '../protocols/utils';
-import { dispatch } from './dispatcher';
-import { checkLogin } from './auth';
-import { remove as removeMedia } from './media'; 
+const utils = require('../protocols/utils');
+const dispatcher = require('./dispatcher');
+const auth = require('./auth');
+const media = require('./media');
 
 const AMQP_TWEET_QUEUE = require('../config').tweet.AMQP_Queue;
 const RPC_TWEET_ACTION = require('../protocols/rpc_protocols').RPC_Tweet_Action;
@@ -10,8 +10,8 @@ const ERROR_NOT_YET_LOGIN_MESSAGE = require('../protocols/messages').ERROR_NOT_Y
 const STATUS_OK = 'OK';
 const STATUS_ERROR = "error";
 
-export function post(req, res) {
-    var cookie = checkLogin(req);
+exports.post = function(req, res) {
+    var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var input_data = req.body;
         var msg = {
@@ -21,17 +21,17 @@ export function post(req, res) {
                 'username': cookie[1]
             }
         };
-        dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
             res.json(JSON.parse(response));
         });
     }
     else {
-        var response = generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
+        var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
         return response;
     }
 }
 
-export function get(req, res) {
+exports.get = function(req, res) {
     var tweetId = req.params.id;
     var msg = {
         'action': RPC_TWEET_ACTION.GET_TWEET,
@@ -39,13 +39,13 @@ export function get(req, res) {
             'id': tweetId
         }
     }
-    dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+    dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
         res.json(JSON.parse(response));
     });
 }
 
-export function remove(req, res) {
-    var cookie = checkLogin(req);
+exports.remove = function(req, res) {
+    var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var tweetId = req.param.id;
         var msg = {
@@ -55,11 +55,11 @@ export function remove(req, res) {
                 'username': cookie[1]
             }
         }
-        dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
             //delete associate media if exists
             response = JSON.parse(response);
             if(response.media != null) {
-                removeMedia(response.media);
+                meida.remove(response.media);
             }
 
             if(response.status == STATUS_OK)    res.status(200).json(response);
@@ -67,13 +67,13 @@ export function remove(req, res) {
         });
     }
     else {
-        var response = generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
+        var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
         return response;
     }
 }
 
-export function like(req, res) {
-    var cookie = checkLogin(req);
+exports.like = function(req, res) {
+    var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var tweetId = req.param.id;
         var input_data = req.body;
@@ -85,18 +85,18 @@ export function like(req, res) {
                 'username': cookie[1]
             }
         }
-        dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
             res.json(JSON.parse(response));
         });
     }
     else {
-        var response = generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
+        var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
         return response;
     }
 }
 
-export function search(req, res) {
-    var cookie = checkLogin(req);
+exports.search = function(req, res) {
+    var cookie = auth.checkLogin(req);
     var input_data = req.body;
     var following = input_data.following == null ? true : input_data.following;
 
@@ -107,13 +107,13 @@ export function search(req, res) {
                 'action': RPC_TWEET_ACTION.SEARCH,
                 'payload': input_data
             }
-            dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+            dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
                 res.json(JSON.parse(response));
             });
         }
     }
     else {
-        var response = generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
+        var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
         return response;
     }
 }

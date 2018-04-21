@@ -1,4 +1,4 @@
-var config = {
+module.exports = {
     serverPort: 5000,
 
     basic: {
@@ -49,5 +49,3 @@ var config = {
         AMQP_Queue: 'profile_queue'
     }
 }
-
-export default config;

@@ -1,4 +1,4 @@
-import { checkLogin } from './auth';
+const auth = require('./auth');
 
 const AMQP_PROFILE_QUEUE = require('../config').profile.AMQP_Queue;
 const RPC_PROFILE_ACTION = require('../protocols/rpc_protocols').RPC_Profile_Action;
@@ -6,7 +6,7 @@ const RPC_PROFILE_ACTION = require('../protocols/rpc_protocols').RPC_Profile_Act
 const STATUS_OK = 'OK';
 const STATUS_ERROR = "error";
 
-export function getUser(req, res) {
+exports.getUser = function(req, res) {
     var username = req.params.username;
     var msg = {
         'action': RPC_PROFILE_ACTION.GET_PROFILE,
@@ -19,7 +19,7 @@ export function getUser(req, res) {
     });
 }
 
-export function getFollower(req, res) {
+exports.getFollower = function(req, res) {
     var username = req.params.username;
     var input_data = req.body;
     var msg = {
@@ -34,7 +34,7 @@ export function getFollower(req, res) {
     });
 }
 
-export function getFollowing(req, res) {
+exports.getFollowing = function(req, res) {
     var username = req.params.username;
     var input_data = req.body;
     var msg = {
@@ -49,8 +49,8 @@ export function getFollowing(req, res) {
     });
 }
 
-export function follow(req, res) {
-    var cookie = checkLogin(req);
+exports.follow = function(req, res) {
+    var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var input_data = req.body;
         var msg = {

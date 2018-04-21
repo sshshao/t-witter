@@ -43,7 +43,7 @@ router.get('/user/:username/followers', profile.getFollower);
 router.get('/user/:username/following', profile.getFollowing);
 router.post('/follow', profile.follow);
 router.post('/addmedia', media.post);
-router.get('/media/:id', media.get)
+router.get('/media/:id', media.get);
 
 app.use('/', router);
 app.listen(serverPort, () => {

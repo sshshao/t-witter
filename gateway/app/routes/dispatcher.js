@@ -29,7 +29,7 @@ function startConnection() {
 }
 
 
-export function dispatch(service, payload, callback) {
+exports.dispatch = function(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {
             console.log('[AMQP Error] ' + err);
