@@ -32,7 +32,7 @@ exports.register = function(req, res) {
         'action': RPC_AUTH_ACTION.REGISTER,
         'payload': input_data
     };
-    dispatcher.dispatch(AMQP_AUTH_QUEUE, JSON.stringify(msg), (resposne) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, JSON.stringify(msg), (response) => {
         res.json(JSON.parse(response));
     });
 }

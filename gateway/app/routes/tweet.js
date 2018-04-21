@@ -21,7 +21,7 @@ exports.post = function(req, res) {
                 'username': cookie[1]
             }
         };
-        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             res.json(JSON.parse(response));
         });
     }
@@ -39,7 +39,7 @@ exports.get = function(req, res) {
             'id': tweetId
         }
     }
-    dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
+    dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
         res.json(JSON.parse(response));
     });
 }
@@ -55,7 +55,7 @@ exports.remove = function(req, res) {
                 'username': cookie[1]
             }
         }
-        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             //delete associate media if exists
             response = JSON.parse(response);
             if(response.media != null) {
@@ -85,7 +85,7 @@ exports.like = function(req, res) {
                 'username': cookie[1]
             }
         }
-        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             res.json(JSON.parse(response));
         });
     }
@@ -107,7 +107,7 @@ exports.search = function(req, res) {
                 'action': RPC_TWEET_ACTION.SEARCH,
                 'payload': input_data
             }
-            dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
+            dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
                 res.json(JSON.parse(response));
             });
         }
