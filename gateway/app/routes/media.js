@@ -44,8 +44,8 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res) {
     var mediaId = req.params.id;
-    var query = "SELECT id, type, content FROM media WHERE id = '?'";
-    client.execute(query, [mediaId], function(err, result) {
+    var query = 'SELECT id, type, content FROM media WHERE id = ?';
+    client.execute(query, [mediaId], {hints: ['text']}, function(err, result) {
         if(err) {
             res.send(utils.generateMessage(STATUS_ERROR, err.message));
             return;
@@ -67,8 +67,8 @@ exports.get = function(req, res) {
 exports.remove = function(mediaIds) {
     for(var i = 0; i < mediaIds.length; i++) {
         var mediaId = mediaIds[i];
-        var query = "DELETE FROM media WHERE id = '?'";
-        client.execute(query, [mediaId], function(err, result) {
+        var query = 'DELETE FROM media WHERE id = ?';
+        client.execute(query, [mediaId], {hints: ['text']}, function(err, result) {
             if(err) {
                 utils.generateMessage(STATUS_ERROR, err.message);
             }
