@@ -68,6 +68,6 @@ exports.follow = function(req, res) {
     }
     else {
         var response = generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
-        return response;
+        res.json(response);
     }
 }

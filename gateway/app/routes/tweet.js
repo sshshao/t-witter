@@ -27,7 +27,7 @@ exports.post = function(req, res) {
     }
     else {
         var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
-        return response;
+        res.json(response);
     }
 }
 
@@ -91,7 +91,7 @@ exports.like = function(req, res) {
     }
     else {
         var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
-        return response;
+        res.json(response);
     }
 }
 
@@ -103,17 +103,17 @@ exports.search = function(req, res) {
     if((cookie[0] && following) || (!following)) {
         if(cookie[0] && following) {
             input_data.user = cookie[1];
-            var msg = {
-                'action': RPC_TWEET_ACTION.SEARCH,
-                'payload': input_data
-            }
-            dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
-                res.json(JSON.parse(response));
-            });
         }
+        var msg = {
+            'action': RPC_TWEET_ACTION.SEARCH,
+            'payload': input_data
+        }
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
+            res.json(JSON.parse(response));
+        });
     }
     else {
         var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
-        return response;
+        res.json(response);
     }
 }
