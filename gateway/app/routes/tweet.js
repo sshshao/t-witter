@@ -47,7 +47,7 @@ exports.get = function(req, res) {
 exports.remove = function(req, res) {
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
-        var tweetId = req.param.id;
+        var tweetId = req.params.id;
         var msg = {
             'action': RPC_TWEET_ACTION.GET_TWEET,
             'payload': {
@@ -75,7 +75,7 @@ exports.remove = function(req, res) {
 exports.like = function(req, res) {
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
-        var tweetId = req.param.id;
+        var tweetId = req.params.id;
         var input_data = req.body;
         var msg = {
             'action': RPC_TWEET_ACTION.LIKE_TWEET,
