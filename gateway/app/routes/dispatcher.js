@@ -18,11 +18,10 @@ function startConnection(callback) {
         }
 
         console.log('[x] AMQP connection established.');
-        
-        //outdated function?
+
         conn.on('error', function(err) {
             if (err.message !== 'Connection closing') {
-                console.error('[AMQP] Connection error', err.message);
+                console.error('[AMQP] Connection error:', err.message);
             }
         });
         conn.on('close', function() {
@@ -38,8 +37,9 @@ function startConnection(callback) {
 function startChannel(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {
-            console.log('[AMQP Error] ' + err);
-            return setTimeout(startConnection, 100);
+            console.log('[AMQP] Create channal error ' + err);
+            //return setTimeout(startConnection, 100);
+            return;
         }
 
         ch.consume('amq.rabbitmq.reply-to', function(msg) {

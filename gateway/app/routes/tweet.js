@@ -21,7 +21,7 @@ exports.post = function(req, res) {
                 'username': cookie[1]
             }
         };
-        dispatcher.dispatch(AMQP_TWEET_QUEUE, msg, (resposne) => {
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (resposne) => {
             res.json(JSON.parse(response));
         });
     }

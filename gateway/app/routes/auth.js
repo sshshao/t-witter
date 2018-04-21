@@ -43,7 +43,7 @@ exports.login = function(req, res) {
         'action': RPC_AUTH_ACTION.LOG_IN,
         'payload': input_data
     };
-    dispatcher.dispatch(AMQP_AUTH_QUEUE, msg, (response) => {
+    dispatcher.dispatch(AMQP_AUTH_QUEUE, JSON.stringify(msg), (response) => {
         //assign jwt
         response = JSON.parse(response);
         if(response.status == STATUS_OK) {
