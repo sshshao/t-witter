@@ -271,7 +271,7 @@ def on_request(ch, method, props, body):
         ch.basic_ack(delivery_tag = method.delivery_tag)
             
             
-message_channel.basic_qos(prefetch_count=1)
+message_channel.basic_qos(prefetch_count=5)
 message_channel.basic_consume(on_request, queue=AMQP_Auth_Queue)
 
 print("[x] Auth Service Starts Listening...")
