@@ -78,7 +78,7 @@ def delete_tweet(payload):
     tweet = collection.find_one(query)
     result = collection.delete_one(query)
 
-    if(result.deleted_count == 1):
+    if(result.deleted_count != 1):
         return generate_message(RES_FAILURE, ERROR_GET_TWEET)
     return generate_del_msg(RES_SUCCESS, '', tweet['media'] if tweet != None else None)
 

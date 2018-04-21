@@ -68,7 +68,7 @@ exports.remove = function(req, res) {
     }
     else {
         var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
-        return response;
+        res.status(400).json(response);
     }
 }
 

@@ -28,7 +28,7 @@ def generate_message(status, msg):
 
 def generate_del_msg(status, msg, media):
     return json.dumps({
-        'status': STATUS_OK,
+        'status': status,
         'message': msg,
         'media': media
     })
