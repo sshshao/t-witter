@@ -37,7 +37,7 @@ router.get('/api/status', (req, res) => {
 });
 router.post('/adduser', auth.register);
 router.post('/login', auth.login);
-router.post('logout', auth.logout);
+router.post('/logout', auth.logout);
 router.post('/verify', auth.verify);
 router.post('/additem', tweet.post);
 router.get('/item/:id', tweet.get);
