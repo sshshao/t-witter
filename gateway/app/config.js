@@ -7,7 +7,7 @@ module.exports = {
     },
     
     amqp: {
-        AMQP_Host: 'amqp-service',
+        AMQP_Host: 'amqp://amqp-service',
         AMQP_Exchange: 'tasks',
         AMQP_Exchange_Type: 'direct'
     },
