@@ -5,7 +5,7 @@ metadata:
     twitter: email-service
   name: email-service
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       twitter: email-service
