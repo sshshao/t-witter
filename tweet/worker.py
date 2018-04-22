@@ -40,7 +40,7 @@ def add_tweet(payload):
     db = client[DB_NAME]
     collection = db[TWEET_COLLECTION_NAME]
     collection.create_index([#('timestamp', pymongo.DESCENDING), 
-        ('id', pymongo.ASCENDING),
+        ('id', pymongo.ASCENDING)],
         #('username', pymongo.ASCENDING)], 
         background=True)
     result = collection.insert_one(tweet)
