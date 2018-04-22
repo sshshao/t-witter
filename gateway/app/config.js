@@ -17,6 +17,10 @@ module.exports = {
         Cass_Namespace: 'media'
     },
 
+    memcached: {
+        Mcd_Host: 'memcache-memcached'
+    },
+
     auth: {
         PostgreSQL_Host: 'postgres',
         PostgreSQL_User: 'postgres',

@@ -1,3 +1,4 @@
+var Memcached = require('memcached');
 const utils = require('../protocols/utils');
 const dispatcher = require('./dispatcher');
 const auth = require('./auth');
@@ -5,10 +6,14 @@ const media = require('./media');
 
 const AMQP_TWEET_QUEUE = require('../config').tweet.AMQP_Queue;
 const RPC_TWEET_ACTION = require('../protocols/rpc_protocols').RPC_Tweet_Action;
+const MCD_HOST = require('../config').memcached.Mcd_Host;
 const ERROR_NOT_YET_LOGIN_MESSAGE = require('../protocols/messages').ERROR_NOT_YET_LOGIN_MESSAGE;
 
 const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
+
+var mcd_options = {retries: 10, retry: 10000, poolSize: 50};
+var memcached = new Memcached(MCD_HOST, mcd_options);
 
 exports.post = function(req, res) {
     var cookie = auth.checkLogin(req);
@@ -22,7 +27,13 @@ exports.post = function(req, res) {
             }
         };
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
-            res.json(JSON.parse(response));
+            response = JSON.parse(response);
+            memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3, function(err) {
+                if(err) {
+                    console.error('[Cache] Cache error:', err.message);
+                }
+            });
+            res.json(response);
         });
     }
     else {
@@ -33,14 +44,31 @@ exports.post = function(req, res) {
 
 exports.get = function(req, res) {
     var tweetId = req.params.id;
-    var msg = {
-        'action': RPC_TWEET_ACTION.GET_TWEET,
-        'payload': {
-            'id': tweetId
+    memcached.get(utils.MCDtweetKey(tweetId), function(err, tweet) {
+        if(err) {
+            console.error('[Cache] Cache error:', err.message);
         }
-    }
-    dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
-        res.json(JSON.parse(response));
+
+        if(tweet != null) {
+            res.json(tweet);
+        }
+        else {
+            var msg = {
+                'action': RPC_TWEET_ACTION.GET_TWEET,
+                'payload': {
+                    'id': tweetId
+                }
+            }
+            dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
+                response = JSON.parse(response);
+                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3, function(err) {
+                    if(err) {
+                        console.error('[Cache] Cache error:', err.message);
+                    }
+                });
+                res.json(response);
+            });
+        }
     });
 }
 
@@ -48,6 +76,12 @@ exports.remove = function(req, res) {
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var tweetId = req.params.id;
+        memcached.del(utils.MCDtweetKey(tweetId), function(err) {
+            if(err) {
+                console.error('[Cache] Cache error:', err.message);
+            }
+        });
+
         var msg = {
             'action': RPC_TWEET_ACTION.DELETE_TWEET,
             'payload': {

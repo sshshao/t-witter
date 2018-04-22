@@ -1,6 +1,9 @@
 const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
 
+const tweetKey = 'T';
+const profileKey = 'P';
+
 exports.generateMessage = function(status, msg) {
     if (status == STATUS_OK) {
         return {
@@ -14,4 +17,12 @@ exports.generateMessage = function(status, msg) {
             'error': msg,
         };
     }
+}
+
+exports.MCDtweetKey = function(tweetId) {
+    return tweetKey + tweetId;
+}
+
+exports.MCDprofileKey = function(username) {
+    return profileKey + username;
 }

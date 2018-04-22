@@ -53,6 +53,7 @@ def get_profile(payload):
     res = json.dumps({
         'status': RES_SUCCESS,
         'user': {
+            'username': result['username'],
             'email': result['email'],
             'followers': len(result['follower']),
             'following': len(result['following'])
