@@ -50,7 +50,8 @@ def add_tweet(payload):
 
     res = json.dumps({
         'status': RES_SUCCESS,
-        'id': tweet_id
+        'id': tweet_id,
+        'item': tweet
     })
     return res
 

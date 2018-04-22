@@ -37,7 +37,7 @@ function startConnection(callback) {
 function startChannel(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {
-            console.log('[AMQP] Create channal error ' + err);
+            console.error('[AMQP] Create channal error ' + err.message);
             //return setTimeout(startConnection, 100);
             return;
         }
