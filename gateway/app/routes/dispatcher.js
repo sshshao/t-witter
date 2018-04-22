@@ -43,7 +43,7 @@ function startChannel(service, payload, callback) {
         }
 
         ch.consume('amq.rabbitmq.reply-to', function(msg) {
-            console.log(' [.] Received %s', msg.content.toString());
+            //console.log(' [.] Responding %s', msg.content.toString());
             callback(msg.content.toString());
             ch.close();
         }, {noAck: true});
@@ -54,6 +54,8 @@ function startChannel(service, payload, callback) {
 }
 
 exports.dispatch = function(service, payload, callback) {
+    console.log('[x] Sending request: ' + payload);
+
     if(connection == null) {
         startConnection(function() {
             startChannel(service, payload, callback);
