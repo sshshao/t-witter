@@ -28,7 +28,7 @@ exports.post = function(req, res) {
         };
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
-            memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3, function(err) {
+            memcached.add(utils.MCDtweetKey(response.item.id), response.item, 30, function(err) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
@@ -61,7 +61,7 @@ exports.get = function(req, res) {
             }
             dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
                 response = JSON.parse(response);
-                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3, function(err) {
+                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 30, function(err) {
                     if(err) {
                         console.error('[Cache] Cache error:', err.message);
                     }
@@ -119,8 +119,14 @@ exports.like = function(req, res) {
                 'username': cookie[1]
             }
         }
+        // If the tweet is cached, invalidate it.
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             res.json(JSON.parse(response));
+        });
+        memcached.del(utils.MCDtweetKey(tweetId), function(err){
+            if(err){
+                console.error('[Cache] Cache error:', err.message);
+            }
         });
     }
     else {
