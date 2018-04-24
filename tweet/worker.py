@@ -48,6 +48,8 @@ def add_tweet(payload):
     if(result.inserted_id == None):
         return generate_message(RES_FAILURE, ERROR_POST_TWEET)
 
+    del tweet['_id']
+
     res = json.dumps({
         'status': RES_SUCCESS,
         'id': tweet_id,
