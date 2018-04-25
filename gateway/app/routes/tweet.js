@@ -50,6 +50,7 @@ exports.get = function(req, res) {
         }
 
         if(tweet != null) {
+            tweet.status = STATUS_OK;
             res.json(tweet);
         }
         else {
