@@ -64,12 +64,14 @@ exports.get = function(req, res) {
                 if(response.status == STATUS_ERROR){
                     res.json(response);
                 }
-                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3600, function(err) {
-                    if(err) {
-                        console.error('[Cache] Cache error:', err.message);
-                    }
-                });
-                res.json(response);
+                else{
+                    memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3600, function(err) {
+                        if(err) {
+                            console.error('[Cache] Cache error:', err.message);
+                        }
+                    });
+                    res.json(response);
+                }
             });
         }
     });
