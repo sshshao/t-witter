@@ -21,10 +21,6 @@ spec:
         image: "memcached:1.5.7"
         ports:
         - containerPort: 11211
-        resources:
-          limits:
-            cpu: "2"
-            memory: "1024M"
 ---
 apiVersion: v1
 kind: Service
