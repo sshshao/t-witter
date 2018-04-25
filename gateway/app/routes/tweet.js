@@ -126,12 +126,12 @@ exports.like = function(req, res) {
         }
         // If the tweet is cached, invalidate it.
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
+            memcached.del(utils.MCDtweetKey(tweetId), function(err){
+                if(err){
+                    console.error('[Cache] Cache error:', err.message);
+                }
+            });
             res.json(JSON.parse(response));
-        });
-        memcached.del(utils.MCDtweetKey(tweetId), function(err){
-            if(err){
-                console.error('[Cache] Cache error:', err.message);
-            }
         });
     }
     else {
