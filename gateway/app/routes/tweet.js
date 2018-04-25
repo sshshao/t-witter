@@ -28,7 +28,7 @@ exports.post = function(req, res) {
         };
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
-            memcached.add(utils.MCDtweetKey(response.item.id), response.item, 30, function(err) {
+            memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3600, function(err) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
@@ -64,7 +64,7 @@ exports.get = function(req, res) {
                 if(response.status == STATUS_ERROR){
                     res.json(response);
                 }
-                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 30, function(err) {
+                memcached.add(utils.MCDtweetKey(response.item.id), response.item, 3600, function(err) {
                     if(err) {
                         console.error('[Cache] Cache error:', err.message);
                     }
