@@ -44,7 +44,7 @@ def callback(ch, method, properties, body):
             raise ValueError()
 
         msg = email.message.Message()
-        msg['From'] = "richard@richackard.com"
+        msg['From'] = "ubuntu@docker-1.cloud.compas.cs.stonybrook.edu"
         msg['To'] = payload['email']
         msg['Subject'] = payload['title']
         msg.add_header('Content-Type', 'text')
