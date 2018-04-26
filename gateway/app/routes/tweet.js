@@ -26,6 +26,7 @@ exports.post = function(req, res) {
                 'username': cookie[1]
             }
         };
+        
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
             memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
