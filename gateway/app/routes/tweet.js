@@ -26,7 +26,7 @@ exports.post = function(req, res) {
                 'username': cookie[1]
             }
         };
-        
+        res.json({'status': STATUS_OK});
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
             memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
@@ -34,7 +34,7 @@ exports.post = function(req, res) {
                     console.error('[Cache] Cache error:', err.message);
                 }
             });
-            res.json(response);
+            //res.json(response);
         });
     }
     else {
