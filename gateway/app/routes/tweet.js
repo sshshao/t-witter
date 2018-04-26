@@ -26,15 +26,14 @@ exports.post = function(req, res) {
                 'username': cookie[1]
             }
         };
-        res.json({'status': STATUS_OK});
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
+            res.json(response);            
             memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
             });
-            //res.json(response);
         });
     }
     else {
@@ -66,12 +65,12 @@ exports.get = function(req, res) {
                     res.json(response);
                 }
                 else{
+                    res.json(response);
                     memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
                         if(err) {
                             console.error('[Cache] Cache error:', err.message);
                         }
                     });
-                    res.json(response);
                 }
             });
         }
