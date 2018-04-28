@@ -103,17 +103,14 @@ def like_tweet(payload):
     liked_by = result['property']['liked_by']
     
     if like:
-        if user in liked_by:
-            return generate_message(RES_SUCCESS, '')
-        else:
+        if user not in liked_by:
             update = json.loads(like_tweet_update(user))
             collection.update_one(query, update, upsert=False)
     else:
         if user in liked_by:
             update = json.loads(unlike_tweet_update(user))
             collection.update_one(query, update, upsert=False)
-        else:
-            return generate_message(RES_SUCCESS, '')
+    return generate_message(RES_SUCCESS, '')
 
 
 def search(payload):
