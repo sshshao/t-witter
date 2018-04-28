@@ -13,8 +13,8 @@ kubectl delete -f tweet-service-deployment.yml
 
 cd ..
 echo '\033[35m[x] Updating Codebase... \033[0m'
-git checkout m3-node
-git pull origin m3-node
+git checkout m4
+git pull origin m4
 sudo sh build.sh
 
 echo '\033[35m[x] Deploying new Services... \033[0m'
