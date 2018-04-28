@@ -1,11 +1,18 @@
 #!/bin/bash
 echo "Build Started."
 
-cd mongo
-echo '\033[33m[x] Building Mongo DB Service...\033[0m'
-docker image build -q -t twitter_mongo_db .
+#echo '\033[35m[x] Stopping Services... \033[0m'
+#kompose down
+#sudo docker stack rm twitter
 
-cd ../auth
+echo '\033[36m[x] Build Docker Images... \033[0m'
+#sudo sh build.sh
+#echo '\033[36m[x] Deploy Services... \033[0m'
+#sleep 10
+#kompose up
+#sudo docker stack deploy -c docker-compose.yml twitter
+
+cd auth
 echo '\033[35m[x] Building Auth Service...\033[0m'
 docker image build -q -t twitter_auth_service .
 
@@ -26,13 +33,6 @@ echo '\033[35m[x] Building Tweet Service...\033[0m'
 docker image build -q -t twitter_tweet_service .
 
 # TAG AND PUSH TO LOCAL REGISTRY.
-
-# Tagging and Pushing Auth Service.
-echo '\033[35m[x] Tagging Mongo DB Service...\033[0m'
-docker tag twitter_mongo_db richackard/twitter_mongo_db:latest
-
-echo '\033[35m[x] Pushing Mongo DB Service...\033[0m'
-docker push richackard/twitter_mongo_db:latest
 
 
 # Tagging and Pushing Auth Service.

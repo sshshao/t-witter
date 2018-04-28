@@ -1,0 +1,95 @@
+---
+- hosts: witter-all
+  remote_user: ubuntu
+  gather_facts: no
+  become: yes
+  
+  pre_tasks:
+  - name: 'update cache'
+    raw: sudo apt-get update
+
+  - name: 'install python2'
+    raw: sudo apt-get -y install python-simplejson
+
+  - name: 'install aptitude'
+    raw: sudo apt-get -y install aptitude
+  
+  tasks:
+    - name: Clean Apt
+      raw: sudo apt-get clean
+
+    - name: Install apt-transport-https.
+      apt:
+        name: apt-transport-https
+        state: present
+        update_cache: yes
+
+    - name: Install ca-certificates.
+      apt:
+        name: ca-certificates
+        state: present
+    
+    - name: Install curl.
+      apt:
+        name: curl
+        state: present
+    
+    - name: Install software-properties-common.
+      apt:
+        name: software-properties-common
+        state: latest
+
+    - name: Add Docker's GPG key.
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    
+    - name: Add Docker Repo.
+      raw: 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'
+    
+    - name: Update Cache.
+      apt:
+        update_cache: yes
+
+    - name: Install Docker CE.
+      apt:
+        name: "docker-ce=17.03.0~ce-0~ubuntu-xenial"
+        state: present
+
+    - name: Kubernetes Key...
+      raw: sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
+
+    - name: Adding Kubernetes Repo
+      raw: 'sudo add-apt-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"'
+      
+
+    - name: Update Cache.
+      apt:
+        update_cache: yes
+    
+    - name: Install Kubernetes (Kubelet)...
+      apt:
+        name: "kubelet"
+        state: present
+
+    - name: Install Kubernetes (Kubeadm)...
+      apt:
+        name: "kubeadm"
+        state: present
+
+    - name: Install Kubernetes (Kubectl)...
+      apt:
+        name: "kubectl"
+        state: present
+
+    - name: Install Kubernetes (kubernetes-cni)...
+      apt:
+        name: "kubernetes-cni"
+        state: present
+
+    - name: Install Kompose...
+      raw: |
+        curl -L https://github.com/kubernetes/kompose/releases/download/v1.11.0/kompose-linux-amd64 -o kompose
+        chmod +x kompose
+        sudo mv ./kompose /usr/local/bin/kompose
+

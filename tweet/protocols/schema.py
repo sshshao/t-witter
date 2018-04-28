@@ -2,38 +2,23 @@ import json
 import math
 import time
 import uuid
+import pymongo
 
-db_model = json.dumps({
-    'id': 'ixo134j03k4l3',
-    'username': 'mazafaka',
-    'property': {
-        'likes': 0
-    },
-    'retweeted': 0,
-    'content': '9C9EF148 :参戦ID 参加者募集！Lv100 ゼノ・コロゥ',
-    'timestamp': 1521959941
-})
 
-amqp = json.dumps({
-    'action': '/additem',
-    'payload': {
-        'content': '9C9EF148 :参戦ID 参加者募集！Lv100 ゼノ・コロゥ',
-        'childType': None,
-        'parent': '0xo184e',
-        'media': []
-    }
-})
-
-def new_post(username, content):
+def new_post(username, content, childType, parent, media):
     return json.dumps({
         'id': generate_tweet_id(),
         'username': username,
-        'property': {
-            'likes': 0
-        },
-        'retweeted': 0,
+        'timestamp': math.floor(time.time()),
         'content': content,
-        'timestamp': math.floor(time.time())
+        'retweeted': 0,
+        'property': {
+            'likes': 0,
+            'liked_by': []
+        },
+        'childType': childType,
+        'parent': parent,
+        'media': media
     })
 
 
@@ -43,14 +28,45 @@ def tweet_query(id):
     })
 
 
+def user_tweet_query(id, username):
+    return json.dumps({
+        'id': id,
+        'username': username
+    })
 
-def query_search(timestamp, q, username, targets):
+
+def like_tweet_update(user):
+    return json.dumps({
+        '$inc': { 
+            'property.likes': 1
+        }, 
+        '$push': {
+            'property.liked_by': user
+        }
+    })
+
+
+def unlike_tweet_update(user):
+    return json.dumps({
+        '$inc': { 
+            'property.likes': -1
+        }, 
+        '$pull': {
+            'property.liked_by': user
+        }
+    })
+
+
+def search_query(timestamp, q, username, targets, parent, replies, hasMedia):
     '''
     query = { '$and': [
         { 'timestamp': {'$lte': timestamp} },
-        { 'content': {'$regex' : '.*'+q+'.*'} }
-        { 'username': username }, 
-        { 'username': {'$in': targets} }
+        { 'content': {'$regex' : '.*'+q+'.*'} },
+        { 'username': username },
+        { 'username': {'$in': targets} },
+        { 'parent': parent },
+        { 'childType': {'$not': 'reply'} },
+        { 'media': { '$size': { 'gt': 0 } } }
     ]}
     '''
     query = { '$and': [
@@ -63,8 +79,25 @@ def query_search(timestamp, q, username, targets):
         query['$and'].append({'username': username})
     if targets != None:
         query['$and'].append({'username': {'$in': targets}})
-    
+    if parent != None:
+        query['$and'].append({'parent': parent})
+    if not replies:
+        query['$and'].append({'childType': {'$ne': 'reply'}})
+    if hasMedia:
+        query['$and'].append({'media': {'$exists': True}, '$where': 'this.media.length > 0'})
+
     return json.dumps(query)
+
+
+def search_sort(rank):
+    if rank == 'interest':
+        return [
+            ('timestamp', pymongo.DESCENDING), 
+            ('retweeted', pymongo.DESCENDING),
+            ('property.likes', pymongo.DESCENDING)
+        ]
+    else:
+        return [('timestamp', pymongo.DESCENDING)]
 
 
 def generate_tweet_id():

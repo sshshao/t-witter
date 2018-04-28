@@ -1,4 +1,0 @@
-flask
-pika
-PyJWT
-cerberus

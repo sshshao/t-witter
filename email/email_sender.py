@@ -44,17 +44,15 @@ def callback(ch, method, properties, body):
             raise ValueError()
 
         msg = email.message.Message()
-        msg['From'] = "richackard@gmail.com"
+        msg['From'] = "ubuntu@docker-1.cloud.compas.cs.stonybrook.edu"
         msg['To'] = payload['email']
         msg['Subject'] = payload['title']
         msg.add_header('Content-Type', 'text')
         msg.set_payload(payload['content'])
 
-        smtp_obj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        smtp_obj.ehlo()
-        smtp_obj.login(Gmail_User, Gmail_Password)
+        smtp_obj = smtplib.SMTP("docker-1")
         smtp_obj.sendmail(msg['From'], [msg['To']], msg.as_string())
-        smtp_obj.quit()
+        smtp_obj.close()
     except ValueError:
         print("Malformed Payload. Ignored.")
     ch.basic_ack(delivery_tag = method.delivery_tag)

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    twitter: email-service
+  name: email-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      twitter: email-service
+  template:
+    metadata:
+      labels: 
+        twitter: email-service
+    spec:
+      containers:
+      - image: richackard/twitter_email_service
+        name: email-service
+      restartPolicy: Always

@@ -1,13 +1,14 @@
-FROM tiangolo/uwsgi-nginx-flask:python3.5
+FROM node:carbon
 
-COPY requirements.txt /tmp
+WORKDIR /app
 
-ENV STATIC_INDEX 1
+COPY ./app/package*.json ./
 
-RUN pip install -U pip
-
-RUN pip install -r /tmp/requirements.txt
+RUN npm install
 
 COPY ./app /app
 
+EXPOSE 5000
+
+CMD ["npm", "start"]
 

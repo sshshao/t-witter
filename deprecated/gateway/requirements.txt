@@ -1,0 +1,6 @@
+flask
+pika
+PyJWT
+gevent
+cerberus
+cassandra-driver

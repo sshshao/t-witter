@@ -9,7 +9,8 @@ class REQ_ACTION(Enum):
     ADD_TWEET = 1,
     GET_TWEET = 2,
     DELETE_TWEET = 3,
-    SEARCH = 4,
+    LIKE_TWEET = 4,
+    SEARCH = 5,
 
 
 def generate_message(status, msg):
@@ -23,6 +24,14 @@ def generate_message(status, msg):
             'status': status,
             'error': msg,
         })
+
+
+def generate_del_msg(status, msg, media):
+    return json.dumps({
+        'status': status,
+        'message': msg,
+        'media': media
+    })
 
 
 def generate_payload(status, msg, payload):

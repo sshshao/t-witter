@@ -1,0 +1,19 @@
+---
+- hosts: witter-workers
+  remote_user: ubuntu
+  gather_facts: False
+  become: yes
+
+  tasks:
+    # - name: Clear All...
+    #   raw: kubeadm reset   
+    # - name: Clear Flannel...
+    #   raw: rm -rf /var/lib/cni/flannel/*   
+    # - name: Clear bridge
+    #   raw: rm -rf /var/lib/cni/networks/cbr0/* 
+    # - name: Clear links
+    #   raw: ip link delete cni0 flannel.1
+    # - name: Reboot
+    #   raw: reboot
+    - name: Join Master
+      raw: kubeadm join 10.0.1.15:6443 --token yxql2w.p7zlvadh4swu2hg5 --discovery-token-ca-cert-hash sha256:cc4d3c8a03a335cb132313addef3b292adae70c2806b7bb51518c282021c42cc

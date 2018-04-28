@@ -1,6 +1,7 @@
 from sqlalchemy import func
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, OperationalError as SOE
+from psycopg2 import OperationalError as POE
 from models import UserAccount, UserActivationToken, Base, connect
 from cerberus import Validator
 import hashlib, uuid
@@ -32,13 +33,27 @@ Session_Duration = config_basic['Session_Duration']
 JWT_Secret = config_basic['JWT_Secret']
 
 # Connecting to PostgreSQL DB.
-engine = connect()
-Base.metadata.bind = engine
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
-print('Auth Service DB Connnection Established...')
-# Connecting to Message Broker
-message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+while True:
+    try:
+        engine = connect()
+        Base.metadata.bind = engine
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        break
+    except Exception as err:
+        print("[x] Auth Service PostgreSQL Not Ready Yet...")
+print('[x] Auth Service DB Connnection Established...')
+
+
+while True:
+    try:
+        # Connecting to Message Broker
+        message_broker = pika.BlockingConnection(pika.ConnectionParameters(host=AMQP_Host))
+        break
+    except Exception as err:
+        print('[x] Auth Service AMQP Connection Not Ready Yet...')
+        
+
 message_channel = message_broker.channel()
 
 # Declare exchange
@@ -107,7 +122,7 @@ def validate_user(email, key):
         # Get this user's activation key.
         ac_token_record = session.query(UserActivationToken).filter(UserActivationToken.user_account == user_account).first()
         if ac_token_record:
-            if key == ac_token_record.activation_token or key == "secret-key":
+            if key == ac_token_record.activation_token or key == "abracadabra":
                 try:
                     user_account.activated = True
                     session.delete(ac_token_record)
@@ -123,6 +138,7 @@ def validate_user(email, key):
                         },
                     })
                     res = dispatcher.call(AMQP_Profile_Queue, req)
+                    dispatcher.close()
                     res_format = json.loads(res)
                     if res_format['status'] == STATUS_OK:
                         return generate_message(STATUS_OK, SUCCESS_ACCOUNT_ACTIVATED_MESSAGE)
@@ -255,7 +271,7 @@ def on_request(ch, method, props, body):
         ch.basic_ack(delivery_tag = method.delivery_tag)
             
             
-message_channel.basic_qos(prefetch_count=1)
+message_channel.basic_qos(prefetch_count=5)
 message_channel.basic_consume(on_request, queue=AMQP_Auth_Queue)
 
 print("[x] Auth Service Starts Listening...")

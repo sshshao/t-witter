@@ -11,9 +11,21 @@ Queue: tweet_queue -> For Tweet-related Service RPC.
 Queue: profile_queue -> For Profile Action Handling.
 
 
-sudo docker stack rm twitter
-git pull origin test
-git checkout test
+run deploy.sh will first stop all services, then fetch the newest repo, then deploy those services.
 
-sudo sh build.sh
-sudo docker stack deploy -c docker-compose.yml twitter
+
+Memcached can be accessed via port 11211 on the following DNS name from within your cluster:
+memcache-memcached.default.svc.cluster.local
+
+If you'd like to test your instance, forward the port locally:
+
+  export POD_NAME=$(kubectl get pods --namespace default -l "app=memcache-memcached" -o jsonpath="{.items[0].metadata.name}")
+  kubectl port-forward $POD_NAME 11211
+
+In another tab, attempt to set a key:
+
+  $ echo -e 'set mykey 0 60 5\r\nhello\r' | nc localhost 11211
+
+You should see:
+
+  STORED

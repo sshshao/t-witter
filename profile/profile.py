@@ -20,7 +20,13 @@ AMQP_EXCHANGE_TYPE = config['AMQP']['AMQP_Exchange_Type']
 AMQP_PROFILE_QUEUE = config_profile['AMQP_Queue']
 
 # Set up AMQP connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+while True:
+    try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+        break
+    except Exception as err:
+        print("[x] AMQP Connection Not Ready Yet...")
+
 channel = connection.channel()
 channel.exchange_declare(exchange=AMQP_EXCHANGE, exchange_type=AMQP_EXCHANGE_TYPE)
 result = channel.queue_declare(queue=AMQP_PROFILE_QUEUE, durable=True)
@@ -53,7 +59,7 @@ def on_request(ch, method, props, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-channel.basic_qos(prefetch_count=1)
+channel.basic_qos(prefetch_count=10)
 channel.basic_consume(on_request, queue=AMQP_PROFILE_QUEUE)
 
 # Start consume

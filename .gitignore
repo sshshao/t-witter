@@ -1,0 +1,5 @@
+kubeconfig
+/composes
+/env-config
+/gateway/app/node_modules
+/.vscode

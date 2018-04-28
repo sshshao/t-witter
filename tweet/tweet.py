@@ -18,7 +18,12 @@ AMQP_EXCHANGE_TYPE = config['AMQP']['AMQP_Exchange_Type']
 AMQP_TWEET_QUEUE = config_tweet['AMQP_Queue']
 
 # Set up AMQP connection
-connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+while True:
+    try:
+        connection = pika.BlockingConnection(pika.ConnectionParameters(AMQP_HOST))
+        break
+    except Exception as err:
+        print('[x] AMQP Connection Not Ready Yet...')
 channel = connection.channel()
 channel.exchange_declare(exchange=AMQP_EXCHANGE, exchange_type=AMQP_EXCHANGE_TYPE)
 result = channel.queue_declare(queue=AMQP_TWEET_QUEUE, durable=True)
@@ -28,6 +33,7 @@ options = {
     REQ_ACTION.ADD_TWEET.name: add_tweet,
     REQ_ACTION.GET_TWEET.name: get_tweet,
     REQ_ACTION.DELETE_TWEET.name: delete_tweet,
+    REQ_ACTION.LIKE_TWEET.name: like_tweet,
     REQ_ACTION.SEARCH.name: search
 }
 
@@ -42,7 +48,7 @@ def on_request(ch, method, props, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-channel.basic_qos(prefetch_count=1)
+channel.basic_qos(prefetch_count=20)
 channel.basic_consume(on_request, queue=AMQP_TWEET_QUEUE)
 
 # Start consume

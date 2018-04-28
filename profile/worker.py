@@ -18,12 +18,14 @@ config.read('./config.ini')
 config_profile = config['PROFILE']
 QUERY_LIMIT_DEFAULT = int(config_profile['Query_Limit_Default'])
 QUERY_LIMIT_MAX = int(config_profile['Query_Limit_Max'])
-URI = config_profile['MongoDB_Uri']
 DB_NAME = config_profile['MongoDB_Name']
+NODE_NAME = config_profile['MongoDB_Node']
+PORT_NUM = int(config_profile['MongoDB_Mgs_Port'])
 COLLECTION_NAME = config_profile['MongoDB_Collection']
 
 # Set up Mongo client
-client = pymongo.MongoClient('mongodb://mongo_db', 27017, maxPoolSize=100, waitQueueMultiple=10)
+client = pymongo.MongoClient('mongodb://%s' % NODE_NAME, PORT_NUM, maxPoolSize=100, waitQueueMultiple=10)
+
 
 def add_profile(payload):
     profile = json.loads(new_profile(payload['id'], payload['username'], payload['email']))
@@ -51,6 +53,7 @@ def get_profile(payload):
     res = json.dumps({
         'status': RES_SUCCESS,
         'user': {
+            'username': result['username'],
             'email': result['email'],
             'followers': len(result['follower']),
             'following': len(result['following'])
@@ -61,7 +64,7 @@ def get_profile(payload):
 
 def get_follower(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if payload['limit'] != None:
+    if 'limit' in payload:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
     query = json.loads(query_profile(payload['username']))
@@ -83,7 +86,7 @@ def get_follower(payload):
 
 def get_following(payload):
     limit = QUERY_LIMIT_DEFAULT
-    if payload['limit'] != None:
+    if 'limit' in payload:
         limit = int(payload['limit']) if int(payload['limit']) < QUERY_LIMIT_MAX else QUERY_LIMIT_MAX
 
     query = json.loads(query_profile(payload['username']))
@@ -104,9 +107,7 @@ def get_following(payload):
 
 
 def follow(payload):
-    do_follow = True
-    if 'follow' in payload:
-        do_follow = payload['follow']
+    do_follow = True if 'follow' not in payload else payload['follow']
     
     query_user = json.loads(query_profile(payload['user']))
     query_target  = json.loads(query_profile(payload['target']))
