@@ -1,0 +1,13 @@
+      - name: mgs01-node03
+        image: mongo:3.2
+        command:
+        - "mongos"
+        args:
+        - "--configdb"
+        - "configReplSet01/__CONFIG_SERVERS_SERVICES__"
+        - "--port"
+        - "27017"
+        - "--bind_ip=0.0.0.0"
+        ports:
+        - name: mgs01-node03
+          containerPort: 27017

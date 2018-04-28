@@ -1,0 +1,17 @@
+      - name: arb04-node04
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs04
+        - "--port"
+        - "27019"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: arb04-node04
+          containerPort: 27019
+        volumeMounts:
+        - name: db-rs04
+          mountPath: /data/db

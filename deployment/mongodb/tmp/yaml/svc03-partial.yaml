@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-node03 
+  labels:
+    app: mongodb-node03
+    role: mongoshard
+    tier: backend
+spec:
+  selector:
+    app: mongodb-shard-node03
+    role: mongoshard
+    tier: backend 
+  ports:

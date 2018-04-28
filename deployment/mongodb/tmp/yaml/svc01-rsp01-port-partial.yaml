@@ -1,0 +1,3 @@
+  - name: rsp01-node01
+    port: 27020
+    protocol: TCP

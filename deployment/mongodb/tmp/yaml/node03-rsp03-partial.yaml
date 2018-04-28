@@ -1,0 +1,17 @@
+      - name: rsp03-node03
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs03
+        - "--port"
+        - "27020"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: rsp03-node03
+          containerPort: 27020
+        volumeMounts:
+        - name: db-rs03
+          mountPath: /data/db

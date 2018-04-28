@@ -1,0 +1,17 @@
+      - name: arb03-node01
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs03
+        - "--port"
+        - "27019"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: arb03-node01
+          containerPort: 27019
+        volumeMounts:
+        - name: db-rs03
+          mountPath: /data/db

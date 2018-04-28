@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mongodb-shard-node03
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb-shard-node03
+        role: mongoshard
+        tier: backend
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: docker-3
+      containers:

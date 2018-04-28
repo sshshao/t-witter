@@ -1,0 +1,143 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb-node03 
+  labels:
+    app: mongodb-node03
+    role: mongoshard
+    tier: backend
+spec:
+  selector:
+    app: mongodb-shard-node03
+    role: mongoshard
+    tier: backend 
+  ports:
+  - name: arb01-node03
+    port: 27019
+    protocol: TCP
+  - name: cfg01-node03
+    port: 27018
+    protocol: TCP
+  - name: mgs01-node03
+    port: 27017
+    protocol: TCP
+  - name: rsp03-node03
+    port: 27020
+    protocol: TCP
+  - name: rss04-node03
+    port: 27021
+    protocol: TCP
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mongodb-shard-node03
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb-shard-node03
+        role: mongoshard
+        tier: backend
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: docker-3
+      containers:
+      - name: arb01-node03
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs01
+        - "--port"
+        - "27019"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: arb01-node03
+          containerPort: 27019
+        volumeMounts:
+        - name: db-rs01
+          mountPath: /data/db
+      - name: rss04-node03
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs04
+        - "--port"
+        - "27021"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: rss04-node03
+          containerPort: 27021
+        volumeMounts:
+        - name: db-rs04
+          mountPath: /data/db
+      - name: rsp03-node03
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs03
+        - "--port"
+        - "27020"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: rsp03-node03
+          containerPort: 27020
+        volumeMounts:
+        - name: db-rs03
+          mountPath: /data/db
+      - name: cfg01-node03
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--configsvr"
+        - "--replSet"
+        - configReplSet01
+        - "--port"
+        - "27018"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: cfg01-node03
+          containerPort: 27018
+        volumeMounts:
+        - name: db-cfg
+          mountPath: /data/db
+      - name: mgs01-node03
+        image: mongo:3.2
+        command:
+        - "mongos"
+        args:
+        - "--configdb"
+        - "configReplSet01/mongodb-node01.default.svc.cluster.local:27018,mongodb-node02.default.svc.cluster.local:27018,mongodb-node03.default.svc.cluster.local:27018,mongodb-node04.default.svc.cluster.local:27018"
+        - "--port"
+        - "27017"
+        - "--bind_ip=0.0.0.0"
+        ports:
+        - name: mgs01-node03
+          containerPort: 27017
+      volumes:
+      - name: db-cfg
+        hostPath:
+          path: /data/mongodb/db-cfg
+      - name: db-rs01
+        hostPath:
+          path: /data/mongodb/db-rs01
+      - name: db-rs03
+        hostPath:
+          path: /data/mongodb/db-rs03
+      - name: db-rs04
+        hostPath:
+          path: /data/mongodb/db-rs04
