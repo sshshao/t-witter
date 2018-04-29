@@ -1,0 +1,3 @@
+  - name: cfg01-node01
+    port: 27018
+    protocol: TCP

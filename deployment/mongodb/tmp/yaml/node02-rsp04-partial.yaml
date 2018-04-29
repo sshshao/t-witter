@@ -1,0 +1,17 @@
+      - name: rsp04-node02
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs04
+        - "--port"
+        - "27020"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: rsp04-node02
+          containerPort: 27020
+        volumeMounts:
+        - name: db-rs04
+          mountPath: /data/db

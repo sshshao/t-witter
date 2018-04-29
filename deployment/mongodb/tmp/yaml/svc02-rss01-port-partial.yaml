@@ -1,0 +1,3 @@
+  - name: rss01-node02
+    port: 27021
+    protocol: TCP

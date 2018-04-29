@@ -1,0 +1,17 @@
+      - name: rss03-node04
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--replSet"
+        - rs03
+        - "--port"
+        - "27021"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: rss03-node04
+          containerPort: 27021
+        volumeMounts:
+        - name: db-rs03
+          mountPath: /data/db

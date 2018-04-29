@@ -1,0 +1,3 @@
+  - name: rsp02-node04
+    port: 27020
+    protocol: TCP

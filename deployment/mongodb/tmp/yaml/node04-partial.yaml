@@ -1,0 +1,16 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: mongodb-shard-node04
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mongodb-shard-node04
+        role: mongoshard
+        tier: backend
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: docker-4
+      containers:

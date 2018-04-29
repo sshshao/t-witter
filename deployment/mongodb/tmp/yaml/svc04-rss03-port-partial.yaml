@@ -1,0 +1,3 @@
+  - name: rss03-node04
+    port: 27021
+    protocol: TCP

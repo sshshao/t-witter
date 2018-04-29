@@ -1,0 +1,18 @@
+      - name: cfg01-node02
+        image: mongo:3.2
+        args:
+        - "--storageEngine"
+        - wiredTiger
+        - "--configsvr"
+        - "--replSet"
+        - configReplSet01
+        - "--port"
+        - "27018"
+        - "--noprealloc"
+        - "--smallfiles"
+        ports:
+        - name: cfg01-node02
+          containerPort: 27018
+        volumeMounts:
+        - name: db-cfg
+          mountPath: /data/db
