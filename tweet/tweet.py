@@ -2,6 +2,7 @@ import configparser
 import pika
 import json
 import sys, os
+import time
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from worker import *
@@ -40,7 +41,10 @@ options = {
 
 def on_request(ch, method, props, body):
     data = decode_json(body.decode('utf-8'))
+    t_bf = int(time.time() * 1000)
     response = options[data['action']](data['payload'])
+    t_af = int(time.time() * 1000)
+    print("%s Takes: %d ms" % (data['action'], (t_af - t_bf)))
 
     ch.basic_publish(exchange='',
         routing_key=props.reply_to,
@@ -48,7 +52,7 @@ def on_request(ch, method, props, body):
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
-channel.basic_qos(prefetch_count=5)
+channel.basic_qos(prefetch_count=10)
 channel.basic_consume(on_request, queue=AMQP_TWEET_QUEUE)
 
 # Start consume
