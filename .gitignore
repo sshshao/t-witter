@@ -3,4 +3,5 @@ kubeconfig
 /env-config
 /gateway/app/node_modules
 /tweet/node_modules
+/tweet/protocols/__pycache__/
 /.vscode
