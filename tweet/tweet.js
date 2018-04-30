@@ -17,7 +17,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
         ch.assertQueue('', {durable: true, exclusive: false}, function(err, q) {
 
             ch.bindQueue(q.queue, AMQP_EXCHANGE, AMQP_TWEET_QUEUE);
-            ch.prefetch(10);
+            ch.prefetch(5);
 
             ch.consume(q.queue, function(msg) {
                 var request = JSON.parse(msg.content.toString('utf8'));
