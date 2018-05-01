@@ -50,6 +50,7 @@ function startChannel(service, payload, callback) {
         
         ch.publish('', service, new Buffer(payload),
             {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
+        console.log(" [x] Sent %s: '%s'", service, JSON.stringify(payload));
     });
 }
 

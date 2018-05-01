@@ -23,7 +23,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
         ch.assertQueue('', {exclusive: false}, function(err, q) {
             if(err) throw err;
 
-            ch.bindQueue(q.queue, AMQP_EXCHANGE, AMQP_TWEET_QUEUE);
+            ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
             //ch.prefetch(5);
             console.log('[.] Queue asserted');
 
