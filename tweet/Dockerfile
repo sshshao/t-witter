@@ -2,10 +2,10 @@ FROM node:carbon
 
 WORKDIR /app
 
-COPY ./app/package*.json ./
+COPY ./package*.json ./
 
 RUN npm install
 
-COPY ./app /app
+COPY ./ /app
 
 CMD ["npm", "start"]
