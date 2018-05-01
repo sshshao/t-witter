@@ -24,7 +24,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             if(err) throw err;
 
             //ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
-            ch.prefetch(5);
+            //ch.prefetch(5);
             console.log('[.] Queue asserted');
 
             ch.consume(q.queue, function(msg) {
