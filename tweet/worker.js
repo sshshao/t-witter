@@ -36,7 +36,7 @@ exports.addTweet = function(payload) {
 
                 delete tweet._id;
                 var response = {
-                    'status': RES_SUCCESS,
+                    'status': STATUS_OK,
                     'id': tweet.id,
                     'item': tweet
                 };
@@ -69,7 +69,7 @@ exports.getTweet = function(payload) {
                 if(result != null) {
                     delete result._id;
                     var response = {
-                        'status': RES_SUCCESS,
+                        'status': STATUS_OK,
                         'item': result
                     };
                     resolve(response);
@@ -207,7 +207,7 @@ exports.searchTweet = function(payload) {
                     }
 
                     var response = {
-                        'status': RES_SUCCESS,
+                        'status': STATUS_OK,
                     };
                     var items = [];
                     // Remove BSON _ids
