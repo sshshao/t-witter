@@ -13,7 +13,7 @@ const STATUS_ERROR = 'error';
 
 exports.addTweet = function(payload) {
     return new Promise(function(resolve, reject) {
-        var tweet = util.tweetInsert(payload.username, payload.content, 
+        var tweet = utils.tweetInsert(payload.username, payload.content, 
             payload.childType, payload.parent, payload.media);
         
         mongodb.connect(MONGO_URI, function(err, client) {
