@@ -19,12 +19,13 @@ amqp.connect(AMQP_HOST, function(err, conn) {
         if(err) throw err;
 
         console.log("[.] channel created");
-        ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: false});
+        //ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: false});
         ch.assertQueue('', {exclusive: false}, function(err, q) {
             if(err) throw err;
 
             ch.bindQueue(q.queue, AMQP_EXCHANGE, AMQP_TWEET_QUEUE);
-            ch.prefetch(5);
+            //ch.prefetch(5);
+            console.log('[.] Queue asserted');
 
             ch.consume(q.queue, function(msg) {
                 var request = JSON.parse(msg.content.toString('utf8'));
