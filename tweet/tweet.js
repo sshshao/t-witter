@@ -24,7 +24,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             if(err) throw err;
 
             //ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
-            //ch.prefetch(5);
+            ch.prefetch(5);
             console.log('[.] Queue asserted');
 
             ch.consume(q.queue, function(msg) {
@@ -60,7 +60,7 @@ function sendTask(req, callback) {
             break;
 
         case TWEET_ACTION.SEARCH:
-            action.search(req.payload).then(callback);
+            action.searchTweet(req.payload).then(callback);
             break;
 
         default:
