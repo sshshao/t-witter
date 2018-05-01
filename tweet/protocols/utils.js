@@ -72,38 +72,38 @@ exports.unlikeTweetUpdate = function(user) {
 
 exports.searchQuery = function(timestamp, q, target, targets, parent, replies, hasMedia) {
     /*
-    var query = { '$and': [
-        { 'timestamp': {'$lte': timestamp} },
-        { 'content': {'$regex' : '.*'+q+'.*'} },
-        { 'username': username },
-        { 'username': {'$in': targets} },
-        { 'parent': parent },
-        { 'childType': {'$not': 'reply'} },
-        { 'media': { '$size': { 'gt': 0 } } }
-    ]}
+    var query = { 
+        'timestamp': {'$lte': timestamp},
+        'content': {'$regex' : '.*'+q+'.*'},
+        'username': username,
+        'username': {'$in': targets},
+        'parent': parent,
+        'childType': {'$ne': 'reply'},
+        'media': {'$exists': True}, '$where': 'this.media.length > 0'}
+    }
     */
    
-    var query = { '$and': [
-        { 'timestamp': {'$lte': timestamp} }
-    ]};
+    var query = { 
+        'timestamp': {'$lte': timestamp}
+    };
 
     if(q != null) {
-        query['$and'].push({'content': {'$regex': '.*'+q+'.*'}});
+        query.push({'content': {'$regex': '.*'+q+'.*'}});
     }
     if(target != null) {
-        query['$and'].push({'username': target});
+        query.push({'username': target});
     }
     if(targets != null) {
-        query['$and'].push({'username': {'$in': targets}});
+        query.push({'username': {'$in': targets}});
     }
     if(parent != null) {
-        query['$and'].push({'parent': parent});
+        query.push({'parent': parent});
     }
     if(!replies) {
-        query['$and'].push({'childType': {'$ne': 'reply'}});
+        query.push({'childType': {'$ne': 'reply'}});
     }
     if(hasMedia) {
-        query['$and'].push({'media': {'$exists': True}, '$where': 'this.media.length > 0'});
+        query.push({'media': {'$exists': True}, '$where': 'this.media.length > 0'});
     }
 
     return query;
