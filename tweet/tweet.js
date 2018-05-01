@@ -14,8 +14,7 @@ const STATUS_ERROR = 'error';
 amqp.connect(AMQP_HOST, function(err, conn) {
     conn.createChannel(function(err, ch) {
         ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: true});
-        ch.assertQueue('', {durable: true, exclusive: false}, function(err, q) {
-
+        ch.assertQueue('', {durable: false, exclusive: false}, function(err, q) {
             ch.bindQueue(q.queue, AMQP_EXCHANGE, AMQP_TWEET_QUEUE);
             ch.prefetch(5);
 
