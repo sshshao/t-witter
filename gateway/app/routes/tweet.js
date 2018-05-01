@@ -145,6 +145,8 @@ exports.like = function(req, res) {
 
 exports.search = function(req, res) {
     var cookie = auth.checkLogin(req);
+    var following = req.body.following == null ? true : req.body.following;
+    
     if((cookie[0] && following) || (!following)) {
         var msg = {
             'action': RPC_TWEET_ACTION.SEARCH,
@@ -155,7 +157,7 @@ exports.search = function(req, res) {
                     (req.body.limit <= SEARCH_LIMIT_MAX) ? req.body.limit : SEARCH_LIMIT_MAX,
                 'q': req.body.q,
                 'target': req.body.username,
-                'following': req.body.following == null ? true : req.body.following,
+                'following': following,
                 'rank': req.body.rank == null ? 'interest' : req.body.rank,
                 'parent': req.body.parent,
                 'replies': req.body.replies == null ? true : req.body.replies,
