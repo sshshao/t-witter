@@ -20,7 +20,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
 
         console.log("[.] channel created");
         //ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: false});
-        ch.assertQueue(AMQP_TWEET_QUEUE, {exclusive: false});
+        ch.assertQueue(AMQP_TWEET_QUEUE, {durable: true, exclusive: false});
         //ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
         ch.prefetch(1);
         console.log('[.] Waiting for request');

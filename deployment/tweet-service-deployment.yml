@@ -17,4 +17,4 @@ spec:
       containers:
       - image: richackard/twitter_tweet_service
         name: tweet-service
-      restartPolicy: Never
+      restartPolicy: Always
