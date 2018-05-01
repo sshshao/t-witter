@@ -21,7 +21,7 @@ echo '\033[35m[x] Deploying new Services... \033[0m'
 cd deployment
 sleep 5
 echo '\033[35m[x] Clearing Databases.. \033[0m'
-./utils/clear.sh
+sh ./utils/clear.sh
 kubectl apply -f api-gateway-deployment.yml
 kubectl apply -f auth-service-deployment.yml
 kubectl apply -f email-service-deployment.yml
