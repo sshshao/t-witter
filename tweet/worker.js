@@ -39,13 +39,14 @@ exports.addTweet = function(payload) {
                 }
             });
         });
+
+        var response = {
+            'status': STATUS_OK,
+            'id': tweet.id,
+            'item': tweet
+        };
+        resolve(response);
     });
-    var response = {
-        'status': STATUS_OK,
-        'id': tweet.id,
-        'item': tweet
-    };
-    resolve(response);
 }
 
 exports.getTweet = function(payload) {
