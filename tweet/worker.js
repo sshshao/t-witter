@@ -102,8 +102,7 @@ exports.deleteTweet = function(payload) {
                     return;
                 }
 
-                console.log("Deletion result: " + JSON.stringify(result));
-                if(result.deletedCount == 1) {
+                if(result.ok == 1) {
                     var response = {
                         'status': STATUS_OK,
                         'media': result.value.media
