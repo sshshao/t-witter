@@ -59,7 +59,7 @@ exports.getTweet = function(payload) {
             }
             
             const db = client.db(DB_NAME);
-            db.collection(TWEET_COLLECTION).findOne(tweet, function(err, result) {
+            db.collection(TWEET_COLLECTION).findOne(query, function(err, result) {
                 if(err) {
                     resolve(utils.generateMessage(STATUS_ERROR, err.message));
                     client.close();
@@ -102,6 +102,7 @@ exports.deleteTweet = function(payload) {
                     return;
                 }
 
+                console.log("Deletion result: " + result);
                 if(result.deletedCount == 1) {
                     var response = {
                         'status': STATUS_OK,
