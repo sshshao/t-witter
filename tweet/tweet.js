@@ -27,12 +27,17 @@ amqp.connect(AMQP_HOST, function(err, conn) {
 
         ch.consume(AMQP_TWEET_QUEUE, function(msg) {
             var request = JSON.parse(msg.content.toString('utf8'));
-            console.log(' [x] Received request: "%s"', JSON.stringify(request));
+            //console.log(' [x] Received request: "%s"', JSON.stringify(request));
             
+            console.time(request.action);
+
             sendTask(request, function(response) {
-                console.log(JSON.stringify(response));
+                //console.log(JSON.stringify(response));
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
             }); 
+            
+            console.timeEnd(request.action);
+
             ch.ack(msg);
         });
     });

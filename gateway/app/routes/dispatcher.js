@@ -52,7 +52,7 @@ function startChannel(service, payload) {
             
             ch.publish('', service, new Buffer(payload),
                 {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
-            console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
+            //console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
         });
     });
 }

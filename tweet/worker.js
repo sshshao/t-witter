@@ -24,19 +24,29 @@ exports.addTweet = function(payload) {
             }
             
             const db = client.db(DB_NAME);
-            db.collection(TWEET_COLLECTION).insertOne(tweet, function(err, result) {
+            const collection = db.collection(TWEET_COLLECTION);
+
+            collection.createIndex({ 'id': 1, 'username': 1 }, function(err, indexResult) {
                 if(err) {
                     resolve(utils.generateMessage(STATUS_ERROR, err.message));
                     client.close();
                     return;
                 }
                 
-                // Check result insert count
-                //resolve(utils.generateMessage(STATUS_ERROR, ERROR_POST_TWEET));
-                client.close();
+                collection.insertOne(tweet, function(err, result) {
+                    if(err) {
+                        resolve(utils.generateMessage(STATUS_ERROR, err.message));
+                        client.close();
+                        return;
+                    }
+                    
+                    // Check result insert count
+                    //resolve(utils.generateMessage(STATUS_ERROR, ERROR_POST_TWEET));
+                    client.close();
+                });
             });
         });
-        
+
         var response = {
             'status': STATUS_OK,
             'id': tweet.id,
