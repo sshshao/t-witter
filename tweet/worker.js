@@ -6,6 +6,7 @@ const DB_NAME = require('./config').tweet.MongoDB_Name;
 const TWEET_COLLECTION = require('./config').tweet.MongoDB_Tweet_Collection;
 const PROFILE_COLLECTION = require('./config').tweet.MongoDB_Profile_Collection;
 const ERROR_GET_TWEET = require('./protocols/messages').ERROR_GET_TWEET;
+const ERROR_POST_TWEET = require('./protocols/messages').ERROR_POSR_TWEET;
 const ERROR_DELETE_TWEET = require('./protocols/messages').ERROR_DELETE_TWEET;
 
 const STATUS_OK = 'OK';
@@ -19,7 +20,6 @@ exports.addTweet = function(payload) {
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                client.close();
                 return;
             }
             
@@ -32,15 +32,18 @@ exports.addTweet = function(payload) {
                 }
                 
                 // Check result insert count
-                console.log("Insertion result: " + JSON.stringify(result));
-
-                delete tweet._id;
-                var response = {
-                    'status': STATUS_OK,
-                    'id': tweet.id,
-                    'item': tweet
-                };
-                resolve(response);
+                if(result.ok == 1) {
+                    delete tweet._id;
+                    var response = {
+                        'status': STATUS_OK,
+                        'id': tweet.id,
+                        'item': tweet
+                    };
+                    resolve(response);
+                }
+                else {
+                    resolve(utils.generateMessage(STATUS_ERROR, ));
+                }
                 client.close();
             });            
         });
@@ -54,7 +57,6 @@ exports.getTweet = function(payload) {
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                client.close();
                 return;
             }
             
@@ -90,7 +92,6 @@ exports.deleteTweet = function(payload) {
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                client.close();
                 return;
             }
             
@@ -125,7 +126,6 @@ exports.likeTweet = function(payload) {
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                client.close();
                 return;
             }
             
@@ -175,7 +175,6 @@ exports.searchTweet = function(payload) {
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                client.close();
                 return;
             }
             
