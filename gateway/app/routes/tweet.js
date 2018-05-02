@@ -37,6 +37,7 @@ exports.post = function(req, res) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
+                console.log('[Cache] Interted');
             });
         });
     }
@@ -54,9 +55,11 @@ exports.get = function(req, res) {
         }
 
         if(tweet != null) {
+            console.log('[Cache] Cache hit');
             res.json(tweet);
         }
         else {
+            console.log('[Cache] Cache miss');
             var msg = {
                 'action': RPC_TWEET_ACTION.GET_TWEET,
                 'payload': {
