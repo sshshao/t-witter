@@ -102,7 +102,7 @@ exports.deleteTweet = function(payload) {
                     return;
                 }
 
-                console.log("Deletion result: " + result);
+                console.log("Deletion result: " + JSON.stringify(result));
                 if(result.deletedCount == 1) {
                     var response = {
                         'status': STATUS_OK,
@@ -121,7 +121,7 @@ exports.deleteTweet = function(payload) {
 
 exports.likeTweet = function(payload) {
     return new Promise(function(resolve, reject) {
-        var query = tweetQuery(payload.id);
+        var query = utils.tweetQuery(payload.id);
 
         mongodb.connect(MONGO_URI, function(err, client) {
             if(err) {
