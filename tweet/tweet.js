@@ -29,14 +29,14 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             var request = JSON.parse(msg.content.toString('utf8'));
             //console.log(' [x] Received request: "%s"', JSON.stringify(request));
             
-            console.time(request.action);
+            console.time(request.action + Math.floor(Date.now()/1000));
 
             sendTask(request, function(response) {
                 //console.log(JSON.stringify(response));
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
             }); 
-            
-            console.timeEnd(request.action);
+
+            console.timeEnd(request.action + Math.floor(Date.now()/1000));
 
             ch.ack(msg);
         });
