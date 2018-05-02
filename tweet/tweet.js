@@ -11,6 +11,8 @@ const TWEET_ACTION = require('./protocols/rpc_protocols').RPC_Tweet_Action;
 const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
 
+const uuidv4 = require('uuid/v4');
+
 amqp.connect(AMQP_HOST, function(err, conn) {
     if(err) throw err;
 
@@ -22,21 +24,22 @@ amqp.connect(AMQP_HOST, function(err, conn) {
         //ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: false});
         ch.assertQueue(AMQP_TWEET_QUEUE, {durable: true, exclusive: false});
         //ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
-        ch.prefetch(1);
+        ch.prefetch(10);
         console.log('[.] Waiting for request');
 
         ch.consume(AMQP_TWEET_QUEUE, function(msg) {
             var request = JSON.parse(msg.content.toString('utf8'));
             //console.log(' [x] Received request: "%s"', JSON.stringify(request));
             
-            console.time(request.action + Math.floor(Date.now()/1000));
+            var counterLabel = uuidv4();
+            console.time(request.action + '-' + counterLabel);
 
             sendTask(request, function(response) {
                 //console.log(JSON.stringify(response));
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
             }); 
 
-            console.timeEnd(request.action + Math.floor(Date.now()/1000));
+            console.timeEnd(request.action + '-' + counterLabel);
 
             ch.ack(msg);
         });
