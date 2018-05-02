@@ -83,27 +83,27 @@ exports.searchQuery = function(timestamp, q, target, targets, parent, replies, h
     }
     */
    
-    var query = { 
-        'timestamp': {'$lte': timestamp}
-    };
+    var query = { '$and': [
+        { 'timestamp': {'$lte': timestamp} }
+    ]};
 
     if(q != null) {
-        query.push({'content': {'$regex': '.*'+q+'.*'}});
+        query['$and'].push({'content': {'$regex': '.*'+q+'.*'}});
     }
     if(target != null) {
-        query.push({'username': target});
+        query['$and'].push({'username': target});
     }
     if(targets != null) {
-        query.push({'username': {'$in': targets}});
+        query['$and'].push({'username': {'$in': targets}});
     }
     if(parent != null) {
-        query.push({'parent': parent});
+        query['$and'].push({'parent': parent});
     }
     if(!replies) {
-        query.push({'childType': {'$ne': 'reply'}});
+        query['$and'].push({'childType': {'$ne': 'reply'}});
     }
     if(hasMedia) {
-        query.push({'media': {'$exists': True}, '$where': 'this.media.length > 0'});
+        query['$and'].push({'media': {'$exists': True}, '$where': 'this.media.length > 0'});
     }
 
     return query;

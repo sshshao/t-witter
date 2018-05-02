@@ -30,6 +30,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             console.log(' [x] Received request: "%s"', JSON.stringify(request));
             
             sendTask(request, function(response) {
+                console.log(response.toString());
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(response.toString()));
             }); 
             ch.ack(msg);
