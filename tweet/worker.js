@@ -6,7 +6,7 @@ const DB_NAME = require('./config').tweet.MongoDB_Name;
 const TWEET_COLLECTION = require('./config').tweet.MongoDB_Tweet_Collection;
 const PROFILE_COLLECTION = require('./config').tweet.MongoDB_Profile_Collection;
 const ERROR_GET_TWEET = require('./protocols/messages').ERROR_GET_TWEET;
-const ERROR_POST_TWEET = require('./protocols/messages').ERROR_POSR_TWEET;
+const ERROR_POST_TWEET = require('./protocols/messages').ERROR_POST_TWEET;
 const ERROR_DELETE_TWEET = require('./protocols/messages').ERROR_DELETE_TWEET;
 
 const STATUS_OK = 'OK';
@@ -32,18 +32,15 @@ exports.addTweet = function(payload) {
                 }
                 
                 // Check result insert count
-                if(result.ok == 1) {
-                    delete tweet._id;
-                    var response = {
-                        'status': STATUS_OK,
-                        'id': tweet.id,
-                        'item': tweet
-                    };
-                    resolve(response);
-                }
-                else {
-                    resolve(utils.generateMessage(STATUS_ERROR, ));
-                }
+                delete tweet._id;
+                var response = {
+                    'status': STATUS_OK,
+                    'id': tweet.id,
+                    'item': tweet
+                };
+                resolve(response);
+                //resolve(utils.generateMessage(STATUS_ERROR, ERROR_POST_TWEET));
+                
                 client.close();
             });            
         });
