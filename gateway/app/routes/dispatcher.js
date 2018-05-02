@@ -37,22 +37,26 @@ function startConnection(callback) {
 }
 
 function startChannel(service, payload, callback) {
-    connection.createConfirmChannel(function(err, ch) {
-        if(err) {
-            console.error('[AMQP] Channal error: ' + err.message);
-            throw err;
-        }
-
-        ch.consume('amq.rabbitmq.reply-to', function(msg) {
-            //console.log(' [.] Responding %s', msg.content.toString());
-            callback(msg.content.toString());
-            ch.close();
-        }, {noAck: true});
-        
-        ch.publish('', service, new Buffer(payload),
-            {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
-        console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
-    });
+    try {
+        connection.createConfirmChannel(function(err, ch) {
+            if(err) {
+                console.error('[AMQP] Channal error: ' + err.message);
+                throw err;
+            }
+    
+            ch.consume('amq.rabbitmq.reply-to', function(msg) {
+                //console.log(' [.] Responding %s', msg.content.toString());
+                callback(msg.content.toString());
+                ch.close();
+            }, {noAck: true});
+            
+            ch.publish('', service, new Buffer(payload),
+                {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
+            console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
+        });
+    } catch(err) {
+        throw err;
+    }
 }
 
 exports.dispatch = function(service, payload, callback) {
