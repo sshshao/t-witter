@@ -13,7 +13,7 @@ function startConnection(callback) {
 
     amqp.connect(AMQP_HOST, function(err, conn) {
         if(err) {
-            console.log('[AMQP Error] ' + err);
+            console.error('[AMQP Error] ' + err);
             //return setTimeout(startConnection(callback), 500);
             return;
         }
@@ -39,9 +39,8 @@ function startConnection(callback) {
 function startChannel(service, payload, callback) {
     connection.createConfirmChannel(function(err, ch) {
         if(err) {
-            console.error('[AMQP] Create channal error ' + err.message);
-            //return setTimeout(startConnection, 100);
-            return;
+            console.error('[AMQP] Channal error: ' + err.message);
+            throw err;
         }
 
         ch.consume('amq.rabbitmq.reply-to', function(msg) {
@@ -52,19 +51,23 @@ function startChannel(service, payload, callback) {
         
         ch.publish('', service, new Buffer(payload),
             {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
-        console.log(" [x] Sending to %s: '%s'", service, JSON.stringify(payload));
+        console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
     });
 }
 
 exports.dispatch = function(service, payload, callback) {
-    console.log('[x] Sending request: ' + payload);
-
     if(connection == null) {
         startConnection(function() {
             startChannel(service, payload, callback);
         });
     }
     else {
-        startChannel(service, payload, callback);
+        try {
+            startChannel(service, payload, callback);
+        } catch(err) {
+            startConnection(function() {
+                startChannel(service, payload, callback);
+            });
+        }
     }
 }
