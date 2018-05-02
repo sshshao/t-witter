@@ -32,18 +32,17 @@ exports.addTweet = function(payload) {
                 }
                 
                 // Check result insert count
-                delete tweet._id;
-                var response = {
-                    'status': STATUS_OK,
-                    'id': tweet.id,
-                    'item': tweet
-                };
-                resolve(response);
                 //resolve(utils.generateMessage(STATUS_ERROR, ERROR_POST_TWEET));
-                
                 client.close();
-            });            
+            });
         });
+        
+        var response = {
+            'status': STATUS_OK,
+            'id': tweet.id,
+            'item': tweet
+        };
+        resolve(response);
     });
 }
 
