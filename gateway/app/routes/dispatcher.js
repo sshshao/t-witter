@@ -36,17 +36,17 @@ function startConnection(callback) {
     });
 }
 
-function startChannel(service, payload, callback) {
-    try {
+function startChannel(service, payload) {
+    return new Promise(function(resolve, reject) {
         connection.createConfirmChannel(function(err, ch) {
             if(err) {
                 console.error('[AMQP] Channal error: ' + err.message);
-                throw err;
+                reject();
             }
     
             ch.consume('amq.rabbitmq.reply-to', function(msg) {
                 //console.log(' [.] Responding %s', msg.content.toString());
-                callback(msg.content.toString());
+                resolve(msg.content.toString());
                 ch.close();
             }, {noAck: true});
             
@@ -54,24 +54,20 @@ function startChannel(service, payload, callback) {
                 {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
             console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
         });
-    } catch(err) {
-        throw err;
-    }
+    });
 }
 
 exports.dispatch = function(service, payload, callback) {
     if(connection == null) {
         startConnection(function() {
-            startChannel(service, payload, callback);
+            startChannel(service, payload).then(callback);
         });
     }
     else {
-        try {
-            startChannel(service, payload, callback);
-        } catch(err) {
+        startChannel(service, payload).then(callback, function() {
             startConnection(function() {
-                startChannel(service, payload, callback);
+                startChannel(service, payload).then(callback);
             });
-        }
+        });
     }
 }
