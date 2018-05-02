@@ -14,7 +14,8 @@ function startConnection(callback) {
     amqp.connect(AMQP_HOST, function(err, conn) {
         if(err) {
             console.log('[AMQP Error] ' + err);
-            return setTimeout(startConnection(callback), 500);
+            //return setTimeout(startConnection(callback), 500);
+            return;
         }
 
         console.log('[x] AMQP connection established.');
@@ -26,7 +27,8 @@ function startConnection(callback) {
         });
         conn.on('close', function() {
             console.error('[AMQP] Reconnecting...');
-            return setTimeout(startConnection(callback), 100);
+            //return setTimeout(startConnection(callback), 100);
+            return;
         });
 
         connection = conn;
@@ -50,7 +52,7 @@ function startChannel(service, payload, callback) {
         
         ch.publish('', service, new Buffer(payload),
             {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
-        console.log(" [x] Sent %s: '%s'", service, JSON.stringify(payload));
+        console.log(" [x] Sending to %s: '%s'", service, JSON.stringify(payload));
     });
 }
 
