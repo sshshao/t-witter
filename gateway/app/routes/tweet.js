@@ -1,3 +1,4 @@
+const uuidv4 = require('uuid/v4');
 var Memcached = require('memcached');
 const utils = require('../protocols/utils');
 const dispatcher = require('./dispatcher');
@@ -18,17 +19,17 @@ var mcd_options = {retries: 10, retry: 10000, poolSize: 50};
 var memcached = new Memcached(MCD_HOST, mcd_options);
 
 
-const uuidv4 = require('uuid/v4');
-
 exports.post = function(req, res) {
     var counterLabel = uuidv4();
     console.time('ADD_TWEET' + ' - ' + counterLabel);
 
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
+        var tweetId = uuidv4();
         var msg = {
             'action': RPC_TWEET_ACTION.ADD_TWEET,
             'payload': {
+                'id': tweetId,
                 'username': cookie[1],
                 'content': req.body.content,
                 'childType': req.body.childType,
@@ -38,13 +39,16 @@ exports.post = function(req, res) {
         };
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
-            res.json(response);            
             memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
                 console.timeEnd('ADD_TWEET' + ' - ' + counterLabel);
             });
+        });
+        res.json({
+            'status': STATUS_OK,
+            'id': tweetId
         });
     }
     else {

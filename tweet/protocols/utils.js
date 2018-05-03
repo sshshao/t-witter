@@ -1,5 +1,3 @@
-const uuidv4 = require('uuid/v4');
-
 const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
 
@@ -18,9 +16,9 @@ exports.generateMessage = function(status, msg) {
     }
 }
 
-exports.tweetInsert = function(username, content, childType, parent, media) {
+exports.tweetInsert = function(id, username, content, childType, parent, media) {
     return {
-        'id': uuidv4(),
+        'id': id,
         'username': username,
         'timestamp': Math.floor(Date.now()/1000),
         'content': content,
