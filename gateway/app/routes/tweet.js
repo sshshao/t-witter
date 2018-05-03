@@ -37,7 +37,6 @@ exports.post = function(req, res) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
-                console.log('[Cache] Interted');
             });
         });
     }

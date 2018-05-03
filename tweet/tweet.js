@@ -24,7 +24,7 @@ amqp.connect(AMQP_HOST, function(err, conn) {
         //ch.assertExchange(AMQP_EXCHANGE, AMQP_EXCHANGE_TYPE, {durable: false});
         ch.assertQueue(AMQP_TWEET_QUEUE, {durable: true, exclusive: false});
         //ch.bindQueue(q.queue, '', AMQP_TWEET_QUEUE);
-        ch.prefetch(10);
+        ch.prefetch(5);
         console.log('[.] Waiting for request');
 
         ch.consume(AMQP_TWEET_QUEUE, function(msg) {
@@ -33,14 +33,11 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             
             var counterLabel = uuidv4();
             console.time(request.action + '-' + counterLabel);
-
             sendTask(request, function(response) {
                 //console.log(JSON.stringify(response));
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
-            }); 
-
-            console.timeEnd(request.action + '-' + counterLabel);
-
+                console.timeEnd(request.action + '-' + counterLabel);
+            });
             ch.ack(msg);
         });
     });
