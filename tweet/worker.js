@@ -26,7 +26,7 @@ exports.addTweet = function(payload) {
             payload.childType, payload.parent, payload.media);
         
         const collection = db.collection(TWEET_COLLECTION);
-        collection.createIndex({ 'id': 1, 'username': 1 }, function(err, indexResult) {
+        collection.createIndexes(utils.searchIndex, function(err, indexResult) {
             if(err) {
                 console.error(err.message);
                 return;

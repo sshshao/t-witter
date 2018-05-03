@@ -70,6 +70,25 @@ exports.unlikeTweetUpdate = function(user) {
     };
 }
 
+exports.searchIndex = [
+    {
+        key: {
+            'id': 1,
+            'username': 1,
+        },
+        name: "by_id",
+        background: true,
+        unique: true
+    },
+    {
+        key: {
+            'content': 'text'
+        },
+        name: "by_text",
+        background: true
+    }
+];
+
 exports.searchQuery = function(timestamp, q, target, targets, parent, replies, hasMedia) {
     /*
     var query = { 
