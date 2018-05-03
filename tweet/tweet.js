@@ -32,11 +32,11 @@ amqp.connect(AMQP_HOST, function(err, conn) {
             //console.log(' [x] Received request: "%s"', JSON.stringify(request));
             
             var counterLabel = uuidv4();
-            console.time(request.action + '-' + counterLabel);
+            console.time(request.action + ' - ' + counterLabel);
             sendTask(request, function(response) {
                 //console.log(JSON.stringify(response));
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
-                console.timeEnd(request.action + '-' + counterLabel);
+                console.timeEnd(request.action + ' - ' + counterLabel);
             });
             ch.ack(msg);
         });

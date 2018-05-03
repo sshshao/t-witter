@@ -17,7 +17,13 @@ const STATUS_ERROR = 'error';
 var mcd_options = {retries: 10, retry: 10000, poolSize: 50};
 var memcached = new Memcached(MCD_HOST, mcd_options);
 
+
+const uuidv4 = require('uuid/v4');
+
 exports.post = function(req, res) {
+    var counterLabel = uuidv4();
+    console.time('ADD_TWEET' + ' - ' + counterLabel);
+
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var msg = {
@@ -37,6 +43,7 @@ exports.post = function(req, res) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
+                console.timeEnd('ADD_TWEET' + ' - ' + counterLabel);
             });
         });
     }
