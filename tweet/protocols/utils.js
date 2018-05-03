@@ -107,7 +107,7 @@ exports.searchQuery = function(timestamp, q, target, targets, parent, replies, h
     ]};
 
     if(q != null) {
-        query['$and'].push({'content': {'$regex': '.*'+q+'.*'}});
+        query['$and'].push({'$text': {'$search' : q }});
     }
     if(target != null) {
         query['$and'].push({'username': target});
