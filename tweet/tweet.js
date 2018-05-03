@@ -38,8 +38,8 @@ amqp.connect(AMQP_HOST, function(err, conn) {
                 ch.sendToQueue(msg.properties.replyTo, new Buffer(JSON.stringify(response)));
                 console.timeEnd(request.action + ' - ' + counterLabel);
             });
-            ch.ack(msg);
-        });
+            //ch.ack(msg);
+        }, {noAck: true});
     });
 });
 
