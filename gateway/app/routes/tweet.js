@@ -177,6 +177,7 @@ exports.search = function(req, res) {
                 'hasMedia': req.body.hasMedia == null ? false : req.body.hasMedia
             }
         }
+        console.log(JSON.stringify(msg));
         memcached.get(utils.MCDsearchKey(msg.payload), function(err, result) {
             if(err) {
                 console.error('[Cache] Cache error:', err.message);
