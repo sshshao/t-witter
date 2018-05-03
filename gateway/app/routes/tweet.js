@@ -65,11 +65,11 @@ exports.get = function(req, res) {
         }
 
         if(tweet != null) {
-            console.log('[Cache] Cache hit');
+            console.log('[Cache] Cache hit - Get Tweet');
             res.json(tweet);
         }
         else {
-            console.log('[Cache] Cache miss');
+            console.log('[Cache] Cache miss - Get Tweet');
             var msg = {
                 'action': RPC_TWEET_ACTION.GET_TWEET,
                 'payload': {
@@ -177,8 +177,28 @@ exports.search = function(req, res) {
                 'hasMedia': req.body.hasMedia == null ? false : req.body.hasMedia
             }
         }
-        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
-            res.json(JSON.parse(response));
+        memcached.get(utils.MCDsearchKey(msg.payload), function(err, result) {
+            if(err) {
+                console.error('[Cache] Cache error:', err.message);
+            }
+    
+            if(result != null) {
+                console.log('[Cache] Cache hit - Search');
+                res.json(result);
+            }
+            else {
+                console.log('[Cache] Cache miss - Search');
+                dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
+                    response = JSON.parse(response);
+                    res.json(response);
+                    // Insert to cache
+                    memcached.add(utils.MCDsearchKey(msg.payload), response, 1000, function(err) {
+                        if(err) {
+                            console.error('[Cache] Cache error:', err.message);
+                        }
+                    });
+                });
+            }
         });
     }
     else {
