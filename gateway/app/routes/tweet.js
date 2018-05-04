@@ -37,6 +37,10 @@ exports.post = function(req, res) {
                 'media': req.body.media == null ? [] : req.body.media
             }
         };
+        res.json({
+            'status': STATUS_OK,
+            'id': tweetId
+        });
         dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
             response = JSON.parse(response);
             memcached.add(utils.MCDtweetKey(response.item.id), response, 3600, function(err) {
@@ -45,10 +49,6 @@ exports.post = function(req, res) {
                 }
                 console.timeEnd('ADD_TWEET' + ' - ' + counterLabel);
             });
-        });
-        res.json({
-            'status': STATUS_OK,
-            'id': tweetId
         });
     }
     else {
