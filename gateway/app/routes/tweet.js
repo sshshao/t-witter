@@ -20,9 +20,6 @@ var memcached = new Memcached(MCD_HOST, mcd_options);
 
 
 exports.post = function(req, res) {
-    var counterLabel = uuidv4();
-    console.time('ADD_TWEET' + ' - ' + counterLabel);
-
     var cookie = auth.checkLogin(req);
     if(cookie[0]) {
         var tweetId = uuidv4();
@@ -47,7 +44,6 @@ exports.post = function(req, res) {
                 if(err) {
                     console.error('[Cache] Cache error:', err.message);
                 }
-                console.timeEnd('ADD_TWEET' + ' - ' + counterLabel);
             });
         });
     }
