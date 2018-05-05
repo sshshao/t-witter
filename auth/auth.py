@@ -80,17 +80,26 @@ def toekn_gen():
 
 
 def add_user(username, email, password):
+    t_bf = int(time.time() * 1000)
     pw_salt = uuid.uuid4().hex
     salted_pw = password + pw_salt
+    t_af = int(time.time() * 1000)
+    print("Salting takes: %d" (t_af - t_bf))
     hashed_pw = hashlib.sha512(salted_pw.encode('utf-8')).hexdigest()
     try:
+        t_bf = int(time.time() * 1000)
         # Add a user.
         user = UserAccount(
             username=username, 
             email=email, 
             password=hashed_pw, 
             password_salt=pw_salt)
+        t_af = int(time.time() * 1000)
+        print("User Object Creation takes: %d" % (t_af - t_bf))
+        t_bf = int(time.time() * 1000)
         session.add(user)
+        t_af = int(time.time() * 1000)
+        print("Adding User to Session takes: %d" % (t_af - t_bf))
 
         # Add its activation token
         ac_token = toekn_gen()
