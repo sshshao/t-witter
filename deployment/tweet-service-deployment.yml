@@ -5,7 +5,7 @@ metadata:
     twitter: tweet-service
   name: tweet-service
 spec:
-  replicas: 10
+  replicas: 40
   selector:
     matchLabels:
       twitter: tweet-service
