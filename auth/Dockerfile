@@ -1,9 +1,11 @@
-FROM python:3
+FROM node:carbon
 
-WORKDIR /auth_service
+WORKDIR /app
 
-ADD . /auth_service
+COPY ./package*.json ./
 
-RUN pip install -r requirements.txt
+RUN npm install
 
-CMD ["python3", "auth.py"]
+COPY ./ /app
+
+CMD ["npm", "start"]
