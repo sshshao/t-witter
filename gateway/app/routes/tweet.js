@@ -173,6 +173,19 @@ exports.search = function(req, res) {
                 'hasMedia': req.body.hasMedia == null ? false : req.body.hasMedia
             }
         }
+        dispatcher.dispatch(AMQP_TWEET_QUEUE, JSON.stringify(msg), (response) => {
+            response = JSON.parse(response);
+            res.json(response);
+            // Insert to cache
+            /*
+            memcached.add(utils.MCDsearchKey(msg.payload), response, 1000, function(err) {
+                if(err) {
+                    console.error('[Cache] Cache error:', err.message);
+                }
+            });
+            */
+        });
+        /*
         console.log(JSON.stringify(msg));
         memcached.get(utils.MCDsearchKey(msg.payload), function(err, result) {
             if(err) {
@@ -197,6 +210,7 @@ exports.search = function(req, res) {
                 });
             }
         });
+        */
     }
     else {
         var response = utils.generateMessage(STATUS_ERROR, ERROR_NOT_YET_LOGIN_MESSAGE);
