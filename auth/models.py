@@ -25,7 +25,7 @@ class UserActivationToken(Base):
     tokenid = Column(Integer, primary_key=True, autoincrement=True)    
     uid = Column(Integer, ForeignKey('userAccount.uid'), nullable=False)
     activation_token = Column(String(128), nullable=False)
-    user_account = relationship(UserAccount, index=True)
+    user_account = relationship(UserAccount)
 
 
 
