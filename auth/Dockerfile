@@ -6,4 +6,4 @@ ADD . /auth_service
 
 RUN pip install -r requirements.txt
 
-CMD ["python3", "auth.py"]
+CMD ["python3", "-u", "auth.py"]
