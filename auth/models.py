@@ -11,7 +11,7 @@ Base = declarative_base()
 class UserAccount(Base):
     __tablename__ = 'userAccount'
     uid = Column(Integer, primary_key=True, autoincrement=True)
-    username = Column(String(256), unique=True)
+    username = Column(String(256), unique=True, index=True)
     email = Column(String(256), unique=True)
     password = Column(String(128), nullable=False)
     password_salt = Column(String(128), nullable=False)
@@ -25,7 +25,7 @@ class UserActivationToken(Base):
     tokenid = Column(Integer, primary_key=True, autoincrement=True)    
     uid = Column(Integer, ForeignKey('userAccount.uid'), nullable=False)
     activation_token = Column(String(128), nullable=False)
-    user_account = relationship(UserAccount)
+    user_account = relationship(UserAccount, index=True)
 
 
 
