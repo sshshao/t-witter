@@ -1,10 +1,13 @@
 const mongodb = require('mongodb').MongoClient;
 const utils = require('./protocols/utils');
+const mongoose = require('mongoose');
+const mexp = require('mongoose-elasticsearch-xp');
 
 const MONGO_URI = require('./config').tweet.MongoDB_Uri;
 const DB_NAME = require('./config').tweet.MongoDB_Name;
-const TWEET_COLLECTION = require('./config').tweet.MongoDB_Tweet_Collection;
+//const TWEET_COLLECTION = require('./config').tweet.MongoDB_Tweet_Collection;
 const PROFILE_COLLECTION = require('./config').tweet.MongoDB_Profile_Collection;
+const ES_HOST = require('./config').tweet.ES_HOST;
 const ERROR_GET_TWEET = require('./protocols/messages').ERROR_GET_TWEET;
 const ERROR_POST_TWEET = require('./protocols/messages').ERROR_POST_TWEET;
 const ERROR_DELETE_TWEET = require('./protocols/messages').ERROR_DELETE_TWEET;
@@ -19,41 +22,52 @@ mongodb.connect(MONGO_URI, function(err, client) {
     db = client.db(DB_NAME);
 });
 
+// Initialize mongoose connection
+mongoose.connect(MONGO_URI, {
+    dbName: DB_NAME,
+    autoIndex: false,
+    reconnectTries: Number.MAX_VALUE,
+    reconnectInterval: 500,
+    bufferMaxEntries: 0
+});
+
+var tweetSchema = utils.getTweetSchema();
+tweetSchema.plugin(mexp, {host: ES_HOST});
+if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
+tweetSchema.options.toObject.transform = function (doc, ret, options) {
+    // remove the _id of every document before returning the result
+    delete ret._id;
+    return ret;
+}
+
+var Tweet = mongoose.model('tweet', tweetSchema);
+
 
 exports.addTweet = function(payload) {
     return new Promise(function(resolve, reject) {
-        var tweet = utils.tweetInsert(payload.id, payload.username, payload.content, 
-            payload.childType, payload.parent, payload.media);
-        
-        const collection = db.collection(TWEET_COLLECTION);
-        collection.createIndexes(utils.searchIndex, function(err, indexResult) {
+        var tweet = new Tweet(utils.tweetInsert(payload.id, payload.username, payload.content,  
+            payload.childType, payload.parent, payload.media));
+        tweet.save(function (err) {
             if(err) {
                 console.error(err.message);
                 return;
             }
 
-            collection.insertOne(tweet, function(err, result) {
-                if(err) {
-                    console.error(err.message);
-                    return;
-                }
-            });
+            var response = {
+                'status': STATUS_OK,
+                'id': payload.id,
+                'item': tweet.toObject()
+            };
+            resolve(response);
         });
-
-        var response = {
-            'status': STATUS_OK,
-            'id': tweet.id,
-            'item': tweet
-        };
-        resolve(response);
     });
 }
 
 exports.getTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQuery(payload.id);
-        
-        db.collection(TWEET_COLLECTION).findOne(query, function(err, result) {
+
+        Tweet.findOne(query).lean().exec(function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
                 return;
@@ -70,31 +84,32 @@ exports.getTweet = function(payload) {
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_GET_TWEET));
             }
-        });            
+        });   
     });
 }
 
 exports.deleteTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQueryWithUsername(payload.id, payload.username);
-       
-        db.collection(TWEET_COLLECTION).findOneAndDelete(query, function(err, result) {
+
+        Tweet.findOneAndRemove(query, function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
                 return;
             }
 
-            if(result.ok == 1) {
+            if(result != null) {
+                
                 var response = {
                     'status': STATUS_OK,
-                    'media': result.value.media
+                    'media': result.toObject().media
                 };
                 resolve(response);
             }
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_DELETE_TWEET));
             }
-        });            
+        });         
     });
 }
 
@@ -102,7 +117,7 @@ exports.likeTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQuery(payload.id);
 
-        db.collection(TWEET_COLLECTION).findOne(query, function(err, result) {
+        Tweet.findOne(query).lean().exec(function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
                 return;
@@ -121,7 +136,7 @@ exports.likeTweet = function(payload) {
                 }
 
                 if(update != null) {
-                    db.collection(TWEET_COLLECTION).updateOne(query, update, function(err, result) {
+                    Tweet.findOneAndUpdate(query, update, function(err, result) {
                         if(err) {
                             resolve(utils.generateMessage(STATUS_ERROR, err.message));
                             return;
@@ -133,7 +148,7 @@ exports.likeTweet = function(payload) {
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_GET_TWEET));
             }
-        });            
+        });     
     });
 }
 
@@ -153,28 +168,24 @@ exports.searchTweet = function(payload) {
                 payload.targets = [];
             }
 
-            var query = utils.searchQuery(payload.timestamp, payload.q, payload.target, 
-                payload.targets, payload.parent, payload.replies, payload.hasMedia);
-            var option = utils.searchOption(payload.rank, payload.limit);
+            var query = utils.searchQuery(payload.limit, payload.timestamp, payload.q, payload.target, 
+                payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
 
-            db.collection(TWEET_COLLECTION).find(query, option).toArray(function(err, results) {
-                if(err) {
-                    resolve(utils.generateMessage(STATUS_ERROR, err.message));
-                    return;
-                }
-
+            Tweet.esSearch(query).then(function(results) {
                 var response = {
                     'status': STATUS_OK,
                 };
                 var items = [];
-                // Remove BSON _ids
-                for(var i = 0; i < results.length; i++) {
-                    delete results[i]._id;
-                    items.push(results[i]);
+
+                if(results != null) {
+                    for(var i = 0; i < results.length; i++) {
+                        delete results[i]._id;
+                        items.push(results[i]);
+                    }
                 }
                 response.items = items;
                 resolve(response);
-            });                
+            });      
         });            
     });
 }

@@ -32,6 +32,7 @@ def add_profile(payload):
 
     db = client[DB_NAME]
     collection = db[COLLECTION_NAME]
+    collection.create_index([('username', pymongo.ASCENDING)],background=True)
     result = collection.insert_one(profile)
 
     if(result.inserted_id == None):

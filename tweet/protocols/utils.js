@@ -1,3 +1,5 @@
+const mongoose = require('mongoose');
+
 const STATUS_OK = 'OK';
 const STATUS_ERROR = 'error';
 
@@ -16,17 +18,33 @@ exports.generateMessage = function(status, msg) {
     }
 }
 
+exports.getTweetSchema = function() {
+    var propertySchema = new mongoose.Schema({
+        'likes': { type: Number, default: 0 },
+        'liked_by': { type: Number, default: [] }
+    });
+
+    var tweetSchema = new mongoose.Schema({
+        'id': { type: String, es_indexed: true },
+        'username': { type: String, es_indexed: true },
+        'timestamp': { type: String, es_indexed: true },
+        'content': { type: String, es_indexed: true },
+        'retweeted': { type: Number, default: 0 },
+        'property': propertySchema,
+        'childType': String,
+        'parent': String,
+        'media': Array
+    });
+
+    return tweetSchema;
+}
+
 exports.tweetInsert = function(id, username, content, childType, parent, media) {
     return {
         'id': id,
         'username': username,
         'timestamp': Math.floor(Date.now()/1000),
         'content': content,
-        'retweeted': 0,
-        'property': {
-            'likes': 0,
-            'liked_by': []
-        },
         'childType': childType,
         'parent': parent,
         'media': media
@@ -87,62 +105,59 @@ exports.searchIndex = [
     }
 ];
 
-exports.searchQuery = function(timestamp, q, target, targets, parent, replies, hasMedia) {
-    /*
-    var query = { 
-        'timestamp': {'$lte': timestamp},
-        'content': {'$regex' : '.*'+q+'.*'},
-        'username': username,
-        'username': {'$in': targets},
-        'parent': parent,
-        'childType': {'$ne': 'reply'},
-        'media': {'$exists': True}, '$where': 'this.media.length > 0'}
-    }
-    */
-   
-    var query = { '$and': [
-        { 'timestamp': {'$lte': timestamp} }
-    ]};
+exports.searchQuery = function(limit, timestamp, q, target, targets, parent, replies, hasMedia, rank) {
+    var query = {
+        'size' : limit,
+        'query': { 
+            'bool': { 
+                'must': [],
+                'must_not': [],
+                'filter': [
+                    { 'range': { 'timestamp': {'lte': timestamp} } }
+                ]
+            }
+        }
+    };
 
     if(q != null) {
-        query['$and'].push({'$text': {'$search' : q }});
+        query.query.bool.must.push({ 'match': { 'content': q } });
     }
     if(target != null) {
-        query['$and'].push({'username': target});
+        query.query.bool.must.push({ 'match': { 'username': target } });
     }
     if(targets != null) {
-        query['$and'].push({'username': {'$in': targets}});
+        query.query.bool.filter.push({
+            'terms': {
+                'username': targets,
+                'minimum_should_match': 1
+            }
+        });
     }
     if(parent != null) {
-        query['$and'].push({'parent': parent});
+        query.query.bool.must.push({ 'match': { 'parent': parent } });
     }
     if(!replies) {
-        query['$and'].push({'childType': {'$ne': 'reply'}});
+        query.query.bool.must_not.push({
+            'term':  { 'childType': 'reply' }
+        });
     }
     if(hasMedia) {
-        query['$and'].push({'media': {'$exists': True}, '$where': 'this.media.length > 0'});
+        query.query.bool.must.push({
+            'exists' : { 'field' : 'media' }
+        });
+    }
+    if(rank == 'interest') {
+        query.sort = [
+            { 'timestamp': {"order": "desc"} },
+            { 'retweeted': {"order": "desc"} },
+            { 'property.likes': {"order": "desc"} }
+        ]
+    }
+    else {
+        query.sort = [
+            { 'timestamp': {"order": "desc"} }
+        ]
     }
 
     return query;
-}
-
-exports.searchOption = function(rank, limit) {
-    if(rank == 'interest') {
-        return {
-            sort: [
-                ['timestamp', -1],
-                ['retweeted', -1],
-                ['property.likes', -1]
-            ],
-            limit: limit
-        };
-    }
-    else {
-        return {
-            sort: [
-                ['timestamp', -1],
-            ],
-            limit: limit
-        };
-    }
 }

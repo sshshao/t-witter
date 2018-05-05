@@ -40,9 +40,10 @@ module.exports = {
         Search_Limit_Max: 100,
         MongoDB_Uri: 'mongodb://docker-2:27017/',
         MongoDB_Name: 'witter',
-        MongoDB_Tweet_Collection: 'tweet',
+        MongoDB_Tweet_Collection: 'tweets',
         MongoDB_Profile_Collection: 'profile',
-        AMQP_Queue: 'tweet_queue'
+        AMQP_Queue: 'tweet_queue',
+        ES_HOST: '10.0.1.14:9200'
     },
 
     profile: {
