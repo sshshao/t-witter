@@ -84,7 +84,7 @@ def add_user(username, email, password):
     pw_salt = uuid.uuid4().hex
     salted_pw = password + pw_salt
     t_af = int(time.time() * 1000)
-    print("Salting takes: %d" % (t_af - t_bf))
+    sys.stderr.write("Salting takes: %d\n" % (t_af - t_bf))
     hashed_pw = hashlib.sha512(salted_pw.encode('utf-8')).hexdigest()
     try:
         t_bf = int(time.time() * 1000)
@@ -95,39 +95,39 @@ def add_user(username, email, password):
             password=hashed_pw, 
             password_salt=pw_salt)
         t_af = int(time.time() * 1000)
-        print("User Object Creation takes: %d" % (t_af - t_bf))
+        sys.stderr.write("User Object Creation takes: %d\n" % (t_af - t_bf))
         t_bf = int(time.time() * 1000)
         session.add(user)
         t_af = int(time.time() * 1000)
-        print("Adding User to Session takes: %d" % (t_af - t_bf))
+        sys.stderr.write("Adding User to Session takes: %d\n" % (t_af - t_bf))
 
         # Add its activation token
         t_bf = int(time.time() * 1000)
         ac_token = toekn_gen()
         t_af = int(time.time() * 1000)
-        print("Token Generation takes: %d" % (t_af - t_bf))
+        sys.stderr.write("Token Generation takes: %d\n" % (t_af - t_bf))
         t_bf = int(time.time() * 1000)        
         user_ac_token = UserActivationToken(
             user_account=user,
             activation_token=ac_token
         )
         t_af = int(time.time() * 1000)
-        print("Token Object Creation takes: %d" % (t_af - t_bf))
+        sys.stderr.write("Token Object Creation takes: %d\n" % (t_af - t_bf))
         t_bf = int(time.time() * 1000) 
         session.add(user_ac_token)
         t_af = int(time.time() * 1000)
         t_bf = int(time.time() * 1000) 
-        print("Adding User Token to Session takes: %d" % (t_af - t_bf)) 
+        sys.stderr.write("Adding User Token to Session takes: %d\n" % (t_af - t_bf)) 
         t_bf = int(time.time() * 1000)               
         session.commit()
         t_af = int(time.time() * 1000)
-        print("Session Commit takes: %d" % (t_af - t_bf)) 
+        sys.stderr.write("Session Commit takes: %d\n" % (t_af - t_bf)) 
         
         t_bf = int(time.time() * 1000)               
         # Async sending emails.
         send_user_token(email, ac_token)
         t_af = int(time.time() * 1000)
-        print("AMQP Transfer takes: %d" % (t_af - t_bf))         
+        sys.stderr.write("AMQP Transfer takes: %d\n" % (t_af - t_bf))         
         return generate_message(STATUS_OK, SUCCESS_ACCOUNT_CREATED_MESSAGE)
     except IntegrityError as err:
         session.rollback()
