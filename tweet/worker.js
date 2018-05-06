@@ -58,6 +58,7 @@ exports.addTweet = function(payload) {
                 'id': payload.id,
                 'item': tweet.toObject()
             };
+            console.log('Added tweet: ' + response);
             resolve(response);
         });
     });
@@ -66,12 +67,15 @@ exports.addTweet = function(payload) {
 exports.getTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQuery(payload.id);
-
+        console.log(query);
+        
         Tweet.findOne(query).lean().exec(function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
                 return;
             }
+
+            console.log('in');
 
             if(result != null) {
                 delete result._id;
@@ -79,6 +83,7 @@ exports.getTweet = function(payload) {
                     'status': STATUS_OK,
                     'item': result
                 };
+                console.log('get tweet: ' + response);
                 resolve(response);
             }
             else {

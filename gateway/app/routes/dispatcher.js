@@ -7,10 +7,6 @@ const AMQP_EXCHANGE_MODE = require('../config').amqp.AMQP_Exchange_Type;
 var connection = null;
 
 function startConnection(callback) {
-    console.log('AMQP check: ' + amqp);
-    console.log('AMQP_HOST check: ' + AMQP_HOST);
-    console.log('connection check: ' + connection);
-
     amqp.connect(AMQP_HOST, function(err, conn) {
         if(err) {
             console.error('[AMQP Error] ' + err);
