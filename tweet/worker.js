@@ -176,16 +176,16 @@ exports.searchTweet = function(payload) {
             Tweet.esSearch(query).then(function(results) {
                 var response = {
                     'status': STATUS_OK,
+                    'items': []
                 };
-                var items = [];
+                console.log("result: " + results);
 
                 if(results != null) {
                     for(var i = 0; i < results.length; i++) {
                         delete results[i]._id;
-                        items.push(results[i]);
+                        response.items.push(results[i]);
                     }
                 }
-                response.items = items;
                 resolve(response);
             });      
         });            
