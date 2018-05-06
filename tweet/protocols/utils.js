@@ -106,10 +106,7 @@ exports.searchQuery = function(limit, timestamp, q, target, targets, parent, rep
     }
     if(targets != null) {
         query.query.bool.filter.push({
-            'terms': {
-                'username': targets,
-                'minimum_should_match': 1
-            }
+            'terms': { 'username': targets }
         });
     }
     if(parent != null) {
