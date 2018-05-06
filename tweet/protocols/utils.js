@@ -19,18 +19,23 @@ exports.generateMessage = function(status, msg) {
 }
 
 exports.getTweetSchema = function() {
+    /*
     var propertySchema = new mongoose.Schema({
         'likes': { type: Number, default: 0 },
         'liked_by': { type: Number, default: [] }
     });
+    */
 
     var tweetSchema = new mongoose.Schema({
         'id': { type: String, es_indexed: true },
         'username': { type: String, es_indexed: true },
-        'timestamp': { type: String, es_indexed: true },
+        'timestamp': { type: Number, es_indexed: true },
         'content': { type: String, es_indexed: true },
         'retweeted': { type: Number, default: 0 },
-        'property': propertySchema,
+        'property': {
+            'likes': { type: Number, default: 0 },
+            'liked_by': { type: Number, default: [] }
+        },
         'childType': String,
         'parent': String,
         'media': Array

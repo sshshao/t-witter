@@ -35,8 +35,9 @@ var tweetSchema = utils.getTweetSchema();
 tweetSchema.plugin(mexp, {hosts: [ES_HOST]});
 if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
 tweetSchema.options.toObject.transform = function (doc, ret, options) {
-    // remove the _id of every document before returning the result
+    // remove the auto generated value of every document before returning the result
     delete ret._id;
+    delete ret.__v;
     return ret;
 }
 
@@ -66,7 +67,6 @@ exports.addTweet = function(payload) {
 exports.getTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQuery(payload.id);
-        console.log('get: ' + query);
         
         Tweet.findOne(query).lean().exec(function(err, result) {
             if(err) {
@@ -74,15 +74,11 @@ exports.getTweet = function(payload) {
                 return;
             }
 
-            console.log('in');
-
             if(result != null) {
-                delete result._id;
                 var response = {
                     'status': STATUS_OK,
-                    'item': result
+                    'item': result.toObject()
                 };
-                console.log('get tweet: ' + response);
                 resolve(response);
             }
             else {
