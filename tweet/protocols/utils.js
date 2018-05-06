@@ -37,11 +37,11 @@ exports.getTweetSchema = function() {
     return tweetSchema;
 }
 
-exports.tweetInsert = function(id, username, content, childType, parent, media) {
+exports.tweetInsert = function(id, username, timestamp, content, childType, parent, media) {
     return {
         'id': id,
         'username': username,
-        'timestamp': Math.floor(Date.now()/1000),
+        'timestamp': timestamp,
         'content': content,
         'childType': childType,
         'parent': parent,

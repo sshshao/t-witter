@@ -28,6 +28,7 @@ exports.post = function(req, res) {
             'payload': {
                 'id': tweetId,
                 'username': cookie[1],
+                'timestamp': Math.floor(Date.now()/1000),
                 'content': req.body.content,
                 'childType': req.body.childType,
                 'parent': req.body.parent,

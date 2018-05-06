@@ -45,8 +45,8 @@ var Tweet = mongoose.model('tweet', tweetSchema);
 
 exports.addTweet = function(payload) {
     return new Promise(function(resolve, reject) {
-        var tweet = new Tweet(utils.tweetInsert(payload.id, payload.username, payload.content,  
-            payload.childType, payload.parent, payload.media));
+        var tweet = new Tweet(utils.tweetInsert(payload.id, payload.username, payload.timestamp, 
+            payload.content, payload.childType, payload.parent, payload.media));
         tweet.save(function (err) {
             if(err) {
                 console.error(err.message);
