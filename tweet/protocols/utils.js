@@ -7,25 +7,18 @@ exports.generateMessage = function(status, msg) {
     if (status == STATUS_OK) {
         return {
             'status': STATUS_OK,
-            'message': msg,
+            'message': msg
         };
     }
     else{
         return {
             'status': status,
-            'error': msg,
+            'error': msg
         };
     }
 }
 
 exports.getTweetSchema = function() {
-    /*
-    var propertySchema = new mongoose.Schema({
-        'likes': { type: Number, default: 0 },
-        'liked_by': { type: Array, default: [] }
-    });
-    */
-
     var tweetSchema = new mongoose.Schema({
         'id': { type: String, es_indexed: true },
         'username': { type: String, es_indexed: true },
@@ -91,27 +84,6 @@ exports.unlikeTweetUpdate = function(user) {
     };
 }
 
-/*
-exports.searchIndex = [
-    {
-        key: {
-            'id': 1,
-            'username': 1,
-        },
-        name: "by_id",
-        background: true,
-        unique: true
-    },
-    {
-        key: {
-            'content': 'text'
-        },
-        name: "by_text",
-        background: true
-    }
-];
-*/
-
 exports.searchQuery = function(limit, timestamp, q, target, targets, parent, replies, hasMedia, rank) {
     var query = {
         'size' : limit,
@@ -158,12 +130,12 @@ exports.searchQuery = function(limit, timestamp, q, target, targets, parent, rep
             { 'timestamp': {'order': 'desc'} },
             { 'retweeted': {'order': 'desc'} },
             { 'property.likes': {'order': 'desc'} }
-        ]
+        ];
     }
     else {
         query.sort = [
             { 'timestamp': {'order': 'desc'} }
-        ]
+        ];
     }
 
     return query;
