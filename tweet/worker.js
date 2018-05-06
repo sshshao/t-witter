@@ -155,6 +155,8 @@ exports.likeTweet = function(payload) {
 
 exports.searchTweet = function(payload) {
     return new Promise(function(resolve, reject) {
+        console.log(JSON.stringify(payload));
+
         db.collection(PROFILE_COLLECTION).findOne({'username': payload.username}, function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
