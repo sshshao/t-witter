@@ -155,8 +155,6 @@ exports.likeTweet = function(payload) {
 
 exports.searchTweet = function(payload) {
     return new Promise(function(resolve, reject) {
-        console.log(JSON.stringify(payload));
-
         db.collection(PROFILE_COLLECTION).findOne({'username': payload.username}, function(err, result) {
             if(err) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
@@ -170,11 +168,14 @@ exports.searchTweet = function(payload) {
             else if(result == null && payload.following) {
                 payload.targets = [];
             }
+            console.log('Targets: ' + payload.targets);
 
             var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target, 
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
+            console.log('Query: ' + JSON.stringify(query));
 
             Tweet.esSearch(query).then(function(results) {
+                console.log('Result: ' + JSON.stringify(results));
                 var response = {
                     'status': STATUS_OK,
                     'items': []
