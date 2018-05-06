@@ -138,6 +138,5 @@ exports.searchQuery = function(limit, timestamp, q, target, targets, parent, rep
         ];
     }
 
-    console.log(JSON.stringify(query));
     return query;
 }
