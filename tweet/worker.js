@@ -75,9 +75,12 @@ exports.getTweet = function(payload) {
             }
 
             if(result != null) {
+                delete result._id;
+                delete result.__v;
+
                 var response = {
                     'status': STATUS_OK,
-                    'item': result.toObject()
+                    'item': result
                 };
                 resolve(response);
             }
