@@ -17,13 +17,15 @@ git checkout m4
 git pull origin m4
 sudo sh build.sh
 
-echo '\033[35m[x] Deploying new Services... \033[0m'
+
+echo '\033[35m[x] Clearing Databases.. \033[0m'
+curl -XDELETE 10.0.1.14:9200/tweets
 cd deployment
 sleep 5
-echo '\033[35m[x] Clearing Databases.. \033[0m'
 cd utils
 sh clear.sh
 cd ..
+echo '\033[35m[x] Deploying new Services... \033[0m'
 kubectl apply -f api-gateway-deployment.yml
 kubectl apply -f auth-service-deployment.yml
 kubectl apply -f email-service-deployment.yml
