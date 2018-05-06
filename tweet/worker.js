@@ -5,7 +5,6 @@ const mexp = require('mongoose-elasticsearch-xp');
 
 const MONGO_URI = require('./config').tweet.MongoDB_Uri;
 const DB_NAME = require('./config').tweet.MongoDB_Name;
-//const TWEET_COLLECTION = require('./config').tweet.MongoDB_Tweet_Collection;
 const PROFILE_COLLECTION = require('./config').tweet.MongoDB_Profile_Collection;
 const ES_HOST = require('./config').tweet.ES_HOST;
 const ERROR_GET_TWEET = require('./protocols/messages').ERROR_GET_TWEET;
