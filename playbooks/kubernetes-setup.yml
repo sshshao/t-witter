@@ -1,5 +1,5 @@
 ---
-- hosts: witter-all
+- hosts: witter-extra-workers
   remote_user: ubuntu
   gather_facts: no
   become: yes
@@ -86,10 +86,3 @@
       apt:
         name: "kubernetes-cni"
         state: present
-
-    - name: Install Kompose...
-      raw: |
-        curl -L https://github.com/kubernetes/kompose/releases/download/v1.11.0/kompose-linux-amd64 -o kompose
-        chmod +x kompose
-        sudo mv ./kompose /usr/local/bin/kompose
-
