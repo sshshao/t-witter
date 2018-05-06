@@ -22,7 +22,7 @@ exports.getTweetSchema = function() {
     /*
     var propertySchema = new mongoose.Schema({
         'likes': { type: Number, default: 0 },
-        'liked_by': { type: Number, default: [] }
+        'liked_by': { type: Array, default: [] }
     });
     */
 
@@ -34,7 +34,7 @@ exports.getTweetSchema = function() {
         'retweeted': { type: Number, default: 0 },
         'property': {
             'likes': { type: Number, default: 0 },
-            'liked_by': { type: Number, default: [] }
+            'liked_by': { type: Array, default: [] }
         },
         'childType': String,
         'parent': String,
