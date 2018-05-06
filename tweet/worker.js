@@ -179,7 +179,7 @@ exports.searchTweet = function(payload) {
                     'items': []
                 };
 
-                if(results.hits.total != 0) {
+                if(results.hits.total > 0) {
                     var hits = results.hits.hits;
                     for(var i = 0; i < hits.length; i++) {
                         response.items.push(hits[i]._source);
