@@ -41,14 +41,14 @@ function startChannel(service, payload) {
             }
     
             ch.consume('amq.rabbitmq.reply-to', function(msg) {
-                //console.log(' [.] Responding %s', msg.content.toString());
+                console.log(' [.] Responding %s', msg.content.toString());
                 resolve(msg.content.toString());
                 ch.close();
             }, {noAck: true});
             
             ch.publish('', service, new Buffer(payload),
                 {replyTo: 'amq.rabbitmq.reply-to', persistent: true});
-            //console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
+            console.log("[x] Sending to %s: '%s'", service, JSON.stringify(payload));
         });
     });
 }

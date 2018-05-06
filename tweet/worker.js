@@ -58,7 +58,6 @@ exports.addTweet = function(payload) {
                 'id': payload.id,
                 'item': tweet.toObject()
             };
-            console.log('Added tweet: ' + response);
             resolve(response);
         });
     });
@@ -67,7 +66,7 @@ exports.addTweet = function(payload) {
 exports.getTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var query = utils.tweetQuery(payload.id);
-        console.log(query);
+        console.log('get: ' + query);
         
         Tweet.findOne(query).lean().exec(function(err, result) {
             if(err) {
