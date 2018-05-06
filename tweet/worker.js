@@ -32,7 +32,7 @@ mongoose.connect(MONGO_URI, {
 });
 
 var tweetSchema = utils.getTweetSchema();
-tweetSchema.plugin(mexp, {host: ES_HOST});
+tweetSchema.plugin(mexp, {hosts: [ES_HOST]});
 if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
 tweetSchema.options.toObject.transform = function (doc, ret, options) {
     // remove the _id of every document before returning the result
