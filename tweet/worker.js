@@ -87,7 +87,7 @@ exports.getTweet = function(payload) {
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_GET_TWEET));
             }
-        });   
+        });
     });
 }
 
@@ -111,7 +111,7 @@ exports.deleteTweet = function(payload) {
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_DELETE_TWEET));
             }
-        });         
+        });
     });
 }
 
@@ -150,7 +150,7 @@ exports.likeTweet = function(payload) {
             else {
                 resolve(utils.generateMessage(STATUS_ERROR, ERROR_GET_TWEET));
             }
-        });     
+        });
     });
 }
 
@@ -178,7 +178,7 @@ exports.searchTweet = function(payload) {
                     'status': STATUS_OK,
                     'items': []
                 };
-                console.log("result: " + results);
+                console.log("result: " + JSON.stringify(results));
 
                 if(results != null) {
                     for(var i = 0; i < results.length; i++) {
@@ -187,7 +187,7 @@ exports.searchTweet = function(payload) {
                     }
                 }
                 resolve(response);
-            });      
-        });            
+            });
+        });
     });
 }
