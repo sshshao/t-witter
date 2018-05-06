@@ -182,7 +182,7 @@ exports.searchTweet = function(payload) {
                 if(results.hits.total != 0) {
                     var hits = results.hits.hits;
                     for(var i = 0; i < hits.length; i++) {
-                        response.items.push(hits._source[i]);
+                        response.items.push(hits[i]._source);
                     }
                 }
                 resolve(response);
