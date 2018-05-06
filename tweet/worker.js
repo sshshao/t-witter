@@ -77,7 +77,7 @@ exports.getTweet = function(payload) {
             if(result != null) {
                 var response = {
                     'status': STATUS_OK,
-                    'item': result.toObject()
+                    'item': result
                 };
                 resolve(response);
             }
