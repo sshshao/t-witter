@@ -178,12 +178,11 @@ exports.searchTweet = function(payload) {
                     'status': STATUS_OK,
                     'items': []
                 };
-                console.log("result: " + JSON.stringify(results));
 
-                if(results != null) {
-                    for(var i = 0; i < results.length; i++) {
-                        delete results[i]._id;
-                        response.items.push(results[i]);
+                if(results.hits.total != 0) {
+                    var hits = results.hits.hits;
+                    for(var i = 0; i < hits.length; i++) {
+                        response.items.push(hits._source[i]);
                     }
                 }
                 resolve(response);
