@@ -161,7 +161,7 @@ exports.search = function(req, res) {
             'action': RPC_TWEET_ACTION.SEARCH,
             'payload': {
                 'username': (cookie[0] && following) ? cookie[1] : null,
-                'timestamp': req.body.timestamp == null ? Math.floor(Date.now()/1000) : req.body.timestamp,
+                'timestamp': req.body.timestamp == null ? Math.floor(Date.now()/1000) : parseInt(req.body.timestamp),
                 'limit': req.body.limit == null ? SEARCH_LIMIT_DEFAULT :
                     (req.body.limit <= SEARCH_LIMIT_MAX) ? req.body.limit : SEARCH_LIMIT_MAX,
                 'q': req.body.q,

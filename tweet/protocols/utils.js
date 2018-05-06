@@ -91,6 +91,7 @@ exports.unlikeTweetUpdate = function(user) {
     };
 }
 
+/*
 exports.searchIndex = [
     {
         key: {
@@ -109,6 +110,7 @@ exports.searchIndex = [
         background: true
     }
 ];
+*/
 
 exports.searchQuery = function(limit, timestamp, q, target, targets, parent, replies, hasMedia, rank) {
     var query = {
@@ -153,14 +155,14 @@ exports.searchQuery = function(limit, timestamp, q, target, targets, parent, rep
     }
     if(rank == 'interest') {
         query.sort = [
-            { 'timestamp': {"order": "desc"} },
-            { 'retweeted': {"order": "desc"} },
-            { 'property.likes': {"order": "desc"} }
+            { 'timestamp': {'order': 'desc'} },
+            { 'retweeted': {'order': 'desc'} },
+            { 'property.likes': {'order': 'desc'} }
         ]
     }
     else {
         query.sort = [
-            { 'timestamp': {"order": "desc"} }
+            { 'timestamp': {'order': 'desc'} }
         ]
     }
 

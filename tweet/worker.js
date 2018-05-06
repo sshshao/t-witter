@@ -77,7 +77,7 @@ exports.getTweet = function(payload) {
             if(result != null) {
                 var response = {
                     'status': STATUS_OK,
-                    'item': result
+                    'item': result.toObject()
                 };
                 resolve(response);
             }
@@ -99,7 +99,6 @@ exports.deleteTweet = function(payload) {
             }
 
             if(result != null) {
-                
                 var response = {
                     'status': STATUS_OK,
                     'media': result.toObject().media
@@ -168,7 +167,7 @@ exports.searchTweet = function(payload) {
                 payload.targets = [];
             }
 
-            var query = utils.searchQuery(payload.limit, payload.timestamp, payload.q, payload.target, 
+            var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target, 
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
 
             Tweet.esSearch(query).then(function(results) {
