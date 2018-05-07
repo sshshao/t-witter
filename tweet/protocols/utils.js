@@ -24,9 +24,9 @@ exports.getTweetSchema = function() {
         'username': { type: String, es_indexed: true },
         'timestamp': { type: Number, es_indexed: true },
         'content': { type: String, es_indexed: true },
-        'retweeted': { type: Number, default: 0, es_indexed: true },
+        'retweeted': { type: Number, default: 0}, //es_indexed: true },
         'property': {
-            'likes': { type: Number, default: 0, es_indexed: true },
+            'likes': { type: Number, default: 0}, //es_indexed: true },
             'liked_by': { type: Array, default: [] }
         },
         'childType': String,
@@ -124,9 +124,9 @@ exports.searchQuery = function(limit, timestamp, q, target, targets, parent, rep
     }
     if(rank == 'interest') {
         query.sort = [
-            { 'timestamp': {'order': 'desc'} },
-            { 'retweeted': {'order': 'desc'} },
-            { 'property.likes': {'order': 'desc'} }
+            { 'timestamp': {'order': 'desc'} }//,
+            //{ 'retweeted': {'order': 'desc'} },
+            //{ 'property.likes': {'order': 'desc'} }
         ];
     }
     else {
