@@ -59,7 +59,7 @@ exports.addTweet = function(payload) {
                     return;
                 }
 
-                console.log('Tweet indexed: ' + payload.id);
+                //console.log('Tweet indexed: ' + payload.id);
             });
 
             var response = {
