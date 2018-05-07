@@ -164,15 +164,15 @@ exports.searchTweet = function(payload) {
             // Resolve list of following users if is logged in
             if(result != null && payload.following) {
                 payload.targets = result.following;
+                // Username index only avaliable for lowercase, a trick :(
+                for(var i = 0; i < payload.targets.length; i++) {
+                    payload.targets[i] = payload.targets[i].toLowerCase();
+                }
             }
             else if(result == null && payload.following) {
                 payload.targets = [];
             }
 
-            // Username index only avaliable for lowercase, a trick :(
-            for(var i = 0; i < payload.targets.length; i++) {
-                payload.targets[i] = payload.targets[i].toLowerCase();
-            }
             console.log('Targets: ' + payload.targets);
 
             var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target,
