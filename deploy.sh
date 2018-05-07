@@ -19,7 +19,7 @@ sudo sh build.sh
 
 
 echo '\033[35m[x] Clearing Databases.. \033[0m'
-curl -XDELETE 10.0.1.14:9200/tweets
+curl -XDELETE 10.0.1.22:9200/tweets
 cd deployment
 sleep 5
 cd utils
