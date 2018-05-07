@@ -53,6 +53,15 @@ exports.addTweet = function(payload) {
                 return;
             }
 
+            tweet.on('es-indexed', function (err, res) {
+                if(err) {
+                    console.error(err.message);
+                    return;
+                }
+
+                console.log('Tweet indexed: ' + payload.id);
+            });
+
             var response = {
                 'status': STATUS_OK,
                 'id': payload.id,
@@ -167,21 +176,20 @@ exports.searchTweet = function(payload) {
                 // Username index only avaliable for lowercase, a trick :(
                 for(var i = 0; i < payload.targets.length; i++) {
                     payload.targets[i] = payload.targets[i].toLowerCase();
-                    console.log('i: ' + payload.targets[i]);
                 }
             }
             else if(result == null && payload.following) {
                 payload.targets = [];
             }
 
-            console.log('Targets: ' + payload.targets);
+            //console.log('Targets: ' + payload.targets);
 
             var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target,
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
-            console.log('Query: ' + JSON.stringify(query));
+            //console.log('Query: ' + JSON.stringify(query));
 
             Tweet.esSearch(query).then(function(results) {
-                console.log('Result: ' + JSON.stringify(results));
+                //console.log('Result: ' + JSON.stringify(results));
                 var response = {
                     'status': STATUS_OK,
                     'items': []
