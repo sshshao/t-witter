@@ -167,6 +167,7 @@ exports.searchTweet = function(payload) {
                 // Username index only avaliable for lowercase, a trick :(
                 for(var i = 0; i < payload.targets.length; i++) {
                     payload.targets[i] = payload.targets[i].toLowerCase();
+                    console.log('i: ' + payload.targets[i]);
                 }
             }
             else if(result == null && payload.following) {

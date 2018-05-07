@@ -49,7 +49,7 @@ module.exports = {
     profile: {
         Query_Limit_Default: 50,
         Query_Limit_Max: 200,
-        MongoDB_Uri: 'mongodb://docker-2:27017/',
+        MongoDB_Uri: 'mongodb://docker-5:27017/',
         MongoDB_Name: 'witter',
         MongoDB_Collection: 'profile',
         AMQP_Queue: 'profile_queue'
