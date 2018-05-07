@@ -168,9 +168,14 @@ exports.searchTweet = function(payload) {
             else if(result == null && payload.following) {
                 payload.targets = [];
             }
+
+            // Username index only avaliable for lowercase, a trick :(
+            for(var i = 0; i < payload.targets.length; i++) {
+                payload.targets[i] = payload.targets[i].toLowerCase();
+            }
             console.log('Targets: ' + payload.targets);
 
-            var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target, 
+            var query = utils.searchQuery(payload.limit, parseInt(payload.timestamp), payload.q, payload.target,
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
             console.log('Query: ' + JSON.stringify(query));
 
