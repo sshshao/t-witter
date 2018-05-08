@@ -31,7 +31,7 @@ mongoose.connect(MONGO_URI, {
 });
 
 var tweetSchema = utils.getTweetSchema();
-tweetSchema.plugin(mongoosastic, {hosts: [ES_HOST]});
+tweetSchema.plugin(mongoosastic, {hosts: [ES_HOST], hydrate:false});
 if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
 tweetSchema.options.toObject.transform = function (doc, ret, options) {
     // remove the auto generated value of every document before returning the result
