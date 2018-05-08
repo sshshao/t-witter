@@ -1,7 +1,7 @@
 const mongodb = require('mongodb').MongoClient;
 const utils = require('./protocols/utils');
 const mongoose = require('mongoose');
-const mexp = require('mongoose-elasticsearch-xp');
+const mongoosastic = require('mongoosastic');
 
 const MONGO_URI = require('./config').tweet.MongoDB_Uri;
 const DB_NAME = require('./config').tweet.MongoDB_Name;
@@ -31,7 +31,7 @@ mongoose.connect(MONGO_URI, {
 });
 
 var tweetSchema = utils.getTweetSchema();
-tweetSchema.plugin(mexp, {hosts: [ES_HOST]});
+tweetSchema.plugin(mongoosastic, {hosts: [ES_HOST]});
 if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
 tweetSchema.options.toObject.transform = function (doc, ret, options) {
     // remove the auto generated value of every document before returning the result
@@ -58,7 +58,6 @@ exports.addTweet = function(payload) {
                     console.error(err.message);
                     return;
                 }
-
                 console.log('Tweet indexed: ' + payload.id);
             });
 
@@ -108,6 +107,14 @@ exports.deleteTweet = function(payload) {
                 resolve(utils.generateMessage(STATUS_ERROR, err.message));
                 return;
             }
+
+            doc.on('es-removed', function(err, res) {
+                if(err) {
+                    console.error(err.message);
+                    return;
+                }
+                console.log('Tweet index removed: ' + payload.id);
+            });
 
             if(result != null) {
                 var response = {
@@ -188,7 +195,7 @@ exports.searchTweet = function(payload) {
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
             //console.log('Query: ' + JSON.stringify(query));
 
-            Tweet.esSearch(query).then(function(results) {
+            Tweet.search(query).then(function(results) {
                 //console.log('Result: ' + JSON.stringify(results));
                 var response = {
                     'status': STATUS_OK,
