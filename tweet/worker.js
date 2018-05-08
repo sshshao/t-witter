@@ -47,7 +47,7 @@ exports.addTweet = function(payload) {
     return new Promise(function(resolve, reject) {
         var tweet = new Tweet(utils.tweetInsert(payload.id, payload.username, payload.timestamp, 
             payload.content, payload.childType, payload.parent, payload.media));
-        tweet.save(function (err) {
+        tweet.save(function(err) {
             if(err) {
                 console.error(err.message);
                 return;
@@ -195,7 +195,12 @@ exports.searchTweet = function(payload) {
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
             //console.log('Query: ' + JSON.stringify(query));
 
-            Tweet.search(query, {hydrate: true}).then(function(results) {
+            Tweet.search(query, function(err, results) {
+                if(err) {
+                    console.error(err.message);
+                    return;
+                }
+
                 //console.log('Result: ' + JSON.stringify(results));
                 var response = {
                     'status': STATUS_OK,
