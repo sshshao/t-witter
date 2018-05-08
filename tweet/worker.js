@@ -31,7 +31,7 @@ mongoose.connect(MONGO_URI, {
 });
 
 var tweetSchema = utils.getTweetSchema();
-tweetSchema.plugin(mongoosastic, {hosts: [ES_HOST], hydrate:false});
+tweetSchema.plugin(mongoosastic, {host: [ES_HOST]});
 if (!tweetSchema.options.toObject) tweetSchema.options.toObject = {};
 tweetSchema.options.toObject.transform = function (doc, ret, options) {
     // remove the auto generated value of every document before returning the result
@@ -195,7 +195,7 @@ exports.searchTweet = function(payload) {
                 payload.targets, payload.parent, payload.replies, payload.hasMedia, payload.rank);
             //console.log('Query: ' + JSON.stringify(query));
 
-            Tweet.search(query).then(function(results) {
+            Tweet.search(query, {hydrate: true}).then(function(results) {
                 //console.log('Result: ' + JSON.stringify(results));
                 var response = {
                     'status': STATUS_OK,
