@@ -58,7 +58,7 @@ exports.addTweet = function(payload) {
                     console.error(err.message);
                     return;
                 }
-                console.log('Tweet indexed: ' + payload.id);
+                //console.log('Tweet indexed: ' + payload.id);
             });
 
             var response = {
@@ -113,7 +113,7 @@ exports.deleteTweet = function(payload) {
                     console.error(err.message);
                     return;
                 }
-                console.log('Tweet index removed: ' + payload.id);
+                //console.log('Tweet index removed: ' + payload.id);
             });
 
             if(result != null) {

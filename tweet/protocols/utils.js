@@ -20,10 +20,10 @@ exports.generateMessage = function(status, msg) {
 
 exports.getTweetSchema = function() {
     var tweetSchema = new mongoose.Schema({
-        'id': { type: String, es_indexed: true },
-        'username': { type: String, es_indexed: true },
-        'timestamp': { type: Number, es_indexed: true },
-        'content': { type: String, es_indexed: true },
+        'id': { type: String } , // es_indexed: true }
+        'username': { type: String, es_indexed: true, es_type: 'keyword' },
+        'timestamp': { type: Number, es_indexed: true, es_type: 'date' },
+        'content': { type: String, es_indexed: true, es_type: 'text' },
         'retweeted': { type: Number, default: 0, es_indexed: true },
         'property': {
             'likes': { type: Number, default: 0, es_indexed: true },
